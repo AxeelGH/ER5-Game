@@ -1,4 +1,4 @@
-export const Game = {
+export const GameState = {
     INVALID: -1,        
     LOADING: 0,         
     INTRO: 1,           
