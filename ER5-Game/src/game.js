@@ -5,11 +5,15 @@ import { View } from './View.js';
 import Asset from './assets.js';
 import SpriteFactory from './SpriteFactory.js';
 import playerView from './PlayerView.js';
+import Map, { mapData} from './Map.js';
+import MapView from './MapView.js';
+import ImageSet from './ImageSet.js';
 
 class Game {
 
     constructor(canvas) {
-
+        globals.canvas.width = 800;
+        globals.canvas.height = 600;
        this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         globals.ctx = this.ctx;
@@ -24,6 +28,10 @@ class Game {
         this.inputManager = new Events();
         this.view = new View(this.ctx);
 
+        const mapImageSet = new ImageSet(0, 0, 32, 32, 0, 0, 32); 
+        globals.map = new Map(mapData, mapImageSet);
+
+        this.mapView = new MapView(this.ctx);
         this.playerView = new playerView(this.ctx)
 
         //key actions
@@ -159,8 +167,8 @@ class Game {
 
                 this.timer -= dt;
                 if (this.timer <= 0) {
-                    this.gameState = gameState.GAME_OVER;
-                    globals.gameState = gameState.GAME_OVER;
+                    this.gameState = GameState.GAME_OVER;
+                    globals.gameState = GameState.GAME_OVER;
                 }
 
                 if (globals.player) {

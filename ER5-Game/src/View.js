@@ -1,12 +1,15 @@
 import globals from './globals.js';
 import { GameState } from './constants.js';
 import playerView from './PlayerView.js';
+import MapView from './MapView.js';
 
 export class View {
 
     constructor(ctx) {
 
         this.ctx = ctx;
+        this.playerView = new playerView(ctx);
+        this.MapView = new MapView(ctx);
     }
 
     render() {
@@ -98,6 +101,10 @@ export class View {
     
 
     renderPlaying() {
+
+        if (globals.gameInstance && globals.gameInstance.mapView) {
+            globals.gameInstance.mapView.render();
+        }
 
         if (globals.player) {
             this.playerView.render(); 

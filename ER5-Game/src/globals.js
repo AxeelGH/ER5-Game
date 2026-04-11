@@ -27,4 +27,5 @@ export default{
 
     sprites: [],
     player: null,
+    map: null,
 }

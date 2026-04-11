@@ -1,3 +1,5 @@
+import globals from './globals.js';
+
 export default class ImageSet{
 
     constructor(initFil, initCol, xSize, ySize, xOffset, yOffset, gridSize){
