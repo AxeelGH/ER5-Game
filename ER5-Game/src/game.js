@@ -2,6 +2,9 @@ import globals from './globals.js';
 import { GameState, Key } from './constants.js';
 import { Events } from './Events.js';
 import { View } from './View.js';
+import Asset from './assets.js';
+import SpriteFactory from './SpriteFactory.js';
+import playerView from './PlayerView.js';
 
 class Game {
 
@@ -21,6 +24,8 @@ class Game {
         this.inputManager = new Events();
         this.view = new View(this.ctx);
 
+        this.playerView = new playerView(this.ctx)
+
         //key actions
         globals.action = {
 
@@ -39,7 +44,18 @@ class Game {
         const game = new Game(canvas);
 
         globals.gameInstance = game;
-        globals.gameState = game.gameState;
+        
+        globals.sprites = [];
+        globals.tileSets = [];
+        globals.assetsToLoad = [];
+        globals.assetsLoaded = 0;
+
+        game.assets = new Asset();
+        game.assets.loadAssets();
+
+        game.player = SpriteFactory.createPlayer(250, 100, 120, 70);
+        globals.player = game.player;
+        globals.sprites.push(globals.player);
 
         console.log("Ready to execute.");
         return game;
@@ -118,6 +134,7 @@ class Game {
                             this.gameState = GameState.PLAYING;
                             globals.gameState = GameState.PLAYING;
                             this.timer = 400; 
+                            globals.action.confirm = false;
                             break;
 
                         case 1: // Story
@@ -141,6 +158,14 @@ class Game {
             case GameState.PLAYING:
 
                 this.timer -= dt;
+                if (this.timer <= 0) {
+                    this.gameState = gameState.GAME_OVER;
+                    globals.gameState = gameState.GAME_OVER;
+                }
+
+                if (globals.player) {
+                    globals.player.update();
+                }
                 
                 break;
 
