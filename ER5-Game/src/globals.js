@@ -28,4 +28,7 @@ export default{
     sprites: [],
     player: null,
     map: null,
+
+    enemies: [],  // Array para almacenar enemigos
+    currentEnemy: null,  // Enemigo actual en combate
 }

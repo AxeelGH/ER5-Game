@@ -21,20 +21,20 @@ export const SpriteID = {
     HERO:     0,
     HERO2:    1,
     SLIME:    2,
-    ENEMY2:   3,
-    ENEMY3:   4,
+    SKELETON: 3,
+    MAGE:     4,
 }
 
 export const State = {
     //PLAYER MOVEMENT
-    STILL_LEFT:  0,
+    // STILL_LEFT:  0,
     LEFT:        1,
-    STILL_RIGHT: 2,
-    RIGHT:       3,
-    STILL_UP:    4,
-    UP:          5,
-    STILL_DOWN:  6,
-    DOWN:        7,
+    // STILL_RIGHT: 2,
+    RIGHT:       2,
+    // STILL_UP:    4,
+    UP:          3,
+    // STILL_DOWN:  6,
+    DOWN:        0,
 
     //PLAYER COMBAT
     ATTACK:      8,

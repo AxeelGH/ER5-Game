@@ -1,5 +1,5 @@
 import globals from './globals.js';
-import { GameState, Key } from './constants.js';
+import { GameState, Key, SpriteID } from './constants.js';
 import { Events } from './Events.js';
 import { View } from './View.js';
 import Asset from './assets.js';
@@ -8,6 +8,7 @@ import playerView from './PlayerView.js';
 import Map, { mapData} from './Map.js';
 import MapView from './MapView.js';
 import ImageSet from './ImageSet.js';
+import CollisionManager from './CollisionManager.js';
 
 class Game {
 
@@ -42,6 +43,10 @@ class Game {
             moveRight: false,
             confirm: false,
         };
+        
+        // Inicializar arrays de enemigos
+        globals.enemies = [];
+        globals.currentEnemy = null;
     }
 
     static create(canvas) {
@@ -58,9 +63,31 @@ class Game {
         game.assets = new Asset();
         game.assets.loadAssets();
 
-        game.player = SpriteFactory.createPlayer(250, 100, 120, 70);
+        game.player = SpriteFactory.createPlayer(150, 50, 120, 70);
         globals.player = game.player;
         globals.sprites.push(globals.player);
+        
+        // ========== CREAR ENEMIGOS ==========
+        // Slimes (verdes, más débiles)
+        const slime1 = SpriteFactory.createSlime(350, 250);
+        const slime2 = SpriteFactory.createSlime(550, 400);
+        const slime3 = SpriteFactory.createSlime(150, 450);
+        
+        // Skeletons (blancos, más resistentes)
+        const skeleton1 = SpriteFactory.createSkeleton(600, 200);
+        const skeleton2 = SpriteFactory.createSkeleton(450, 500);
+        
+        // Mages (morados, rango medio)
+        const mage1 = SpriteFactory.createMage(100, 100);
+        const mage2 = SpriteFactory.createMage(200, 100);
+        
+        // Añadir enemigos al array global
+        globals.enemies.push(slime1, slime2, slime3);
+        globals.enemies.push(skeleton1, skeleton2);
+        globals.enemies.push(mage1, mage2);
+        
+        console.log("Enemies created:", globals.enemies.length);
+        // ====================================
 
         console.log("Ready to execute.");
         return game;
@@ -170,9 +197,26 @@ class Game {
                     globals.player.update();
                 }
                 
+                // Limitar movimiento del jugador dentro del canvas
                 if (globals.player) {
                     globals.player.xPos = Math.max(0, Math.min(globals.player.xPos, globals.canvas.width - 50));
                     globals.player.yPos = Math.max(0, Math.min(globals.player.yPos, globals.canvas.height - 70));
+                }
+                
+                // ========== DETECTAR COLISIONES CON ENEMIGOS ==========
+                CollisionManager.detectCollisions();
+                // =====================================================
+                break;
+
+            case GameState.COMBAT:
+                // Si estamos en combate, esperar a que termine
+                // Por ahora, se puede salir del combate con ENTER (para pruebas)
+                if (globals.action.confirm) {
+                    globals.action.confirm = false;
+                    this.gameState = GameState.PLAYING;
+                    globals.gameState = GameState.PLAYING;
+                    globals.currentEnemy = null;
+                    console.log("Returning to PLAYING from COMBAT");
                 }
                 break;
 

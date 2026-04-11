@@ -5,6 +5,7 @@ import Frames from "./Frames.js";
 import Physics from "./Physics.js";
 import HitBox from "./HitBox.js"; 
 import globals from "./globals.js";
+import CollisionManager from "./CollisionManager.js";
 
 export default class Player extends Sprite {
 
@@ -19,8 +20,8 @@ export default class Player extends Sprite {
         this.hp = hp;
         this.mana = mana;
 
-        this.imageSet = new ImageSet(29, 0, 48, 64, 0, 0, 64); 
-        this.frames = new Frames(3, 3); 
+        this.imageSet = new ImageSet(39, 0, 48, 64, 0, 0, 64); 
+        this.frames = new Frames(3, 8); 
         this.physics = new Physics(200); 
         this.hitBox = new HitBox(46, 60, 2, 2);
 
@@ -30,6 +31,7 @@ export default class Player extends Sprite {
     update() {
         this.readKeyboardAndAssignState();
 
+        // Aplicar velocidad según el estado
         switch(this.state){
             case State.UP:
                 this.physics.vx = 0;
@@ -52,8 +54,21 @@ export default class Player extends Sprite {
                 this.physics.vy = 0;
         }
 
+        // Mover temporalmente en X
         this.xPos += this.physics.vx * globals.deltaTime;
+        
+        // Verificar y resolver colisiones en X
+        if (CollisionManager.detectCollisionWithMap(this)) {
+            CollisionManager.resolveMapCollision(this);
+        }
+        
+        // Mover temporalmente en Y
         this.yPos += this.physics.vy * globals.deltaTime;
+        
+        // Verificar y resolver colisiones en Y
+        if (CollisionManager.detectCollisionWithMap(this)) {
+            CollisionManager.resolveMapCollision(this);
+        }
 
         this.updateAnimationFrame();
     }

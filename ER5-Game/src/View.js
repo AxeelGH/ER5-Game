@@ -1,5 +1,5 @@
 import globals from './globals.js';
-import { GameState } from './constants.js';
+import { GameState, SpriteID } from './constants.js';
 import playerView from './PlayerView.js';
 import MapView from './MapView.js';
 
@@ -114,12 +114,48 @@ export class View {
     }
     
     renderPlaying() {
+        // Renderizar el mapa
         if (globals.map && this.mapView) {
             this.mapView.render();
         }
-
+        
+        // ========== RENDERIZAR ENEMIGOS ==========
+        if (globals.enemies) {
+            for (let i = 0; i < globals.enemies.length; i++) {
+                const enemy = globals.enemies[i];
+                if (enemy.isAlive && enemy.draw) {
+                    enemy.draw(this.ctx);
+                }
+            }
+        }
+        // ========================================
+        
+        // Renderizar al jugador (encima de los enemigos)
         if (globals.player) {
             this.playerView.render(); 
+        }
+        
+        // Opcional: Dibujar hitboxes para debugging (descomentar si se necesita)
+        // this.drawAllHitBoxes();
+    }
+    
+    // Método opcional para debugging de colisiones
+    drawAllHitBoxes() {
+        if (globals.player) {
+            this.playerView.drawHitBox(globals.player);
+        }
+        
+        if (globals.enemies) {
+            for (let i = 0; i < globals.enemies.length; i++) {
+                const enemy = globals.enemies[i];
+                if (enemy.isAlive && enemy.hitBox) {
+                    const x = Math.floor(enemy.xPos) + enemy.hitBox.xOffset;
+                    const y = Math.floor(enemy.yPos) + enemy.hitBox.yOffset;
+                    this.ctx.strokeStyle = "red";
+                    this.ctx.lineWidth = 2;
+                    this.ctx.strokeRect(x, y, enemy.hitBox.xSize, enemy.hitBox.ySize);
+                }
+            }
         }
     }
 
@@ -159,10 +195,85 @@ export class View {
     renderCombat() {
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        this.ctx.fillStyle = 'white';
-        this.ctx.font = '20px monospace';
+        
+        // Título
+        this.ctx.fillStyle = '#ff4444';
+        this.ctx.font = '28px monospace';
         this.ctx.textAlign = 'center';
-        this.ctx.fillText('COMBAT MODE', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.fillText('⚔️ COMBAT ⚔️', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 100);
+        
+        // Mostrar información del enemigo
+        if (globals.currentEnemy) {
+            let enemyName = "";
+            let enemyColor = "";
+            switch(globals.currentEnemy.id) {
+                case SpriteID.SLIME:
+                    enemyName = "SLIME";
+                    enemyColor = "#88ff88";
+                    break;
+                case SpriteID.SKELETON:
+                    enemyName = "SKELETON";
+                    enemyColor = "#cccccc";
+                    break;
+                case SpriteID.MAGE:
+                    enemyName = "MAGE";
+                    enemyColor = "#cc88ff";
+                    break;
+                default:
+                    enemyName = "ENEMY";
+                    enemyColor = "#ffffff";
+            }
+            
+            // Nombre del enemigo
+            this.ctx.fillStyle = enemyColor;
+            this.ctx.font = '20px monospace';
+            this.ctx.fillText(enemyName, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 40);
+            
+            // Barra de HP del enemigo
+            const barWidth = 200;
+            const barHeight = 20;
+            const barX = this.ctx.canvas.width / 2 - barWidth / 2;
+            const barY = this.ctx.canvas.height / 2 - 15;
+            
+            // Fondo de la barra (rojo)
+            this.ctx.fillStyle = '#330000';
+            this.ctx.fillRect(barX, barY, barWidth, barHeight);
+            
+            // HP actual (verde)
+            const hpPercent = globals.currentEnemy.hp / globals.currentEnemy.maxHp;
+            this.ctx.fillStyle = '#00ff00';
+            this.ctx.fillRect(barX, barY, barWidth * hpPercent, barHeight);
+            
+            // Borde de la barra
+            this.ctx.strokeStyle = '#ffffff';
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeRect(barX, barY, barWidth, barHeight);
+            
+            // Texto de HP
+            this.ctx.fillStyle = '#ffffff';
+            this.ctx.font = '12px monospace';
+            this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, 
+                             this.ctx.canvas.width / 2, barY + 14);
+            
+            // Mostrar HP del jugador
+            if (globals.player) {
+                this.ctx.fillStyle = '#ff8888';
+                this.ctx.font = '14px monospace';
+                this.ctx.fillText(`Your HP: ${Math.floor(globals.player.hp)}/${globals.player.hp}`, 
+                                 this.ctx.canvas.width / 2, barY + 45);
+            }
+        }
+        
+        // Mensaje de combate
+        this.ctx.fillStyle = 'yellow';
+        this.ctx.font = '12px monospace';
+        this.ctx.fillText("Press ENTER to exit combat (demo)", 
+                         this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 100);
+        
+        this.ctx.fillStyle = '#888888';
+        this.ctx.font = '10px monospace';
+        this.ctx.fillText("Combat system coming soon...", 
+                         this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 140);
     }
 
     renderSettings() {
@@ -246,23 +357,39 @@ export class View {
     renderHUD() {
         if (!globals.player) return;
         
+        // Fondo del HUD
         this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
         this.ctx.fillRect(10, 10, 200, 60);
         
+        // Barra de HP (fondo rojo)
         this.ctx.fillStyle = '#ff0000';
         this.ctx.fillRect(15, 20, 190, 15);
+        
+        // Barra de HP (relleno verde según HP actual)
         this.ctx.fillStyle = '#00ff00';
         var hpPercent = (globals.player.hp / 120);
         this.ctx.fillRect(15, 20, 190 * hpPercent, 15);
         
+        // Texto de HP
         this.ctx.fillStyle = 'white';
         this.ctx.font = '10px monospace';
-        this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/" + globals.player.hp, 45, 18);
+        this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/120", 45, 18);
         
+        // Temporizador
         if (globals.gameInstance) {
             var timer = Math.max(0, Math.floor(globals.gameInstance.timer));
             this.ctx.fillStyle = 'white';
             this.ctx.fillText("Time: " + timer, 40, 50);
+        }
+        
+        // Contador de enemigos vivos (opcional)
+        if (globals.enemies) {
+            let aliveCount = 0;
+            for (let i = 0; i < globals.enemies.length; i++) {
+                if (globals.enemies[i].isAlive) aliveCount++;
+            }
+            this.ctx.fillStyle = '#aaaaaa';
+            this.ctx.fillText("Enemies: " + aliveCount, 40, 65);
         }
     }
 }
