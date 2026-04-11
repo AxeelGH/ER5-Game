@@ -13,7 +13,7 @@ export default class Player extends Sprite {
         super();
 
         this.id = SpriteID.HERO;
-        this.state = State.DOWN; 
+        this.state = State.STILL_DOWN; 
         this.xPos = xPos;
         this.yPos = yPos;
         this.hp = hp;
@@ -21,7 +21,7 @@ export default class Player extends Sprite {
 
         this.imageSet = new ImageSet(29, 0, 48, 64, 0, 0, 64); 
         this.frames = new Frames(3, 3); 
-        this.physics = new Physics(40); 
+        this.physics = new Physics(200); 
         this.hitBox = new HitBox(46, 60, 2, 2);
 
         console.log("Player created with HP:", this.hp, "at", this.xPos, this.yPos);
@@ -59,20 +59,24 @@ export default class Player extends Sprite {
     }
 
     readKeyboardAndAssignState(){
-    
-        this.state = globals.action.moveLeft ? State.LEFT :
-                    globals.action.moveRight ? State.RIGHT :
-                    globals.action.moveUp ? State.UP :
-                    globals.action.moveDown ? State.DOWN :
-                    this.state === State.LEFT ? State.STILL_LEFT :
-                    this.state === State.RIGHT ? State.STILL_RIGHT :
-                    this.state === State.UP ? State.STILL_UP :
-                    this.state === State.DOWN ? State.STILL_DOWN :
-                    this.state;
+        if (globals.action.moveLeft) {
+            this.state = State.LEFT;
+        } else if (globals.action.moveRight) {
+            this.state = State.RIGHT;
+        } else if (globals.action.moveUp) {
+            this.state = State.UP;
+        } else if (globals.action.moveDown) {
+            this.state = State.DOWN;
+        } else {
+            // Set idle states based on last movement
+            if (this.state === State.LEFT) this.state = State.STILL_LEFT;
+            else if (this.state === State.RIGHT) this.state = State.STILL_RIGHT;
+            else if (this.state === State.UP) this.state = State.STILL_UP;
+            else if (this.state === State.DOWN) this.state = State.STILL_DOWN;
+        }
     }
 
     updateAnimationFrame(){
-        
         switch(this.state){
             case State.STILL_UP:
             case State.STILL_LEFT:

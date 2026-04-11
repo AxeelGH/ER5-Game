@@ -18,58 +18,49 @@ export const FPS = 60;
 
 //IDENTIFY ID SPRITE
 export const SpriteID = {
-    
     HERO:     0,
-    HERO2:      1,
-    SLIME:     2,
-    ENEMY2:     3,
-    ENEMY3:       4,
+    HERO2:    1,
+    SLIME:    2,
+    ENEMY2:   3,
+    ENEMY3:   4,
 }
 
 export const State = {
-
-    //PLAYER
+    //PLAYER MOVEMENT
     STILL_LEFT:  0,
     LEFT:        1,
     STILL_RIGHT: 2,
     RIGHT:       3,
     STILL_UP:    4,
     UP:          5,
-    STILL_DOWN: 6,
+    STILL_DOWN:  6,
+    DOWN:        7,
 
     //PLAYER COMBAT
-    STILL_LEFT:  0,
-    ATTACK:      1,
-    ATTACK_2:    2,
-    DEFENSE:     3,
+    ATTACK:      8,
+    ATTACK_2:    9,
+    DEFENSE:     10,
 
     //ENEMY
-    STILL: 0,
-
-    //ENEMY COMBAT
-    STILL_RIGHT:  0,
-    ATTACK_1:      1,
-    ATTACK_2:    2,
-
-    //POTIONS
-    STILL: 0,
+    ENEMY_STILL: 11,
+    ENEMY_ATTACK_1: 12,
+    ENEMY_ATTACK_2: 13,
 
     //DIE
-    DIE_1: 0,
-    DIE_2: 1,
-    DIE_3: 2,
-    DIE_4: 3,
-    DIE_5: 4,
-    DIE_6: 5,
-    DIE_ROLL: 6
+    DIE_1: 14,
+    DIE_2: 15,
+    DIE_3: 16,
+    DIE_4: 17,
+    DIE_5: 18,
+    DIE_6: 19,
+    DIE_ROLL: 20
 }
 
 export const Key = {
-
     UP:     87,       //w
     LEFT:   65,       //a
     DOWN:   83,       //s
     RIGHT:  68,       //d
-    INVENTORY:   69,       //e
+    INVENTORY:   69,  //e
     CONFIRM: 13,      //enter
 }

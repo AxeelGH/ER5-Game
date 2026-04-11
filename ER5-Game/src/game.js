@@ -14,14 +14,14 @@ class Game {
     constructor(canvas) {
         globals.canvas.width = 800;
         globals.canvas.height = 600;
-       this.canvas = canvas;
+        this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         globals.ctx = this.ctx;
 
-        this.gameState = GameState.PLAYING;
-        console.log(this.gameState);
+        this.gameState = GameState.LOADING;
+        console.log("Game State: LOADING");
 
-        this.timer = 400; // 400 seconds = 6 minutes
+        this.timer = 400;
         this.score = 0;
 
         // Managers 
@@ -32,22 +32,19 @@ class Game {
         globals.map = new Map(mapData, mapImageSet);
 
         this.mapView = new MapView(this.ctx);
-        this.playerView = new playerView(this.ctx)
+        this.playerView = new playerView(this.ctx);
 
         //key actions
         globals.action = {
-
             moveUp: false,
             moveDown: false,
             moveLeft: false,
             moveRight: false,
             confirm: false,
         };
-
     }
 
     static create(canvas) {
-
         console.log("Initializing...");
         const game = new Game(canvas);
 
@@ -70,19 +67,16 @@ class Game {
     }
 
     execute() {
-        // Reset timers
         globals.previousCycleMilliseconds = 0;
 
         function gameLoop(currentTime) {
             requestAnimationFrame(gameLoop);
 
-            //safe first cycle
             if (globals.previousCycleMilliseconds === 0) {
                 globals.previousCycleMilliseconds = currentTime;
                 return;
             }
 
-            //Time calculations
             const elapsedSeconds = (currentTime - globals.previousCycleMilliseconds) / 1000;
             globals.previousCycleMilliseconds = currentTime;
 
@@ -92,7 +86,6 @@ class Game {
             if (globals.cycleRealTime >= globals.frameTimeObj) {
                 
                 if (globals.gameInstance) {
-
                     globals.gameInstance.update(globals.deltaTime);
                     globals.gameInstance.render();
                 }
@@ -102,28 +95,31 @@ class Game {
             }
         }
 
-        // Start the game loop
         requestAnimationFrame(gameLoop);
     }
 
     update(dt) {
-    
         switch (this.gameState) {
 
-            case GameState.INTRO:
+            case GameState.LOADING:
+                if (globals.assetsLoaded >= globals.assetsToLoad.length && globals.assetsToLoad.length > 0) {
+                    this.gameState = GameState.INTRO;
+                    globals.gameState = GameState.INTRO;
+                    console.log("Game State: INTRO");
+                }
+                break;
 
+            case GameState.INTRO:
                 if (globals.action.confirm) {
-                    console.log("CONFIRM detected, changing...");
+                    console.log("CONFIRM detected, changing to MENU...");
                     this.gameState = GameState.MENU;   
                     globals.gameState = GameState.MENU;
-                    this.timer = 400;                      
+                    globals.menuIndex = 0;
                     globals.action.confirm = false;        
                 }
-
                 break;
 
             case GameState.MENU:
-
                 if (globals.action.moveUp) {
                     globals.action.moveUp = false; 
                     globals.menuIndex = (globals.menuIndex > 0) ? globals.menuIndex - 1 : 3;
@@ -138,24 +134,24 @@ class Game {
                     globals.action.confirm = false; 
                     
                     switch (globals.menuIndex) {
-                        case 0: // Play
+                        case 0:
                             this.gameState = GameState.PLAYING;
                             globals.gameState = GameState.PLAYING;
                             this.timer = 400; 
-                            globals.action.confirm = false;
+                            console.log("Game State: PLAYING");
                             break;
 
-                        case 1: // Story
+                        case 1:
                             this.gameState = GameState.HISTORY;
                             globals.gameState = GameState.HISTORY;
                             break;
 
-                        case 2: // Controls
+                        case 2:
                             this.gameState = GameState.SETTINGS;
                             globals.gameState = GameState.SETTINGS;
                             break;
 
-                        case 3: // High Score
+                        case 3:
                             this.gameState = GameState.HIGHSCORE;
                             globals.gameState = GameState.HIGHSCORE;
                             break;
@@ -164,7 +160,6 @@ class Game {
                 break;
 
             case GameState.PLAYING:
-
                 this.timer -= dt;
                 if (this.timer <= 0) {
                     this.gameState = GameState.GAME_OVER;
@@ -175,54 +170,44 @@ class Game {
                     globals.player.update();
                 }
                 
+                if (globals.player) {
+                    globals.player.xPos = Math.max(0, Math.min(globals.player.xPos, globals.canvas.width - 50));
+                    globals.player.yPos = Math.max(0, Math.min(globals.player.yPos, globals.canvas.height - 70));
+                }
                 break;
 
             case GameState.HISTORY:
-
                 globals.subMenuIndex = 0;
-
                 if (globals.action.confirm) {
-
                     this.gameState = GameState.MENU;
                     globals.gameState = GameState.MENU;
-
                     globals.subMenuIndex = 0; 
                     globals.action.confirm = false;
                 }
                 break;
 
             case GameState.SETTINGS:
-
                 globals.subMenuIndex = 0;
-
                 if (globals.action.confirm) {
-
                     this.gameState = GameState.MENU;
                     globals.gameState = GameState.MENU;
-
                     globals.subMenuIndex = 0; 
                     globals.action.confirm = false;
                 }
                 break;
 
             case GameState.HIGHSCORE:
-
                 globals.subMenuIndex = 0;
-
                 if (globals.action.confirm) {
-
                     this.gameState = GameState.MENU;
                     globals.gameState = GameState.MENU;
-
                     globals.subMenuIndex = 0; 
                     globals.action.confirm = false;
                 }
                 break;
 
             case GameState.GAME_OVER:
-
                 if (globals.action.confirm) {
-
                     this.gameState = GameState.MENU;
                     globals.gameState = GameState.MENU;
                     globals.action.confirm = false;
@@ -235,11 +220,7 @@ class Game {
     }
 
     render() {
-
-       //Clear all canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        //All the rendering logic is handled by the view
         this.view.render();
     }
 }

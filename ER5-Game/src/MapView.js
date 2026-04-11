@@ -13,7 +13,9 @@ export default class MapView{
 
         const img = globals.tileSets[1]; 
 
-        if (!img) return;
+        if (!img || !img.complete || img.naturalWidth === 0) {
+            return;
+        }
 
         const num_fil = levelData.length;
         const num_col = levelData[0].length;
@@ -24,7 +26,7 @@ export default class MapView{
 
                 if (tileValue <= 0) continue;
 
-                const xTile = (levelData[i][j] - 1) * brickSize;
+                const xTile = (tileValue - 1) * brickSize;
                 const yTile = 0;
 
                 const xPos = j * brickSize;

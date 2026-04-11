@@ -15,20 +15,13 @@ export default class playerView {
         this.ctx.save(); 
         this.ctx.globalAlpha = 1.0; 
 
-        if (player.imageSet && player.imageSet.loaded) {
-        
+        const img = globals.tileSets[0];
+        if (img && img.complete && img.naturalWidth > 0 && player.imageSet && player.imageSet.loaded) {
             const frameIndex = (player.state * 4) + player.frames.frameCounter;
             player.imageSet.draw(this.ctx, x, y, frameIndex);
-
         } else {
-            
-            this.ctx.fillStyle = "magenta";
-            this.ctx.fillRect(
-                x,
-                y,
-                player.hitBox.xSize, 
-                player.hitBox.ySize
-            );
+            this.ctx.fillStyle = "#00ff00";
+            this.ctx.fillRect(x, y, 48, 64);
         }
         
         this.ctx.restore();
