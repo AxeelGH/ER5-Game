@@ -1,11 +1,15 @@
 import globals from './globals.js';
 import { GameState } from './constants.js';
+import playerView from './PlayerView.js';
+import MapView from './MapView.js';
 
 export class View {
 
     constructor(ctx) {
 
         this.ctx = ctx;
+        this.playerView = new playerView(ctx);
+        this.MapView = new MapView(ctx);
     }
 
     render() {
@@ -21,8 +25,9 @@ export class View {
                 break;
             
             case GameState.PLAYING: 
-                this.renderHUD();
+                
                 this.renderPlaying();
+                this.renderHUD();
                 break;
 
             case GameState.COMBAT:
@@ -97,13 +102,14 @@ export class View {
 
     renderPlaying() {
 
-        this.ctx.textAlign = 'left';
-        this.ctx.fillStyle = 'yellow';
-        this.ctx.font = '20px emulogic';
-        
-        this.ctx.fillStyle = '#2E7D32';
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        if (globals.gameInstance && globals.gameInstance.mapView) {
+            globals.gameInstance.mapView.render();
+        }
 
+        if (globals.player) {
+            this.playerView.render(); 
+        }
+        console.log("Rendering");
     }
 
     renderGameOver() {

@@ -16,6 +16,16 @@ export const GameState = {
 
 export const FPS = 60; 
 
+//IDENTIFY ID SPRITE
+export const SpriteID = {
+    
+    HERO:     0,
+    HERO2:      1,
+    SLIME:     2,
+    ENEMY2:     3,
+    ENEMY3:       4,
+}
+
 export const State = {
 
     //PLAYER

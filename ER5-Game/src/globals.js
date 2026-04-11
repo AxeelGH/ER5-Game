@@ -18,4 +18,14 @@ export default{
     menuIndex: 0,
     subMenuIndex: 0,
 
+    //assets
+    tileSet: {},
+    tileSets: [],
+
+    assetsToLoad: [],
+    assetsLoaded: 0,
+
+    sprites: [],
+    player: null,
+    map: null,
 }
