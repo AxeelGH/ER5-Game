@@ -200,14 +200,27 @@ export class View {
     renderCombat() {
     
         this.ctx.drawImage(this.battlegroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
+
+if (globals.player) {
+    const scale = 3;
+    this.ctx.save();
+    this.ctx.translate(100 + 48 * scale, 0); 
+    this.ctx.scale(-scale, scale);            
+    this.ctx.drawImage(
+        globals.tileSets[0],
+        56, 2817, 48, 81,
+        0, 150 / scale, 48, 81
+    );
+    this.ctx.restore();
+        }
         
-        // Título
+        //Title
         this.ctx.fillStyle = '#ff4444';
         this.ctx.font = '32px emulogic';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('COMBAT', 120, 50);
         
-        // Mostrar información del enemigo
+        //Enemy Info
         if (globals.currentEnemy) {
             let enemyName = "";
             let enemyColor = "";

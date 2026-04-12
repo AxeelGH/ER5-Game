@@ -5,7 +5,7 @@ import CombatTurn from './CombatTurn.js';
 
 export default class CollisionManager {
     
-    // Lista de IDs de tiles que son obstáculos (sólidos)
+    
     static getSolidTileIds() {
         return [
             
@@ -73,7 +73,7 @@ export default class CollisionManager {
         return hasCollision;
     }
     
-    // Resolver colisión con el mapa (reposicionar al sprite)
+    //Map Collision
     static resolveMapCollision(sprite) {
         if (!sprite || !sprite.hitBox) return;
         
@@ -84,8 +84,7 @@ export default class CollisionManager {
         const originalX = sprite.xPos;
         const originalY = sprite.yPos;
         
-        // --- RESOLVER COLISIÓN EN X ---
-        // Mover gradualmente hacia atrás en X
+ 
         let step = Math.abs(sprite.physics.vx * globals.deltaTime);
         if (step < 1) step = 2;
         
@@ -95,7 +94,7 @@ export default class CollisionManager {
                 const checkX = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize;
                 const checkY = sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize / 2;
                 if (this.isCollidingWithObstacleAt(checkX, checkY)) {
-                    // Encontrar el borde del tile
+                  
                     const tileCol = Math.floor(checkX / brickSize);
                     const tileX = tileCol * brickSize;
                     sprite.xPos = tileX - sprite.hitBox.xOffset - sprite.hitBox.xSize;
@@ -108,7 +107,7 @@ export default class CollisionManager {
                 const checkX = sprite.xPos + sprite.hitBox.xOffset;
                 const checkY = sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize / 2;
                 if (this.isCollidingWithObstacleAt(checkX, checkY)) {
-                    // Encontrar el borde del tile
+                 
                     const tileCol = Math.floor(checkX / brickSize);
                     const tileX = (tileCol + 1) * brickSize;
                     sprite.xPos = tileX - sprite.hitBox.xOffset;
@@ -122,7 +121,7 @@ export default class CollisionManager {
             }
         }
         
-        // --- RESOLVER COLISIÓN EN Y ---
+        
         resolved = false;
         
         for (let i = 0; i < step && !resolved; i++) {
@@ -131,7 +130,7 @@ export default class CollisionManager {
                 const checkX = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize / 2;
                 const checkY = sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize;
                 if (this.isCollidingWithObstacleAt(checkX, checkY)) {
-                    // Encontrar el borde del tile
+          
                     const tileRow = Math.floor(checkY / brickSize);
                     const tileY = tileRow * brickSize;
                     sprite.yPos = tileY - sprite.hitBox.yOffset - sprite.hitBox.ySize;
@@ -144,7 +143,7 @@ export default class CollisionManager {
                 const checkX = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize / 2;
                 const checkY = sprite.yPos + sprite.hitBox.yOffset;
                 if (this.isCollidingWithObstacleAt(checkX, checkY)) {
-                    // Encontrar el borde del tile
+                 
                     const tileRow = Math.floor(checkY / brickSize);
                     const tileY = (tileRow + 1) * brickSize;
                     sprite.yPos = tileY - sprite.hitBox.yOffset;
@@ -158,7 +157,7 @@ export default class CollisionManager {
             }
         }
         
-        // Si no se resolvió completamente, restaurar posición original
+        
         if (this.detectCollisionWithMap(sprite)) {
             sprite.xPos = originalX;
             sprite.yPos = originalY;
@@ -167,17 +166,17 @@ export default class CollisionManager {
         }
     }
     
-    // Método principal de detección de colisiones
+    //Main method for collisions
     static detectCollisions() {
         const player = globals.player;
         if (!player) return;
         
-        // 1. Detectar colisiones del jugador con el mapa
+        
         if (this.detectCollisionWithMap(player)) {
             this.resolveMapCollision(player);
         }
         
-        // 2. Calcular hitbox del jugador para colisiones con enemigos
+     
         const playerHitBox = {
             x: player.xPos + player.hitBox.xOffset,
             y: player.yPos + player.hitBox.yOffset,
@@ -185,12 +184,12 @@ export default class CollisionManager {
             h: player.hitBox.ySize
         };
         
-        // 3. Verificar colisión con cada enemigo
+    
         for (let i = 0; i < globals.enemies.length; i++) {
             const enemy = globals.enemies[i];
             if (!enemy.isAlive) continue;
             
-            // Calcular hitbox del enemigo
+        
             const enemyHitBox = {
                 x: enemy.xPos + enemy.hitBox.xOffset,
                 y: enemy.yPos + enemy.hitBox.yOffset,
@@ -198,7 +197,7 @@ export default class CollisionManager {
                 h: enemy.hitBox.ySize
             };
             
-            // Detectar colisión entre jugador y enemigo
+        
             if (this.rectIntersect(playerHitBox, enemyHitBox)) {
                 if (!enemy.isCollidingWithPlayer) {
                     enemy.isCollidingWithPlayer = true;
