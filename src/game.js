@@ -9,7 +9,7 @@ import Map, { mapData} from './Map.js';
 import MapView from './MapView.js';
 import ImageSet from './ImageSet.js';
 import CollisionManager from './CollisionManager.js';
-import Combat from './Combat.js'
+import CombatTurn from './CombatTurn.js'
 
 
 class Game {
@@ -21,8 +21,7 @@ class Game {
         this.ctx = canvas.getContext('2d');
         globals.ctx = this.ctx;
 
-        this.gameState = GameState.COMBAT;
-        globals.gameState = GameState.COMBAT;
+        this.gameState = GameState.LOADING;
         console.log("Game State: LOADING");
 
         this.timer = 400;
@@ -30,7 +29,7 @@ class Game {
 
         // Managers 
         this.inputManager = new Events();
-        this.view = new View(this.ctx);
+        this.view = new View(this.ctx,this);
 
         const mapImageSet = new ImageSet(0, 0, 32, 32, 0, 0, 32); 
         globals.map = new Map(mapData, mapImageSet);
@@ -215,8 +214,8 @@ class Game {
 
             case GameState.COMBAT:
 
-                this.combat = new Combat(player, currentEnemy, this.inputManager);
-                this.combat.combatMenu();
+                this.combatTurn = new CombatTurn(this.player, this.currentEnemy, this.inputManager);
+                this.combatTurn.combatMenu();
 
                
 

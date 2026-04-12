@@ -6,7 +6,7 @@ import InventoryPhase from "./InventoryPhase.js";
 import FleePhase from "./FleePhase.js";
 
 
-export default class Combat{
+export default class CombatTurn{
     dice = new Dice();
     constructor(player, enemy,input ) {
         this.player = player;

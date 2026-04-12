@@ -2,14 +2,15 @@ import globals from './globals.js';
 import { GameState, SpriteID } from './constants.js';
 import playerView from './PlayerView.js';
 import MapView from './MapView.js';
-import Combat from './Combat.js';
+import CombatTurn from './CombatTurn.js';
 
 export class View {
 
-    constructor(ctx) {
+    constructor(ctx,game) {
         this.ctx = ctx;
         this.playerView = new playerView(ctx);
         this.mapView = new MapView(ctx);
+        this.game = game;
     }
 
     render() {
@@ -35,6 +36,7 @@ export class View {
 
             case GameState.COMBAT:
                 this.renderCombat();
+                this.renderCombatMenu();
                 break;
 
             case GameState.GAME_OVER:
@@ -262,12 +264,46 @@ export class View {
                                  this.ctx.canvas.width / 2, barY + 45);
             }
         }
-        
+
+    }
+
+
+    renderCombatMenu(){
+
+        const phaseIndex = this.game.combatTurn.phaseIndex;        
         const options = ["Attack", "Ability", "Item", "Flee"];
+
+        const positions = [
+            {x: 20, y: 450 },
+            {x: 190, y: 450},
+            {x: 20, y: 500},
+            {x: 190, y: 500},
+        ];
+
+        const optWidth = 160;
+        const optHeight = 40;
+
         for(let i = 0; i < options.length; i++){
+            const {x, y} = positions[i];
 
+            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillRect(x,y,optWidth,optHeight);
+
+            if(i === phaseIndex){
+                this.ctx.strokeStyle = "red";
+                this.ctx.lineWidth = 4;
+
+            } else {
+                this.ctx.strokeStyle = "#555";
+                this.ctx.lineWidth = 1;
+            }
+            this.ctx.strokeRect (x,y,optWidth,optHeight);
+
+            this.ctx.fillStyle = "black";
+            this.ctx.font = "20px emulogic";
+            this.ctx.textAlign = "center";
+            this.ctx.fillText(options[i], x +70, y + 30);
         }
-
     }
 
     renderSettings() {
