@@ -9,7 +9,7 @@ import Map, { mapData} from './Map.js';
 import MapView from './MapView.js';
 import ImageSet from './ImageSet.js';
 import CollisionManager from './CollisionManager.js';
-import CombatTurn from './Combat.js'
+import Combat from './Combat.js'
 
 
 class Game {
@@ -21,7 +21,8 @@ class Game {
         this.ctx = canvas.getContext('2d');
         globals.ctx = this.ctx;
 
-        this.gameState = GameState.LOADING;
+        this.gameState = GameState.COMBAT;
+        globals.gameState = GameState.COMBAT;
         console.log("Game State: LOADING");
 
         this.timer = 400;
@@ -49,6 +50,8 @@ class Game {
         // Inicializar arrays de enemigos
         globals.enemies = [];
         globals.currentEnemy = null;
+
+        this.combat = null;
     }
 
     static create(canvas) {
@@ -211,16 +214,11 @@ class Game {
                 break;
 
             case GameState.COMBAT:
-                // Si estamos en combate, esperar a que termine
-                // Por ahora, se puede salir del combate con ENTER (para pruebas)
-                if (globals.action.confirm) {
-                    globals.action.confirm = false;
-                    this.gameState = GameState.PLAYING;
-                    globals.gameState = GameState.PLAYING;
-                    globals.currentEnemy = null;
-                    console.log("Returning to PLAYING from COMBAT");
-                }
-                break;
+
+                this.combat = new Combat(player, currentEnemy, this.inputManager);
+                this.combat.combatMenu();
+
+               
 
             case GameState.HISTORY:
                 globals.subMenuIndex = 0;

@@ -2,6 +2,7 @@ import globals from './globals.js';
 import { GameState, SpriteID } from './constants.js';
 import playerView from './PlayerView.js';
 import MapView from './MapView.js';
+import Combat from './Combat.js';
 
 export class View {
 
@@ -68,7 +69,7 @@ export class View {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '16px monospace';
+        this.ctx.font = '16px emulogic';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('LOADING...', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
     }
@@ -78,13 +79,13 @@ export class View {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '16px monospace';
+        this.ctx.font = '16px emulogic';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('THE STORM', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 60);
         this.ctx.fillText('OF THE', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 40);
         this.ctx.fillText('ANCIENT WARRIORS', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 20);
         
-        this.ctx.font = '12px monospace';
+        this.ctx.font = '12px emulogic';
         this.ctx.fillText('Press ENTER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 80);
     }
 
@@ -93,7 +94,7 @@ export class View {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '16px monospace';
+        this.ctx.font = '16px emulogic';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('THE STORM OF THE ANCIENT WARRIORS', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 60);
         
@@ -108,7 +109,7 @@ export class View {
             const isSelected = (index === selectedIndex);
 
             this.ctx.fillStyle = isSelected ? 'yellow' : 'white';
-            this.ctx.font = isSelected ? 'bold 16px monospace' : '14px monospace';
+            this.ctx.font = isSelected ? 'bold 16px emulogic' : '14px emulogic';
             this.ctx.fillText(isSelected ? '> ' + text + ' <' : text, this.ctx.canvas.width / 2, y);
         }
     }
@@ -135,8 +136,6 @@ export class View {
             this.playerView.render(); 
         }
         
-        // Opcional: Dibujar hitboxes para debugging (descomentar si se necesita)
-        // this.drawAllHitBoxes();
     }
     
     // Método opcional para debugging de colisiones
@@ -164,12 +163,12 @@ export class View {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'red';
-        this.ctx.font = '30px monospace';
+        this.ctx.font = '30px emulogic';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('GAME OVER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '12px monospace';
+        this.ctx.font = '12px emulogic';
         this.ctx.fillText('Press ENTER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 50);
     }
 
@@ -178,7 +177,7 @@ export class View {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '30px monospace';
+        this.ctx.font = '30px emulogic';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('PAUSE', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
     }
@@ -187,7 +186,7 @@ export class View {
         this.ctx.fillStyle = '#1a3a1a';
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         this.ctx.fillStyle = '#ffd700';
-        this.ctx.font = '30px monospace';
+        this.ctx.font = '30px emulogic';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('VICTORY!', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
     }
@@ -198,9 +197,9 @@ export class View {
         
         // Título
         this.ctx.fillStyle = '#ff4444';
-        this.ctx.font = '28px monospace';
+        this.ctx.font = '32px emulogic';
         this.ctx.textAlign = 'center';
-        this.ctx.fillText('⚔️ COMBAT ⚔️', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 100);
+        this.ctx.fillText('COMBAT', 120, 50);
         
         // Mostrar información del enemigo
         if (globals.currentEnemy) {
@@ -226,7 +225,7 @@ export class View {
             
             // Nombre del enemigo
             this.ctx.fillStyle = enemyColor;
-            this.ctx.font = '20px monospace';
+            this.ctx.font = '20px emulogic';
             this.ctx.fillText(enemyName, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 40);
             
             // Barra de HP del enemigo
@@ -251,29 +250,24 @@ export class View {
             
             // Texto de HP
             this.ctx.fillStyle = '#ffffff';
-            this.ctx.font = '12px monospace';
+            this.ctx.font = '12px emulogic';
             this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, 
                              this.ctx.canvas.width / 2, barY + 14);
             
             // Mostrar HP del jugador
             if (globals.player) {
                 this.ctx.fillStyle = '#ff8888';
-                this.ctx.font = '14px monospace';
+                this.ctx.font = '14px emulogic';
                 this.ctx.fillText(`Your HP: ${Math.floor(globals.player.hp)}/${globals.player.hp}`, 
                                  this.ctx.canvas.width / 2, barY + 45);
             }
         }
         
-        // Mensaje de combate
-        this.ctx.fillStyle = 'yellow';
-        this.ctx.font = '12px monospace';
-        this.ctx.fillText("Press ENTER to exit combat (demo)", 
-                         this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 100);
-        
-        this.ctx.fillStyle = '#888888';
-        this.ctx.font = '10px monospace';
-        this.ctx.fillText("Combat system coming soon...", 
-                         this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 140);
+        const options = ["Attack", "Ability", "Item", "Flee"];
+        for(let i = 0; i < options.length; i++){
+
+        }
+
     }
 
     renderSettings() {
@@ -281,11 +275,11 @@ export class View {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '20px monospace';
+        this.ctx.font = '20px emulogic';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('CONTROLS', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 80);
         
-        this.ctx.font = '12px monospace';
+        this.ctx.font = '12px emulogic';
         this.ctx.fillStyle = '#aaa';
         this.ctx.fillText('W / UP ARROW - Move Up', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 30);
         this.ctx.fillText('S / DOWN ARROW - Move Down', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
@@ -302,11 +296,11 @@ export class View {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = '#d4af37';
-        this.ctx.font = '20px monospace';
+        this.ctx.font = '20px emulogic';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('THE ANCIENT LORE', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 100);
         
-        this.ctx.font = '12px monospace';
+        this.ctx.font = '12px emulogic';
         this.ctx.fillStyle = '#ccc';
         var story = [
             "In a time of chaos, ancient warriors",
@@ -332,11 +326,11 @@ export class View {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '20px monospace';
+        this.ctx.font = '20px emulogic';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('HIGH SCORES', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 80);
         
-        this.ctx.font = '12px monospace';
+        this.ctx.font = '12px emulogic';
         this.ctx.fillStyle = '#aaa';
         var scores = [
             "1. WARRIOR - 9999",
@@ -372,7 +366,7 @@ export class View {
         
         // Texto de HP
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '10px monospace';
+        this.ctx.font = '10px emulogic';
         this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/120", 45, 18);
         
         // Temporizador

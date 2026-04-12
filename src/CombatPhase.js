@@ -1,7 +1,7 @@
 class CombatPhase{
-    constructor(hero,enemy,input,dice){
+    constructor(player,enemy,input,dice){
 
-        this.hero = hero;
+        this.player = player;
         this.enemy = enemy;
         this.input = input;
         this.dice = dice;
@@ -34,6 +34,14 @@ class CombatPhase{
 
     isFinished(){
         return this.finished;
+    }
+
+    execute(){
+        this.init();
+        this.handleSelection();
+        this.performAction();
+        this.resolve();
+        this.end();
     }
 }
 
