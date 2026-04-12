@@ -46,7 +46,7 @@ export default class Enemy extends Sprite {
         
         if (this.imageSet && this.imageSet.loaded) {
             const frameIndex = this.frames.frameCounter;
-            this.imageSet.draw(ctx, x, y, frameIndex);
+            this.imageSet.draw(ctx, x, y, frameIndex, this.state);
         } else {
             // Fallback visual
             ctx.fillStyle = this.getColor();

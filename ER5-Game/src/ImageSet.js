@@ -14,19 +14,19 @@ export default class ImageSet{
         this.loaded = true;
     }
 
-    draw(ctx, x, y, frameIndex) {
+    draw(ctx, x, y, frame, state) {
         
         const img = globals.tileSets[0]; 
         
-        const column = this.initCol + (frameIndex % 3); 
-        const row = this.initFil + Math.floor(frameIndex / 3);
+        const column = this.initCol + frame;
+        const row = this.initFil + state;
 
         ctx.drawImage(
             img,
-            column * this.gridSize, row * this.gridSize, 
-            this.xSize, this.ySize,                      
-            x, y,                                        
-            this.xSize, this.ySize                       
+            column * this.xSize, row * this.ySize,
+            this.xSize, this.ySize,
+            x, y,
+            this.xSize, this.ySize
         );
     }
 }

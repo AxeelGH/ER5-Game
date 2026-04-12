@@ -16,6 +16,12 @@ export const GameState = {
 
 export const FPS = 60; 
 
+export const Tile = {
+    
+    SIZE_16: 0,
+    SIZE_32: 1,
+};
+
 //IDENTIFY ID SPRITE
 export const SpriteID = {
     HERO:     0,
@@ -27,33 +33,43 @@ export const SpriteID = {
 
 export const State = {
     //PLAYER MOVEMENT
-    // STILL_LEFT:  0,
+    //STILL_LEFT:  1,
     LEFT:        1,
-    // STILL_RIGHT: 2,
+    //STILL_RIGHT: 2,
     RIGHT:       2,
-    // STILL_UP:    4,
+    //STILL_UP:    3,
     UP:          3,
-    // STILL_DOWN:  6,
+    //STILL_DOWN:  0,
     DOWN:        0,
 
     //PLAYER COMBAT
-    ATTACK:      8,
-    ATTACK_2:    9,
-    DEFENSE:     10,
+    ATTACK:      0,
+    ATTACK_2:    1,
+    DEFENSE:    2,
 
     //ENEMY
-    ENEMY_STILL: 11,
-    ENEMY_ATTACK_1: 12,
-    ENEMY_ATTACK_2: 13,
+    ENEMY_STILL: 2,
+    ENEMY_ATTACK_1: 0,
+    ENEMY_ATTACK_2: 1,
+
+    //SLIME
+    SLIME_STILL: 2,
+    //SLIME_ATTACK_1:0,
+    //SLIME_ATTACK_2: 1,
+
+    //SKELETON
+    SKELETON_STILL: 0,
+    //SKELETON_ATTACK_1: 0,
+    //SKELETON_ATTACK_2: 1,
 
     //DIE
-    DIE_1: 14,
-    DIE_2: 15,
-    DIE_3: 16,
-    DIE_4: 17,
-    DIE_5: 18,
-    DIE_6: 19,
-    DIE_ROLL: 20
+    DIE_1: 0,
+    DIE_2: 1,
+    DIE_3: 2,
+    DIE_4: 2,
+    DIE_5: 3,
+    DIE_6: 4,
+    DIE_ROLL: 5
 }
 
 export const Key = {

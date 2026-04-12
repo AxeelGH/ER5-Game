@@ -69,12 +69,12 @@ class Game {
         
         // ========== CREAR ENEMIGOS ==========
         // Slimes (verdes, más débiles)
-        const slime1 = SpriteFactory.createSlime(350, 250);
+        const slime1 = SpriteFactory.createSlime(350, 50);
         const slime2 = SpriteFactory.createSlime(550, 400);
         const slime3 = SpriteFactory.createSlime(150, 450);
         
         // Skeletons (blancos, más resistentes)
-        const skeleton1 = SpriteFactory.createSkeleton(600, 200);
+        const skeleton1 = SpriteFactory.createSkeleton(150, 200);
         const skeleton2 = SpriteFactory.createSkeleton(450, 500);
         
         // Mages (morados, rango medio)
