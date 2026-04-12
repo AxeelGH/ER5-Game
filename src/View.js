@@ -11,6 +11,10 @@ export class View {
         this.playerView = new playerView(ctx);
         this.mapView = new MapView(ctx);
         this.game = game;
+
+        //Combat background
+        this.battlegroundImg = new Image();
+        this.battlegroundImg.src = './images/Battleground.png';
     }
 
     render() {
@@ -194,8 +198,8 @@ export class View {
     }
     
     renderCombat() {
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    
+        this.ctx.drawImage(this.battlegroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         // Título
         this.ctx.fillStyle = '#ff4444';
