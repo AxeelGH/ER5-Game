@@ -355,7 +355,7 @@ export class View {
         }
         
         this.ctx.fillStyle = 'yellow';
-        this.ctx.fillText('Press ENTER to go back', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 140);
+        this.ctx.fillText('Press ENTER to go back', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 180);
     }
 
     renderHighScore() {
