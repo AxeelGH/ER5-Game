@@ -4,6 +4,7 @@ import AbilityPhase from "./AbilityPhase.js";
 import AttackPhase from "./AttackPhase.js";
 import InventoryPhase from "./InventoryPhase.js";
 import FleePhase from "./FleePhase.js";
+import { GameState } from "./constants.js";
 
 
 export default class CombatTurn{
@@ -37,11 +38,11 @@ export default class CombatTurn{
 
         if(globals.action.moveUp){
             globals.action.moveUp = false;
-            this.phaseIndex = (this.phaseIndex > 0) ? this.phaseIndex -1: this.combatPhases.length -1;
+            this.phaseIndex = (this.phaseIndex > 0) ? this.phaseIndex -1: this.phases.length -1;
         }
         if(globals.action.moveDown){
             globals.action.moveDown = false;
-            this.phaseIndex = (this.phaseIndex < this.combatPhases.length -1) ? this.phaseIndex +1 : 0;
+            this.phaseIndex = (this.phaseIndex < this.phases.length -1) ? this.phaseIndex +1 : 0;
         }
         
         if(globals.action.confirm){
@@ -51,18 +52,45 @@ export default class CombatTurn{
             console.log("Selected phase: " + selectedPhase);
 
             this.currentPhase = this.combatPhases[selectedPhase];
+            this.executePhase();
         }
+
+        
     }
 
     executePhase() {      
         this.currentPhase.execute();
-        enemyTurn();
+
+        if(this.currentPhase.fled){
+            this.endCombat();
+            return;
+        }
+
+        if(!this.enemy.isAlive){
+            this.endCombat();
+            return;
+        }
+        this.enemyTurn();
+    }
+
+    endCombat(){
+        globals.currentEnemy = null;
+        globals.gameInstance.combatTurn = null;
+        globals.gameInstance.gameState = GameState.PLAYING;
+        globals.gameState = GameState.PLAYING;
     }
 
     enemyTurn(){
         const damage = 10+ this.dice.rollD6();
 
         this.player.hp -= damage;
+
+        if (this.player.hp <= 0) {
+        this.player.hp = 0;
+        globals.gameInstance.combatTurn = null;
+        globals.gameInstance.gameState = GameState.GAME_OVER;
+        globals.gameState = GameState.GAME_OVER;
+    }
     }
 
     finishTurn(){
@@ -74,6 +102,6 @@ export default class CombatTurn{
         this.currentPhase = null;
         this.turnEnd = false;
 
-        this.initPhases;
+        this.initPhases();
     }
 }

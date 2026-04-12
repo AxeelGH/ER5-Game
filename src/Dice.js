@@ -6,8 +6,9 @@ export default class Dice{
         return roll;
     }
 
-    evaluateFlee(roll){
-
+    evaluateFlee(){
+        
+    const roll = this.rollD6();
     let result;
 
       if(roll === 1 || roll === 2 ){

@@ -3,20 +3,24 @@ import CombatPhase from "./CombatPhase.js";
 
 export default class FleePhase extends CombatPhase{
 
-    fleeResult = this.dice.evaluateFlee();
+   
 
     handleSelection(){}
 
     performAction(){
-        if(this.fleeResult === 1){
-            console.log("You fled succesfully");
+        const fleeResult = this.dice.evaluateFlee();
 
-        } else if(this.fleeResult === 2){
+        if(fleeResult === 1){
+            console.log("You fled succesfully");
+            this.fled = true;
+        } else if(fleeResult === 2){
             console.log("You fled but received damage");
             this.player.hp -= 10 + this.dice.rollD6();
+            this.fled = true;
         } else{
             console.log("You failed to flee and received damage")
             this.player.hp -= 10 + this.dice.rollD6();
+            this.fled = false;
         }
 
         this.state = "resolve";

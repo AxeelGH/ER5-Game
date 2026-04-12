@@ -18,6 +18,7 @@ export default class Player extends Sprite {
         this.xPos = xPos;
         this.yPos = yPos;
         this.hp = hp;
+        this.maxHp = hp;
         this.mana = mana;
 
         this.imageSet = new ImageSet(39, 0, 48, 64, 0, 0); 

@@ -50,7 +50,7 @@ class Game {
         globals.enemies = [];
         globals.currentEnemy = null;
 
-        this.combat = null;
+        this.combatTurn = null;
     }
 
     static create(canvas) {
@@ -214,8 +214,10 @@ class Game {
 
             case GameState.COMBAT:
 
-                this.combatTurn = new CombatTurn(this.player, this.currentEnemy, this.inputManager);
-                this.combatTurn.combatMenu();
+                if(this.combatTurn){
+                   this.combatTurn.combatMenu();
+                }
+                break;
 
                
 

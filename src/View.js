@@ -227,14 +227,14 @@ export class View {
             
             // Nombre del enemigo
             this.ctx.fillStyle = enemyColor;
-            this.ctx.font = '20px emulogic';
-            this.ctx.fillText(enemyName, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 40);
+            this.ctx.font = '32px emulogic';
+            this.ctx.fillText(enemyName, 700, 50);
             
             // Barra de HP del enemigo
             const barWidth = 200;
             const barHeight = 20;
-            const barX = this.ctx.canvas.width / 2 - barWidth / 2;
-            const barY = this.ctx.canvas.height / 2 - 15;
+            const barX = 570;
+            const barY = 80;
             
             // Fondo de la barra (rojo)
             this.ctx.fillStyle = '#330000';
@@ -252,16 +252,16 @@ export class View {
             
             // Texto de HP
             this.ctx.fillStyle = '#ffffff';
-            this.ctx.font = '12px emulogic';
+            this.ctx.font = '20px emulogic';
             this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, 
-                             this.ctx.canvas.width / 2, barY + 14);
+                             660, barY + 45);
             
             // Mostrar HP del jugador
             if (globals.player) {
                 this.ctx.fillStyle = '#ff8888';
                 this.ctx.font = '14px emulogic';
-                this.ctx.fillText(`Your HP: ${Math.floor(globals.player.hp)}/${globals.player.hp}`, 
-                                 this.ctx.canvas.width / 2, barY + 45);
+                this.ctx.fillText(`Your HP: ${Math.floor(globals.player.hp)}/${globals.player.maxHp}`, 
+                                 150,430);
             }
         }
 
@@ -270,6 +270,7 @@ export class View {
 
     renderCombatMenu(){
 
+        if(!this.game.combatTurn) return;
         const phaseIndex = this.game.combatTurn.phaseIndex;        
         const options = ["Attack", "Ability", "Item", "Flee"];
 
@@ -389,7 +390,7 @@ export class View {
         
         // Fondo del HUD
         this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
-        this.ctx.fillRect(10, 10, 200, 60);
+        this.ctx.fillRect(10, 5, 200, 70);
         
         // Barra de HP (fondo rojo)
         this.ctx.fillStyle = '#ff0000';
@@ -403,13 +404,13 @@ export class View {
         // Texto de HP
         this.ctx.fillStyle = 'white';
         this.ctx.font = '10px emulogic';
-        this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/120", 45, 18);
+        this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/120", 70, 18);
         
         // Temporizador
         if (globals.gameInstance) {
             var timer = Math.max(0, Math.floor(globals.gameInstance.timer));
             this.ctx.fillStyle = 'white';
-            this.ctx.fillText("Time: " + timer, 40, 50);
+            this.ctx.fillText("Time: " + timer, 60, 50);
         }
         
         // Contador de enemigos vivos (opcional)
@@ -419,7 +420,7 @@ export class View {
                 if (globals.enemies[i].isAlive) aliveCount++;
             }
             this.ctx.fillStyle = '#aaaaaa';
-            this.ctx.fillText("Enemies: " + aliveCount, 40, 65);
+            this.ctx.fillText("Enemies: " + aliveCount, 68, 65);
         }
     }
 }

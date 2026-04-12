@@ -1,6 +1,7 @@
 // CollisionManager.js
 import globals from './globals.js';
 import { GameState, SpriteID } from './constants.js';
+import CombatTurn from './CombatTurn.js';
 
 export default class CollisionManager {
     
@@ -223,11 +224,12 @@ export default class CollisionManager {
         
         // Guardar el enemigo con el que se está combatiendo
         globals.currentEnemy = enemy;
-        
-        // Cambiar al estado de combate
         globals.gameState = GameState.COMBAT;
+
         if (globals.gameInstance) {
             globals.gameInstance.gameState = GameState.COMBAT;
+
+            globals.gameInstance.combatTurn = new CombatTurn(globals.player,enemy,globals.gameInstance.inputManager);
         }
     }
 }
