@@ -9,6 +9,8 @@ import Map, { mapData} from './Map.js';
 import MapView from './MapView.js';
 import ImageSet from './ImageSet.js';
 import CollisionManager from './CollisionManager.js';
+import CombatTurn from './Combat.js'
+
 
 class Game {
 
