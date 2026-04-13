@@ -207,9 +207,22 @@ class Game {
                     globals.player.yPos = Math.max(0, Math.min(globals.player.yPos, globals.canvas.height - 70));
                 }
                 
-                // ========== DETECTAR COLISIONES CON ENEMIGOS ==========
+                
                 CollisionManager.detectCollisions();
-                // =====================================================
+
+                let allEnemiesDead = true;
+               
+                for (let i = 0; i < globals.enemies.length; i++) {
+                    if (globals.enemies[i].isAlive === true) {
+                        allEnemiesDead = false;
+                    break;
+                    }
+                }
+                
+                if(allEnemiesDead){
+                this.gameState = GameState.VICTORY;
+                globals.gameState = GameState.VICTORY;
+                }
                 break;
 
             case GameState.COMBAT:
