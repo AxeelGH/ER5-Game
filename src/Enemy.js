@@ -8,13 +8,14 @@ import HitBox from "./HitBox.js";
 import globals from "./globals.js";
 
 export default class Enemy extends Sprite {
-    constructor(id, state, xPos, yPos, imageSet, frames, physics, hitBox, hp) {
+    constructor(id, state, xPos, yPos, imageSet, frames, physics, hitBox, hp, combatImageSet) {
         super();
         this.id = id;
         this.state = state;
         this.xPos = xPos;
         this.yPos = yPos;
         this.imageSet = imageSet;
+        this.combatImageSet = combatImageSet;
         this.frames = frames;
         this.physics = physics;
         this.hitBox = hitBox;
@@ -25,8 +26,7 @@ export default class Enemy extends Sprite {
     }
 
     update() {
-        // Enemigos estáticos - no se mueven
-        // Solo actualizar animación
+        
         this.updateAnimationFrame();
     }
 
@@ -49,7 +49,7 @@ export default class Enemy extends Sprite {
             const frameIndex = this.frames.frameCounter;
             this.imageSet.draw(ctx, x, y, frameIndex, this.state);
         } else {
-            // Fallback visual
+            
             ctx.fillStyle = this.getColor();
             ctx.fillRect(x, y, this.hitBox.xSize, this.hitBox.ySize);
         }
