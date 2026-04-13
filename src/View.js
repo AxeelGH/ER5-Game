@@ -22,6 +22,9 @@ export class View {
         //Combat background
         this.battlegroundImg = new Image();
         this.battlegroundImg.src = './images/Battleground.png';
+        //Story background
+        this.storyBackgroundImg = new Image();
+        this.storyBackgroundImg.src = './images/StoryBackground.png'
     }
 
     render() {
@@ -270,12 +273,12 @@ if (globals.player) {
             this.ctx.fillStyle = '#00ff00';
             this.ctx.fillRect(barX, barY, barWidth * hpPercent, barHeight);
             
-            // Borde de la barra
+            //Bar stroke
             this.ctx.strokeStyle = '#ffffff';
             this.ctx.lineWidth = 1;
             this.ctx.strokeRect(barX, barY, barWidth, barHeight);
             
-            // Texto de HP
+            //HP text
             this.ctx.fillStyle = '#ffffff';
             this.ctx.font = '20px emulogic';
             this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, 
@@ -354,15 +357,15 @@ if (globals.player) {
     }
 
     renderHistory() {
-        this.ctx.fillStyle = '#0a0a0a';
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        
+        this.ctx.drawImage(this.storyBackgroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = '#d4af37';
-        this.ctx.font = '20px emulogic';
+        this.ctx.font = '32px emulogic';
         this.ctx.textAlign = 'center';
-        this.ctx.fillText('THE ANCIENT LORE', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 100);
+        this.ctx.fillText('THE ANCIENT LORE', this.ctx.canvas.width / 2, 80);
         
-        this.ctx.font = '12px emulogic';
+        this.ctx.font = '10px emulogic';
         this.ctx.fillStyle = '#ccc';
         var story = [
             "In a time of chaos, ancient warriors",
@@ -376,11 +379,11 @@ if (globals.player) {
         ];
         
         for (var i = 0; i < story.length; i++) {
-            this.ctx.fillText(story[i], this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 40 + (i * 25));
+            this.ctx.fillText(story[i], this.ctx.canvas.width / 2, 170 + (i * 25));
         }
         
         this.ctx.fillStyle = 'yellow';
-        this.ctx.fillText('Press ENTER to go back', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 180);
+        this.ctx.fillText('Press ENTER to go back', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 270);
     }
 
     renderHighScore() {
