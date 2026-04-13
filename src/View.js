@@ -223,7 +223,7 @@ export class View {
 if (globals.player) {
     const scale = 3;
     this.ctx.save();
-    this.ctx.translate(100 + 48 * scale, 0); 
+    this.ctx.translate(100 + 48 * scale, 30); 
     this.ctx.scale(-scale, scale);            
     this.ctx.drawImage(
         globals.tileSets[0],
@@ -263,14 +263,14 @@ if (globals.player) {
             
             //Enemy name
             this.ctx.fillStyle = enemyColor;
-            this.ctx.font = '32px alkhemikal';
+            this.ctx.font = '48px alkhemikal';
             this.ctx.fillText(enemyName, 650, 50);
             
             //Enemy Hp bar
             const barWidth = 200;
             const barHeight = 20;
             const barX = 570;
-            const barY = 80;
+            const barY = 430;
             
             // Fondo de la barra (rojo)
             this.ctx.fillStyle = '#330000';
@@ -288,7 +288,7 @@ if (globals.player) {
             
             //HP text
             this.ctx.fillStyle = '#ffffff';
-            this.ctx.font = '20px alkhemikal';
+            this.ctx.font = '32px alkhemikal';
             this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, 660, barY + 45);
             
             //Player HP
@@ -296,13 +296,13 @@ if (globals.player) {
                 this.ctx.fillStyle = '#ff0000';
                 this.ctx.font = '28px alkhemikal';
                 this.ctx.textAlign = 'left';
-                this.ctx.fillText(`Your HP: ${Math.floor(globals.player.hp)}/${globals.player.maxHp}`, 20,400);
+                this.ctx.fillText(`Your HP: ${Math.floor(globals.player.hp)}/${globals.player.maxHp}`, 20,440);
             }
             //Player mana
             if(globals.player) {
                 this.ctx.fillStyle='#41ddf8';
                 this.ctx.font = '28px alkhemikal';
-                this.ctx.fillText(`Your mana: ${Math.floor(globals.player.mana)}/${globals.player.maxMana}`, 20,430);
+                this.ctx.fillText(`Your mana: ${Math.floor(globals.player.mana)}/${globals.player.maxMana}`, 20,470);
             }
         }
 
@@ -312,14 +312,22 @@ if (globals.player) {
     renderCombatMenu(){
 
         if(!this.game.combatTurn) return;
+
+
+        this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        this.ctx.fillRect(12, 480, 345, 110);
+        this.ctx.strokeStyle = "white";
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(12,480,345,110);
+
         const phaseIndex = this.game.combatTurn.phaseIndex;        
         const options = ["ATTACK", "ABILITY", "ITEM", "FLEE"];
 
         const positions = [
-            {x: 20, y: 450 },
-            {x: 190, y: 450},
-            {x: 20, y: 500},
-            {x: 190, y: 500},
+            {x: 20, y: 490 },
+            {x: 190, y: 490},
+            {x: 20, y: 540},
+            {x: 190, y: 540},
         ];
 
         const optWidth = 160;
@@ -341,10 +349,27 @@ if (globals.player) {
             }
             this.ctx.strokeRect (x,y,optWidth,optHeight);
 
+
+
             this.ctx.fillStyle = "black";
             this.ctx.font = "32px alkhemikal";
             this.ctx.textAlign = "center";
             this.ctx.fillText(options[i], x +70, y + 30);
+
+            //Combat log
+            this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            this.ctx.fillRect(360, 480, 437, 110);
+            this.ctx.strokeStyle = "white";
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(360,480,437,110);
+
+            //Combat log text
+            this.ctx.fillStyle = "white";
+            this.ctx.textAlign = "left";
+            this.ctx.font = "2opx alkhemikal";
+            this.ctx.fillText("Combat log coming soon...",370,510);
+            
+
         }
     }
 
