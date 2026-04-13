@@ -1,14 +1,9 @@
 import globals from "./globals.js";
 import CombatPhase from "./CombatPhase.js";
 
-
 export default class AbilityPhase extends CombatPhase{
 
-
-
     handleSelection(){}
-
-
 
     performAction(){
         console.log("Executing ability");
@@ -19,6 +14,13 @@ export default class AbilityPhase extends CombatPhase{
         this.player.mana -= 20;
 
         console.log("Damage: " +  damage);
+        
+        if (globals.ParticleSystem) {
+            const explosionX = 580;
+            const explosionY = 340;
+            const intensity = Math.min(1.5, damage / 30);
+            globals.ParticleSystem.createExplosion(explosionX, explosionY, 1.5);
+        }
         } else { 
             console.log("Not enough mana to use ability");
             this.cancelled = true;
@@ -38,4 +40,4 @@ export default class AbilityPhase extends CombatPhase{
 
         this.state="end";
     }
-    }
+}

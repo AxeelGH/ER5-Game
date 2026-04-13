@@ -1,14 +1,9 @@
 import globals from "./globals.js";
 import CombatPhase from "./CombatPhase.js";
 
-
 export default class AttackPhase extends CombatPhase{
 
-
-
     handleSelection(){}
-
-
 
     performAction(){
         console.log("Executing attack");
@@ -19,8 +14,14 @@ export default class AttackPhase extends CombatPhase{
         this.player.mana += 5;
         }
      
-
         console.log("Damage: " +  damage);
+        
+        if (globals.ParticleSystem) {
+            const explosionX = 580;
+            const explosionY = 340;
+            const intensity = Math.min(1.0, damage / 40);
+            globals.ParticleSystem.createExplosion(explosionX, explosionY, 1.5);
+        }
 
         this.state = "resolve";
     }
@@ -35,8 +36,4 @@ export default class AttackPhase extends CombatPhase{
 
         this.state="end";
     }
-    }
-
-
-
-
+}
