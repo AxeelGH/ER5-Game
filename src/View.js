@@ -104,7 +104,7 @@ export class View {
         this.ctx.fillText('OF THE', this.ctx.canvas.width / 2, 110);
         this.ctx.fillText('ANCIENT WARRIORS', this.ctx.canvas.width / 2, 160);
         
-        this.ctx.font = '20px alkhemikal';
+        this.ctx.font = '32px alkhemikal';
         this.ctx.fillText('Press ENTER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 200);
     }
 
@@ -432,35 +432,49 @@ if (globals.player) {
     renderHUD() {
         if (!globals.player) return;
         
-        // Background color HP
+        // Background box
         this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
-        this.ctx.fillRect(10, 5, 200, 40);
+        this.ctx.fillRect(10, 5, 200, 50);
+        this.ctx.strokeStyle = "white";
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(10,5,200,50);
         
         this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
-        this.ctx.fillRect(310, 5, 200, 60);
+        this.ctx.fillRect(10, 60, 200, 60);
+        this.ctx.strokeStyle = "white";
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(10,60,200,60);
 
         this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
-        this.ctx.fillRect(590, 5, 200, 40);
+        this.ctx.fillRect(590, 5, 200, 50);
+        this.ctx.strokeStyle = "white";
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(590,5,200,50);
 
         // HP Bar
         this.ctx.fillStyle = '#ff0000';
-        this.ctx.fillRect(15, 20, 190, 15);
+        this.ctx.fillRect(15, 30, 190, 15);
         
         // HP Bar
         this.ctx.fillStyle = '#00ff00';
         var hpPercent = (globals.player.hp / 120);
-        this.ctx.fillRect(15, 20, 190 * hpPercent, 15);
+        this.ctx.fillRect(15, 30, 190 * hpPercent, 15);
+        this.ctx.strokeStyle = "grey";
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(15,30,190,15);
         
         // HP Text
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '20px alkhemikal';
-        this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/120", 70, 18);
+        this.ctx.font = '24px alkhemikal';
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/120", 15, 25);
         
         // Timer
         if (globals.gameInstance) {
             var timer = Math.max(0, Math.floor(globals.gameInstance.timer));
             this.ctx.fillStyle = 'white';
-            this.ctx.fillText("Time: " + timer, 410, 27);
+            this.ctx.textAlign = 'left';
+            this.ctx.fillText("Time: " + timer, 15, 85);
         }
         
         // Enemy counter
@@ -469,8 +483,14 @@ if (globals.player) {
             for (let i = 0; i < globals.enemies.length; i++) {
                 if (globals.enemies[i].isAlive) aliveCount++;
             }
-            this.ctx.fillStyle = '#aaaaaa';
-            this.ctx.fillText("Enemies: " + aliveCount, 410, 55);
+            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillText("Enemies: " + aliveCount, 15, 110);
         }
+
+        //Score and High score
+        this.ctx.fillStyle = 'white';
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText("Score: " + this.game.score, 600,25);
+        this.ctx.fillText("HighScore: " + this.game.highScore,600,45);
     }
 }
