@@ -13,10 +13,6 @@ export default class MapView{
 
         const img = globals.tileSets[1]; 
 
-        if (!img || !img.complete || img.naturalWidth === 0) {
-            return;
-        }
-
         const num_fil = levelData.length;
         const num_col = levelData[0].length;
 

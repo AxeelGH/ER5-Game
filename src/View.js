@@ -140,6 +140,7 @@ export class View {
         // Renderizar al jugador (encima de los enemigos)
         if (globals.player) {
             this.playerView.render(); 
+            this.playerView.drawSpriteRectangle();
         }
         
     }
