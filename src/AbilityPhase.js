@@ -21,6 +21,7 @@ export default class AbilityPhase extends CombatPhase{
         console.log("Damage: " +  damage);
         } else { 
             console.log("Not enough mana to use ability");
+            this.cancelled = true;
         }
       
 
