@@ -33,13 +33,13 @@ export const SpriteID = {
 
 export const State = {
     //PLAYER MOVEMENT
-    //STILL_LEFT:  1,
+    STILL_LEFT:  -3,
     LEFT:        1,
-    //STILL_RIGHT: 2,
+    STILL_RIGHT: -2,
     RIGHT:       2,
-    //STILL_UP:    3,
+    STILL_UP:    -1,
     UP:          3,
-    //STILL_DOWN:  0,
+    STILL_DOWN:  -4,
     DOWN:        0,
 
     //PLAYER COMBAT
@@ -53,7 +53,7 @@ export const State = {
     ENEMY_ATTACK_2: 1,
 
     //SLIME
-    SLIME_STILL: 2,
+    SLIME_STILL: 0,
     //SLIME_ATTACK_1:0,
     //SLIME_ATTACK_2: 1,
 
