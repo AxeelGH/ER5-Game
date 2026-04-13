@@ -2,7 +2,7 @@ import globals from './globals.js';
 import { GameState, SpriteID } from './constants.js';
 import playerView from './PlayerView.js';
 import MapView from './MapView.js';
-import CombatTurn from './CombatTurn.js';
+
 
 export class View {
 
@@ -13,9 +13,12 @@ export class View {
         this.game = game;
 
 
+        //Intro Screen background
+        this.introBackgroundImg = new Image();
+        this.introBackgroundImg.src = './images/IntroBackground.png'
         //Main Screen background
-        this.mainbackgroundImg = new Image();
-        this.mainbackgroundImg.src = './images/MainBackground.png'
+        this.mainBackgroundImg = new Image();
+        this.mainBackgroundImg.src = './images/MainBackground.png'
         //Combat background
         this.battlegroundImg = new Image();
         this.battlegroundImg.src = './images/Battleground.png';
@@ -86,7 +89,7 @@ export class View {
 
     renderIntro() {
         
-        this.ctx.drawImage(this.mainbackgroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.ctx.drawImage(this.introBackgroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
         this.ctx.font = '32px emulogic';
@@ -100,16 +103,17 @@ export class View {
     }
 
     renderMenu() {
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        
+        this.ctx.drawImage(this.mainBackgroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '16px emulogic';
+        this.ctx.font = '32px emulogic';
         this.ctx.textAlign = 'center';
-        this.ctx.fillText('THE STORM OF THE ANCIENT WARRIORS', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 60);
+        this.ctx.fillText('THE STORM OF ', this.ctx.canvas.width / 2, 60);
+        this.ctx.fillText('THE ANCIENT WARRIORS',this.ctx.canvas.width / 2,  100);
         
         const menuItems = ['Play', 'Story', 'Controls', 'High Score'];
-        const startY = this.ctx.canvas.height / 2;
+        const startY = 450;
         const itemHeight = 30;
         const selectedIndex = (globals.menuIndex !== undefined) ? globals.menuIndex : 0;
 
@@ -125,12 +129,12 @@ export class View {
     }
     
     renderPlaying() {
-        // Renderizar el mapa
+        //Render map
         if (globals.map && this.mapView) {
             this.mapView.render();
         }
         
-        // ========== RENDERIZAR ENEMIGOS ==========
+        //Render enemies
         if (globals.enemies) {
             for (let i = 0; i < globals.enemies.length; i++) {
                 const enemy = globals.enemies[i];
@@ -139,17 +143,16 @@ export class View {
                 }
             }
         }
-        // ========================================
+   
         
-        // Renderizar al jugador (encima de los enemigos)
+        //Render player
         if (globals.player) {
             this.playerView.render(); 
-            this.playerView.drawSpriteRectangle();
         }
         
     }
     
-    // Método opcional para debugging de colisiones
+    //Debugg method
     drawAllHitBoxes() {
         if (globals.player) {
             this.playerView.drawHitBox(globals.player);
@@ -247,12 +250,12 @@ if (globals.player) {
                     enemyColor = "#ffffff";
             }
             
-            // Nombre del enemigo
+            //Enemy name
             this.ctx.fillStyle = enemyColor;
             this.ctx.font = '32px emulogic';
-            this.ctx.fillText(enemyName, 700, 50);
+            this.ctx.fillText(enemyName, 650, 50);
             
-            // Barra de HP del enemigo
+            //Enemy Hp bar
             const barWidth = 200;
             const barHeight = 20;
             const barX = 570;
@@ -262,7 +265,7 @@ if (globals.player) {
             this.ctx.fillStyle = '#330000';
             this.ctx.fillRect(barX, barY, barWidth, barHeight);
             
-            // HP actual (verde)
+            //Hp
             const hpPercent = globals.currentEnemy.hp / globals.currentEnemy.maxHp;
             this.ctx.fillStyle = '#00ff00';
             this.ctx.fillRect(barX, barY, barWidth * hpPercent, barHeight);
@@ -278,9 +281,9 @@ if (globals.player) {
             this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, 
                              660, barY + 45);
             
-            // Mostrar HP del jugador
+            //Player HP
             if (globals.player) {
-                this.ctx.fillStyle = '#ff8888';
+                this.ctx.fillStyle = '#ff0000';
                 this.ctx.font = '14px emulogic';
                 this.ctx.fillText(`Your HP: ${Math.floor(globals.player.hp)}/${globals.player.maxHp}`, 
                                  150,430);
@@ -368,7 +371,7 @@ if (globals.player) {
             "You are the chosen hero destined",
             "to restore peace to the kingdom.",
             "",
-            "Find the ancient artifacts and",
+            "Find the legendary sword and",
             "defeat the evil that threatens the land."
         ];
         
