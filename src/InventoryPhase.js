@@ -9,12 +9,16 @@ export default class InventoryPhase extends CombatPhase{
     performAction(){
         console.log("use item");
         
-        if (globals.inventory) {
+        if (globals.inventory && globals.inventory.getPotions() > 0) {
             globals.inventory.usePotion(this.player);
+            console.log("You used a potion, gained 30 HP");
+           
         } else {
             console.log("Error: No inventory found");
+           
         }
-        
+
+        this.cancelled = true;
         this.state = "resolve";
     }
 
@@ -24,5 +28,4 @@ export default class InventoryPhase extends CombatPhase{
     }
     
 
-    resolve(){}
 }

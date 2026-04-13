@@ -61,6 +61,10 @@ export default class CombatTurn{
     executePhase() {      
         this.currentPhase.execute();
 
+        if(this.currentPhase.cancelled){
+            return;
+        }
+
         if(this.currentPhase.fled){
             this.endCombat();
             return;
