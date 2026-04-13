@@ -71,33 +71,25 @@ class Game {
         game.assets = new Asset();
         game.assets.loadAssets();
 
-        game.player = SpriteFactory.createPlayer(150, 300, 120, 70);
+        game.player = SpriteFactory.createPlayer(10, 220, 120, 70);
         globals.player = game.player;
         globals.sprites.push(globals.player);
         
-        // ========== CREAR ENEMIGOS ==========
-        // Slimes (verdes, más débiles)
-        const slime1 = SpriteFactory.createSlime(350, 150);
-        const slime2 = SpriteFactory.createSlime(550, 400);
-        const slime3 = SpriteFactory.createSlime(150, 450);
+        //Create enemies
+        const slime1 = SpriteFactory.createSlime(270, 550);
+        const skeleton1 = SpriteFactory.createSkeleton(740, 560);
+        const mage1 = SpriteFactory.createMage(455, 220);
+       
         
-        // Skeletons (blancos, más resistentes)
-        const skeleton1 = SpriteFactory.createSkeleton(150, 200);
-        const skeleton2 = SpriteFactory.createSkeleton(450, 500);
-        
-        // Mages (morados, rango medio)
-        const mage1 = SpriteFactory.createMage(650, 150);
-        const mage2 = SpriteFactory.createMage(200, 200);
-        
-        // Añadir enemigos al array global
-        globals.enemies.push(slime1, slime2, slime3);
-        globals.enemies.push(skeleton1, skeleton2);
-        globals.enemies.push(mage1, mage2);
+        //Add enemies to global array
+        globals.enemies.push(slime1);
+        globals.enemies.push(skeleton1);
+        globals.enemies.push(mage1);
         
         console.log("Enemies created:", globals.enemies.length);
         // ====================================
 
-        const object = SpriteFactory.createObject(770, 50);
+        const object = SpriteFactory.createObject(470, 100);
         globals.object = object;
         globals.sprites.push(object);
 
