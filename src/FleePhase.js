@@ -15,7 +15,7 @@ export default class FleePhase extends CombatPhase{
             this.fled = true;
         } else if(fleeResult === 2){
             console.log("You fled but received damage");
-            this.player.hp -= 10 + this.dice.rollD6();
+            this.player.hp -= 5 + this.dice.rollD6();
             this.fled = true;
         } else{
             console.log("You failed to flee and received damage")
