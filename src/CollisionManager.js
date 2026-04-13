@@ -6,7 +6,7 @@ export default class CollisionManager {
     
     static getSolidTileIds() {
         return [
-            18,34,35,36,38,42,43,44,68,69,70,71,72,75,76,77,78,79
+            30,31,32,34,35,36,38,42,43,44,68,69,70,71,72,75,76,77,78,79
         ];
     }
     
