@@ -31,4 +31,7 @@ export default{
 
     enemies: [],  // Array para almacenar enemigos
     currentEnemy: null,  // Enemigo actual en combate
+
+    object: null,
+    inventory: null,
 }

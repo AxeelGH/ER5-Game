@@ -6,7 +6,23 @@ export default class InventoryPhase extends CombatPhase{
 
     handleSelection(){}
 
-    performAction(){}
+    performAction(){
+        console.log("use item");
+        
+        if (globals.inventory) {
+            globals.inventory.usePotion(this.player);
+        } else {
+            console.log("Error: No inventory found");
+        }
+        
+        this.state = "resolve";
+    }
+
+    resolve(){
+
+        this.state = "end";
+    }
+    
 
     resolve(){}
 }

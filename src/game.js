@@ -10,6 +10,7 @@ import MapView from './MapView.js';
 import ImageSet from './ImageSet.js';
 import CollisionManager from './CollisionManager.js';
 import CombatTurn from './CombatTurn.js'
+import Inventory from './Inventory.js';
 
 
 class Game {
@@ -64,6 +65,8 @@ class Game {
         globals.assetsToLoad = [];
         globals.assetsLoaded = 0;
 
+        globals.inventory = new Inventory();
+
         game.assets = new Asset();
         game.assets.loadAssets();
 
@@ -92,6 +95,10 @@ class Game {
         
         console.log("Enemies created:", globals.enemies.length);
         // ====================================
+
+        const object = SpriteFactory.createObject(770, 50);
+        globals.object = object;
+        globals.sprites.push(object);
 
         console.log("Ready to execute.");
         return game;

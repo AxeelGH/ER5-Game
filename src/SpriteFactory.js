@@ -3,6 +3,7 @@ import Player from './Player.js';
 import Slime from './Slime.js';
 import Skeleton from './Skeleton.js';
 import Mage from './Mage.js';
+import Object from './Object.js';
 
 export default class SpriteFactory {
     
@@ -20,5 +21,9 @@ export default class SpriteFactory {
     
     static createMage(xPos, yPos) {
         return new Mage(xPos, yPos);
+    }
+
+    static createObject(xPos, yPos) {
+        return new Object(xPos, yPos);
     }
 }

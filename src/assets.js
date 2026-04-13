@@ -19,6 +19,13 @@ export default class Asset {
         tileSet.src = "./images/TileSet.png"; 
         globals.tileSets[1] = tileSet;
         globals.assetsToLoad.push(tileSet);
+
+        tileSet = new Image();
+        tileSet.addEventListener("load", this.tileSetLoader.bind(this));
+        tileSet.addEventListener("error", this.tileSetLoader.bind(this));
+        tileSet.src = "./images/potion_life.png"; 
+        globals.tileSets[2] = tileSet;
+        globals.assetsToLoad.push(tileSet);
     }
 
     tileSetLoader() {

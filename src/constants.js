@@ -29,6 +29,7 @@ export const SpriteID = {
     SLIME:    2,
     SKELETON: 3,
     MAGE:     4,
+    OBJECT:   5
 }
 
 export const State = {
@@ -69,7 +70,10 @@ export const State = {
     DIE_4: 2,
     DIE_5: 3,
     DIE_6: 4,
-    DIE_ROLL: 5
+    DIE_ROLL: 5,
+
+    //OBJECT
+    OBJECT_STILL: 0
 }
 
 export const Key = {

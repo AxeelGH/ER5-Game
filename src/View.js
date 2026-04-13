@@ -2,6 +2,7 @@ import globals from './globals.js';
 import { GameState, SpriteID } from './constants.js';
 import playerView from './PlayerView.js';
 import MapView from './MapView.js';
+import ObjectView from './ObjectView.js';
 
 
 export class View {
@@ -10,6 +11,7 @@ export class View {
         this.ctx = ctx;
         this.playerView = new playerView(ctx);
         this.mapView = new MapView(ctx);
+        this.objectView = new ObjectView(ctx);
         this.game = game;
 
 
@@ -160,7 +162,12 @@ export class View {
             this.playerView.drawHitBox();
             this.playerView.render(); 
         }
-        
+
+        if (globals.object) {
+            
+            this.objectView.drawHitBox();
+            this.objectView.render();
+        }
     }
     
     //Debugg method

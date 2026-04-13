@@ -207,6 +207,20 @@ export default class CollisionManager {
                 enemy.isCollidingWithPlayer = false;
             }
         }
+
+        if (globals.object) {
+
+            const potionHitBox = {
+                x: globals.object.xPos + globals.object.hitBox.xOffset,
+                y: globals.object.yPos + globals.object.hitBox.yOffset,
+                w: globals.object.hitBox.xSize,
+                h: globals.object.hitBox.ySize
+            };
+        
+            if (this.rectIntersect(playerHitBox, potionHitBox)) {
+                this.onCollisionWithPotion();
+            }
+        }
     }
     
     // Detectar colisión entre dos rectángulos
@@ -231,4 +245,16 @@ export default class CollisionManager {
             globals.gameInstance.combatTurn = new CombatTurn(globals.player,enemy,globals.gameInstance.inputManager);
         }
     }
+
+    static onCollisionWithPotion() {
+        console.log("Collision with potion");
+    
+    
+        if (globals.inventory) {
+            globals.inventory.addPotion();
+        }
+    
+        globals.object = null;
+    }
+
 }
