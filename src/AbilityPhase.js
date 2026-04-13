@@ -13,11 +13,16 @@ export default class AbilityPhase extends CombatPhase{
     performAction(){
         console.log("Executing ability");
 
+        if(this.player.mana >= 20 ){
         const damage = 20 + this.dice.rollD6() + this.dice.rollD6();
         this.enemy.hp -= damage;
         this.player.mana -= 20;
 
         console.log("Damage: " +  damage);
+        } else { 
+            console.log("Not enough mana to use ability");
+        }
+      
 
         this.state = "resolve";
     }

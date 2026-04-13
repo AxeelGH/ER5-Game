@@ -9,7 +9,7 @@ import { GameState } from "./constants.js";
 
 export default class CombatTurn{
     dice = new Dice();
-    constructor(player, enemy,input ) {
+    constructor(player, enemy,input) {
         this.player = player;
         this.enemy = enemy;
         this.input = input;
@@ -68,6 +68,7 @@ export default class CombatTurn{
 
         if(!this.enemy.isAlive){
             this.endCombat();
+            this.player.mana += 10;
             return;
         }
         this.enemyTurn();
