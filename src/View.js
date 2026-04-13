@@ -3,7 +3,7 @@ import { GameState, SpriteID } from './constants.js';
 import playerView from './PlayerView.js';
 import MapView from './MapView.js';
 import ObjectView from './ObjectView.js';
-
+import CombatView from './CombatView.js';
 
 export class View {
 
@@ -12,6 +12,7 @@ export class View {
         this.playerView = new playerView(ctx);
         this.mapView = new MapView(ctx);
         this.objectView = new ObjectView(ctx);
+        this.combatView = new CombatView(ctx);
         this.game = game;
 
 
@@ -227,17 +228,20 @@ export class View {
     
         this.ctx.drawImage(this.battlegroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-if (globals.player) {
-    const scale = 3;
-    this.ctx.save();
-    this.ctx.translate(100 + 48 * scale, 30); 
-    this.ctx.scale(-scale, scale);            
-    this.ctx.drawImage(
-        globals.tileSets[0],
-        56, 2817, 48, 81,
-        0, 150 / scale, 48, 81
-    );
-    this.ctx.restore();
+        this.combatView.render();
+
+        if (globals.player) {
+            const scale = 3;
+            this.ctx.save();
+            this.ctx.translate(100 + 48 * scale, 30); 
+            this.ctx.scale(-scale, scale);            
+            this.ctx.drawImage(
+                globals.tileSets[0],
+                56, 2817, 48, 81,
+                0, 150 / scale, 48, 81
+            );
+            
+            this.ctx.restore();
         }
         
         //Title
