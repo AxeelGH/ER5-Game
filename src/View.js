@@ -427,39 +427,45 @@ if (globals.player) {
     renderHUD() {
         if (!globals.player) return;
         
-        // Fondo del HUD
+        // Background color HP
         this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
-        this.ctx.fillRect(10, 5, 200, 70);
+        this.ctx.fillRect(10, 5, 200, 40);
         
-        // Barra de HP (fondo rojo)
+        this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        this.ctx.fillRect(310, 5, 200, 60);
+
+        this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        this.ctx.fillRect(590, 5, 200, 40);
+
+        // HP Bar
         this.ctx.fillStyle = '#ff0000';
         this.ctx.fillRect(15, 20, 190, 15);
         
-        // Barra de HP (relleno verde según HP actual)
+        // HP Bar
         this.ctx.fillStyle = '#00ff00';
         var hpPercent = (globals.player.hp / 120);
         this.ctx.fillRect(15, 20, 190 * hpPercent, 15);
         
-        // Texto de HP
+        // HP Text
         this.ctx.fillStyle = 'white';
         this.ctx.font = '10px emulogic';
         this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/120", 70, 18);
         
-        // Temporizador
+        // Timer
         if (globals.gameInstance) {
             var timer = Math.max(0, Math.floor(globals.gameInstance.timer));
             this.ctx.fillStyle = 'white';
-            this.ctx.fillText("Time: " + timer, 60, 50);
+            this.ctx.fillText("Time: " + timer, 410, 27);
         }
         
-        // Contador de enemigos vivos (opcional)
+        // Enemy counter
         if (globals.enemies) {
             let aliveCount = 0;
             for (let i = 0; i < globals.enemies.length; i++) {
                 if (globals.enemies[i].isAlive) aliveCount++;
             }
             this.ctx.fillStyle = '#aaaaaa';
-            this.ctx.fillText("Enemies: " + aliveCount, 68, 65);
+            this.ctx.fillText("Enemies: " + aliveCount, 410, 55);
         }
     }
 }
