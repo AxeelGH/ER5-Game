@@ -25,7 +25,7 @@ export default class Player extends Sprite {
         this.imageSet = new ImageSet(39, 0, 48, 64, 0, 0); 
         this.frames = new Frames(3, 12); 
         this.physics = new Physics(100); 
-        this.hitBox = new HitBox(34, 56, 6, 7);
+        this.hitBox = new HitBox(34, 36, 6, 25);
 
         console.log("Player created with HP:", this.hp, "at", this.xPos, this.yPos);
     }
