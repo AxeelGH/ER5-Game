@@ -23,6 +23,7 @@ export default class AbilityPhase extends CombatPhase{
         }
         } else { 
             console.log("Not enough mana to use ability");
+            this.cancelled = true;
         }
       
 

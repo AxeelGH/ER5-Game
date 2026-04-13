@@ -183,17 +183,15 @@ export class View {
     }
 
     renderGameOver() {
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        
-        this.ctx.fillStyle = 'red';
-        this.ctx.font = '30px alkhemikal';
+        this.ctx.drawImage(this.mainBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
+        this.ctx.fillStyle = '#310000ff';
+        this.ctx.font = '48px alkhemikal';
         this.ctx.textAlign = 'center';
-        this.ctx.fillText('GAME OVER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.fillText('GAME OVER', this.ctx.canvas.width / 2,80);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '12px alkhemikal';
-        this.ctx.fillText('Press ENTER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 50);
+        this.ctx.font = '24px alkhemikal';
+        this.ctx.fillText('Press ENTER',this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 270);
     }
 
     renderPause() {
@@ -207,12 +205,13 @@ export class View {
     }
 
     renderVictory() {
-        this.ctx.fillStyle = '#1a3a1a';
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        
+        this.ctx.drawImage(this.mainBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
         this.ctx.fillStyle = '#ffd700';
-        this.ctx.font = '30px alkhemikal';
+        this.ctx.font = '48px alkhemikal';
         this.ctx.textAlign = 'center';
-        this.ctx.fillText('VICTORY!', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        this.ctx.fillText('VICTORY!', this.ctx.canvas.width / 2,80);
+        
     }
     
     renderCombat() {
