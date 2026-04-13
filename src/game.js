@@ -26,6 +26,7 @@ class Game {
 
         this.timer = 400;
         this.score = 0;
+        this.highScore = this.score;
 
         // Managers 
         this.inputManager = new Events();

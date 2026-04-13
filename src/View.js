@@ -88,7 +88,7 @@ export class View {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '16px emulogic';
+        this.ctx.font = '16px alkhemikal';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('LOADING...', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
     }
@@ -98,13 +98,13 @@ export class View {
         this.ctx.drawImage(this.introBackgroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '32px emulogic';
+        this.ctx.font = '48px alkhemikal';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('THE STORM', this.ctx.canvas.width / 2,  60);
-        this.ctx.fillText('OF THE', this.ctx.canvas.width / 2, 100);
-        this.ctx.fillText('ANCIENT WARRIORS', this.ctx.canvas.width / 2, 140);
+        this.ctx.fillText('OF THE', this.ctx.canvas.width / 2, 110);
+        this.ctx.fillText('ANCIENT WARRIORS', this.ctx.canvas.width / 2, 160);
         
-        this.ctx.font = '20px emulogic';
+        this.ctx.font = '32px alkhemikal';
         this.ctx.fillText('Press ENTER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 200);
     }
 
@@ -113,7 +113,7 @@ export class View {
         this.ctx.drawImage(this.mainBackgroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '32px emulogic';
+        this.ctx.font = '48px alkhemikal';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('THE STORM OF ', this.ctx.canvas.width / 2, 60);
         this.ctx.fillText('THE ANCIENT WARRIORS',this.ctx.canvas.width / 2,  100);
@@ -129,7 +129,7 @@ export class View {
             const isSelected = (index === selectedIndex);
 
             this.ctx.fillStyle = isSelected ? 'yellow' : 'white';
-            this.ctx.font = isSelected ? 'bold 16px emulogic' : '14px emulogic';
+            this.ctx.font = isSelected ? 'bold 32px alkhemikal' : '28px alkhemikal';
             this.ctx.fillText(isSelected ? '> ' + text + ' <' : text, this.ctx.canvas.width / 2, y);
         }
     }
@@ -188,12 +188,12 @@ export class View {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'red';
-        this.ctx.font = '30px emulogic';
+        this.ctx.font = '30px alkhemikal';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('GAME OVER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '12px emulogic';
+        this.ctx.font = '12px alkhemikal';
         this.ctx.fillText('Press ENTER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 50);
     }
 
@@ -202,7 +202,7 @@ export class View {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '30px emulogic';
+        this.ctx.font = '30px alkhemikal';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('PAUSE', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
     }
@@ -211,7 +211,7 @@ export class View {
         this.ctx.fillStyle = '#1a3a1a';
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         this.ctx.fillStyle = '#ffd700';
-        this.ctx.font = '30px emulogic';
+        this.ctx.font = '30px alkhemikal';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('VICTORY!', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
     }
@@ -223,7 +223,7 @@ export class View {
 if (globals.player) {
     const scale = 3;
     this.ctx.save();
-    this.ctx.translate(100 + 48 * scale, 0); 
+    this.ctx.translate(100 + 48 * scale, 30); 
     this.ctx.scale(-scale, scale);            
     this.ctx.drawImage(
         globals.tileSets[0],
@@ -235,7 +235,7 @@ if (globals.player) {
         
         //Title
         this.ctx.fillStyle = '#ff4444';
-        this.ctx.font = '32px emulogic';
+        this.ctx.font = '48px alkhemikal';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('COMBAT', 120, 50);
         
@@ -263,14 +263,14 @@ if (globals.player) {
             
             //Enemy name
             this.ctx.fillStyle = enemyColor;
-            this.ctx.font = '32px emulogic';
+            this.ctx.font = '48px alkhemikal';
             this.ctx.fillText(enemyName, 650, 50);
             
             //Enemy Hp bar
             const barWidth = 200;
             const barHeight = 20;
             const barX = 570;
-            const barY = 80;
+            const barY = 430;
             
             // Fondo de la barra (rojo)
             this.ctx.fillStyle = '#330000';
@@ -288,16 +288,21 @@ if (globals.player) {
             
             //HP text
             this.ctx.fillStyle = '#ffffff';
-            this.ctx.font = '20px emulogic';
-            this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, 
-                             660, barY + 45);
+            this.ctx.font = '32px alkhemikal';
+            this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, 660, barY + 45);
             
             //Player HP
             if (globals.player) {
                 this.ctx.fillStyle = '#ff0000';
-                this.ctx.font = '14px emulogic';
-                this.ctx.fillText(`Your HP: ${Math.floor(globals.player.hp)}/${globals.player.maxHp}`, 
-                                 150,430);
+                this.ctx.font = '28px alkhemikal';
+                this.ctx.textAlign = 'left';
+                this.ctx.fillText(`Your HP: ${Math.floor(globals.player.hp)}/${globals.player.maxHp}`, 20,440);
+            }
+            //Player mana
+            if(globals.player) {
+                this.ctx.fillStyle='#41ddf8';
+                this.ctx.font = '28px alkhemikal';
+                this.ctx.fillText(`Your mana: ${Math.floor(globals.player.mana)}/${globals.player.maxMana}`, 20,470);
             }
         }
 
@@ -307,14 +312,22 @@ if (globals.player) {
     renderCombatMenu(){
 
         if(!this.game.combatTurn) return;
+
+
+        this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        this.ctx.fillRect(12, 480, 345, 110);
+        this.ctx.strokeStyle = "white";
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(12,480,345,110);
+
         const phaseIndex = this.game.combatTurn.phaseIndex;        
-        const options = ["Attack", "Ability", "Item", "Flee"];
+        const options = ["ATTACK", "ABILITY", "ITEM", "FLEE"];
 
         const positions = [
-            {x: 20, y: 450 },
-            {x: 190, y: 450},
-            {x: 20, y: 500},
-            {x: 190, y: 500},
+            {x: 20, y: 490 },
+            {x: 190, y: 490},
+            {x: 20, y: 540},
+            {x: 190, y: 540},
         ];
 
         const optWidth = 160;
@@ -336,10 +349,27 @@ if (globals.player) {
             }
             this.ctx.strokeRect (x,y,optWidth,optHeight);
 
+
+
             this.ctx.fillStyle = "black";
-            this.ctx.font = "20px emulogic";
+            this.ctx.font = "32px alkhemikal";
             this.ctx.textAlign = "center";
             this.ctx.fillText(options[i], x +70, y + 30);
+
+            //Combat log
+            this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            this.ctx.fillRect(360, 480, 437, 110);
+            this.ctx.strokeStyle = "white";
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(360,480,437,110);
+
+            //Combat log text
+            this.ctx.fillStyle = "white";
+            this.ctx.textAlign = "left";
+            this.ctx.font = "2opx alkhemikal";
+            this.ctx.fillText("Combat log coming soon...",370,510);
+            
+
         }
     }
 
@@ -348,11 +378,11 @@ if (globals.player) {
         this.ctx.drawImage(this.storyBackgroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '32px emulogic';
+        this.ctx.font = '48px alkhemikal';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('CONTROLS', this.ctx.canvas.width / 2,80);
         
-        this.ctx.font = '12px emulogic';
+        this.ctx.font = '24px alkhemikal';
         this.ctx.fillStyle = '#aaa';
         this.ctx.fillText('W - Move Up', this.ctx.canvas.width / 2, 170);
         this.ctx.fillText('S - Move Down', this.ctx.canvas.width / 2, 200);
@@ -370,11 +400,11 @@ if (globals.player) {
         this.ctx.drawImage(this.storyBackgroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = '#d4af37';
-        this.ctx.font = '32px emulogic';
+        this.ctx.font = '48px alkhemikal';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('THE ANCIENT LORE', this.ctx.canvas.width / 2, 80);
         
-        this.ctx.font = '10px emulogic';
+        this.ctx.font = '20px alkhemikal';
         this.ctx.fillStyle = '#ccc';
         var story = [
             "In a time of chaos, ancient warriors",
@@ -397,16 +427,16 @@ if (globals.player) {
 
     renderHighScore() {
         
-        // this.ctx.drawImage(this.highScoreBackgroundImg,this.ctx.canvas.width/2-1600/2,0,1600,this.ctx.canvas.height);
+        //this.ctx.drawImage(this.highScoreBackgroundImg,this.ctx.canvas.width/2-1600/2,0,1600,this.ctx.canvas.height);
         //this.ctx.drawImage(this.highScoreBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
         this.ctx.drawImage(this.storyBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
         
         this.ctx.fillStyle = '#d4af37';
-        this.ctx.font = '32px emulogic';
+        this.ctx.font = '48px alkhemikal';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('HIGH SCORES', this.ctx.canvas.width / 2, 80);
         
-        this.ctx.font = '12px emulogic';
+        this.ctx.font = '24px alkhemikal';
         this.ctx.fillStyle = '#e7e7e7';
         var scores = [
             "1. WARRIOR - 9999",
@@ -427,35 +457,49 @@ if (globals.player) {
     renderHUD() {
         if (!globals.player) return;
         
-        // Background color HP
+        // Background box
         this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
-        this.ctx.fillRect(10, 5, 200, 40);
+        this.ctx.fillRect(10, 5, 200, 50);
+        this.ctx.strokeStyle = "white";
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(10,5,200,50);
         
         this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
-        this.ctx.fillRect(310, 5, 200, 60);
+        this.ctx.fillRect(10, 60, 200, 60);
+        this.ctx.strokeStyle = "white";
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(10,60,200,60);
 
         this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
-        this.ctx.fillRect(590, 5, 200, 40);
+        this.ctx.fillRect(590, 5, 200, 50);
+        this.ctx.strokeStyle = "white";
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(590,5,200,50);
 
         // HP Bar
         this.ctx.fillStyle = '#ff0000';
-        this.ctx.fillRect(15, 20, 190, 15);
+        this.ctx.fillRect(15, 30, 190, 15);
         
         // HP Bar
         this.ctx.fillStyle = '#00ff00';
         var hpPercent = (globals.player.hp / 120);
-        this.ctx.fillRect(15, 20, 190 * hpPercent, 15);
+        this.ctx.fillRect(15, 30, 190 * hpPercent, 15);
+        this.ctx.strokeStyle = "grey";
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(15,30,190,15);
         
         // HP Text
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '10px emulogic';
-        this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/120", 70, 18);
+        this.ctx.font = '24px alkhemikal';
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/120", 15, 25);
         
         // Timer
         if (globals.gameInstance) {
             var timer = Math.max(0, Math.floor(globals.gameInstance.timer));
             this.ctx.fillStyle = 'white';
-            this.ctx.fillText("Time: " + timer, 410, 27);
+            this.ctx.textAlign = 'left';
+            this.ctx.fillText("Time: " + timer, 15, 85);
         }
         
         // Enemy counter
@@ -464,8 +508,14 @@ if (globals.player) {
             for (let i = 0; i < globals.enemies.length; i++) {
                 if (globals.enemies[i].isAlive) aliveCount++;
             }
-            this.ctx.fillStyle = '#aaaaaa';
-            this.ctx.fillText("Enemies: " + aliveCount, 410, 55);
+            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillText("Enemies: " + aliveCount, 15, 110);
         }
+
+        //Score and High score
+        this.ctx.fillStyle = 'white';
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText("Score: " + this.game.score, 600,25);
+        this.ctx.fillText("HighScore: " + this.game.highScore,600,45);
     }
 }

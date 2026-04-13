@@ -20,6 +20,7 @@ export default class Player extends Sprite {
         this.hp = hp;
         this.maxHp = hp;
         this.mana = mana;
+        this.maxMana = mana;
 
         this.imageSet = new ImageSet(39, 0, 48, 64, 0, 0); 
         this.frames = new Frames(3, 12); 
