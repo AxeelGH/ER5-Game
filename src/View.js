@@ -25,6 +25,9 @@ export class View {
         //Story background
         this.storyBackgroundImg = new Image();
         this.storyBackgroundImg.src = './images/StoryBackground.png'
+        //Highscores background
+        this.highScoreBackgroundImg = new Image();
+        this.highScoreBackgroundImg.src = './images/HighScoreBackground.jpg'
     }
 
     render() {
@@ -388,16 +391,18 @@ if (globals.player) {
     }
 
     renderHighScore() {
-        this.ctx.fillStyle = '#111';
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         
-        this.ctx.fillStyle = 'white';
-        this.ctx.font = '20px emulogic';
+        // this.ctx.drawImage(this.highScoreBackgroundImg,this.ctx.canvas.width/2-1600/2,0,1600,this.ctx.canvas.height);
+        //this.ctx.drawImage(this.highScoreBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
+        this.ctx.drawImage(this.storyBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
+        
+        this.ctx.fillStyle = '#d4af37';
+        this.ctx.font = '32px emulogic';
         this.ctx.textAlign = 'center';
-        this.ctx.fillText('HIGH SCORES', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 80);
+        this.ctx.fillText('HIGH SCORES', this.ctx.canvas.width / 2, 80);
         
         this.ctx.font = '12px emulogic';
-        this.ctx.fillStyle = '#aaa';
+        this.ctx.fillStyle = '#e7e7e7';
         var scores = [
             "1. WARRIOR - 9999",
             "2. KNIGHT - 8500",
@@ -407,11 +412,11 @@ if (globals.player) {
         ];
         
         for (var i = 0; i < scores.length; i++) {
-            this.ctx.fillText(scores[i], this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 30 + (i * 25));
+            this.ctx.fillText(scores[i], this.ctx.canvas.width / 2, 170 + (i * 30));
         }
         
         this.ctx.fillStyle = 'yellow';
-        this.ctx.fillText('Press ENTER to go back', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 100);
+        this.ctx.fillText('Press ENTER to go back', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 270);
     }
     
     renderHUD() {
