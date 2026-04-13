@@ -4,6 +4,8 @@ import playerView from './PlayerView.js';
 import MapView from './MapView.js';
 import ObjectView from './ObjectView.js';
 
+import CombatView from './CombatView.js';
+
 export class View {
 
     constructor(ctx,game) {
@@ -11,6 +13,7 @@ export class View {
         this.playerView = new playerView(ctx);
         this.mapView = new MapView(ctx);
         this.objectView = new ObjectView(ctx);
+        this.combatView = new CombatView(ctx);
         this.game = game;
 
         this.introBackgroundImg = new Image();
@@ -221,11 +224,17 @@ export class View {
             globals.ParticleSystem.draw(this.ctx);
         }
 
+        this.combatView.render();
+
+
         if (globals.player) {
             const scale = 3;
             this.ctx.save();
             this.ctx.translate(100 + 48 * scale, 30);
             this.ctx.scale(-scale, scale);
+
+                       
+
             this.ctx.drawImage(
                 globals.tileSets[0],
                 56, 2817, 48, 81,
