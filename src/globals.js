@@ -1,4 +1,5 @@
 import { FPS, GameState } from "./constants.js";
+import { ParticleSystem } from "./Particles.js";
 
 export default{
 
@@ -11,14 +12,11 @@ export default{
     gameInstance: 0,   
     gameState: GameState.INVALID,
     
-    //key pressed states
     action: {},
 
-    //menu states
     menuIndex: 0,
     subMenuIndex: 0,
 
-    //assets
     tileSet: {},
     tileSets: [],
 
@@ -29,9 +27,11 @@ export default{
     player: null,
     map: null,
 
-    enemies: [],  // Array para almacenar enemigos
-    currentEnemy: null,  // Enemigo actual en combate
+    enemies: [],
+    currentEnemy: null,
 
     object: null,
     inventory: null,
+
+    ParticleSystem: new ParticleSystem(),
 }

@@ -4,7 +4,6 @@ import playerView from './PlayerView.js';
 import MapView from './MapView.js';
 import ObjectView from './ObjectView.js';
 
-
 export class View {
 
     constructor(ctx,game) {
@@ -14,20 +13,14 @@ export class View {
         this.objectView = new ObjectView(ctx);
         this.game = game;
 
-
-        //Intro Screen background
         this.introBackgroundImg = new Image();
         this.introBackgroundImg.src = './images/IntroBackground.png'
-        //Main Screen background
         this.mainBackgroundImg = new Image();
         this.mainBackgroundImg.src = './images/MainBackground.png'
-        //Combat background
         this.battlegroundImg = new Image();
         this.battlegroundImg.src = './images/Battleground.png';
-        //Story background
         this.storyBackgroundImg = new Image();
         this.storyBackgroundImg.src = './images/StoryBackground.png'
-        //Highscores background
         this.highScoreBackgroundImg = new Image();
         this.highScoreBackgroundImg.src = './images/HighScoreBackground.jpg'
     }
@@ -137,40 +130,36 @@ export class View {
     }
     
     renderPlaying() {
-        //Render map
         if (globals.map && this.mapView) {
             this.mapView.render();
         }
         
-        //Render enemies
         if (globals.enemies) {
             for (let i = 0; i < globals.enemies.length; i++) {
                 const enemy = globals.enemies[i];
                 if (enemy.isAlive && enemy.draw) {
                     enemy.draw(this.ctx);
-                    enemy.drawHitBox(this.ctx); 
-                    //enemy.drawSpriteRectangle(this.ctx);
+                    enemy.drawHitBox(this.ctx);
                 }
             }
         }
    
+        if (globals.ParticleSystem) {
+            globals.ParticleSystem.update();
+            globals.ParticleSystem.draw(this.ctx);
+        }
         
-        //Render player
         if (globals.player) {
-            
-            //this.playerView.drawSpriteRectangle();
             this.playerView.drawHitBox();
-            this.playerView.render(); 
+            this.playerView.render();
         }
 
         if (globals.object) {
-            
             this.objectView.drawHitBox();
             this.objectView.render();
         }
     }
     
-    //Debugg method
     drawAllHitBoxes() {
         if (globals.player) {
             this.playerView.drawHitBox(globals.player);
@@ -227,26 +216,29 @@ export class View {
     
         this.ctx.drawImage(this.battlegroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-if (globals.player) {
-    const scale = 3;
-    this.ctx.save();
-    this.ctx.translate(100 + 48 * scale, 30); 
-    this.ctx.scale(-scale, scale);            
-    this.ctx.drawImage(
-        globals.tileSets[0],
-        56, 2817, 48, 81,
-        0, 150 / scale, 48, 81
-    );
-    this.ctx.restore();
+        if (globals.ParticleSystem) {
+            globals.ParticleSystem.update();
+            globals.ParticleSystem.draw(this.ctx);
+        }
+
+        if (globals.player) {
+            const scale = 3;
+            this.ctx.save();
+            this.ctx.translate(100 + 48 * scale, 30);
+            this.ctx.scale(-scale, scale);
+            this.ctx.drawImage(
+                globals.tileSets[0],
+                56, 2817, 48, 81,
+                0, 150 / scale, 48, 81
+            );
+            this.ctx.restore();
         }
         
-        //Title
         this.ctx.fillStyle = '#ff4444';
         this.ctx.font = '48px alkhemikal';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('COMBAT', 120, 50);
         
-        //Enemy Info
         if (globals.currentEnemy) {
             let enemyName = "";
             let enemyColor = "";
@@ -268,44 +260,36 @@ if (globals.player) {
                     enemyColor = "#ffffff";
             }
             
-            //Enemy name
             this.ctx.fillStyle = enemyColor;
             this.ctx.font = '48px alkhemikal';
             this.ctx.fillText(enemyName, 650, 50);
             
-            //Enemy Hp bar
             const barWidth = 200;
             const barHeight = 20;
             const barX = 570;
             const barY = 430;
             
-            // Fondo de la barra (rojo)
             this.ctx.fillStyle = '#330000';
             this.ctx.fillRect(barX, barY, barWidth, barHeight);
             
-            //Hp
             const hpPercent = globals.currentEnemy.hp / globals.currentEnemy.maxHp;
             this.ctx.fillStyle = '#00ff00';
             this.ctx.fillRect(barX, barY, barWidth * hpPercent, barHeight);
             
-            //Bar stroke
             this.ctx.strokeStyle = '#ffffff';
             this.ctx.lineWidth = 1;
             this.ctx.strokeRect(barX, barY, barWidth, barHeight);
             
-            //HP text
             this.ctx.fillStyle = '#ffffff';
             this.ctx.font = '32px alkhemikal';
             this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, 660, barY + 45);
             
-            //Player HP
             if (globals.player) {
                 this.ctx.fillStyle = '#ff0000';
                 this.ctx.font = '28px alkhemikal';
                 this.ctx.textAlign = 'left';
                 this.ctx.fillText(`Your HP: ${Math.floor(globals.player.hp)}/${globals.player.maxHp}`, 20,440);
             }
-            //Player mana
             if(globals.player) {
                 this.ctx.fillStyle='#41ddf8';
                 this.ctx.font = '28px alkhemikal';
@@ -315,11 +299,9 @@ if (globals.player) {
 
     }
 
-
     renderCombatMenu(){
 
         if(!this.game.combatTurn) return;
-
 
         this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
         this.ctx.fillRect(12, 480, 345, 110);
@@ -356,27 +338,21 @@ if (globals.player) {
             }
             this.ctx.strokeRect (x,y,optWidth,optHeight);
 
-
-
             this.ctx.fillStyle = "black";
             this.ctx.font = "32px alkhemikal";
             this.ctx.textAlign = "center";
             this.ctx.fillText(options[i], x +70, y + 30);
 
-            //Combat log
             this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
             this.ctx.fillRect(360, 480, 437, 110);
             this.ctx.strokeStyle = "white";
             this.ctx.lineWidth = 2;
             this.ctx.strokeRect(360,480,437,110);
 
-            //Combat log text
             this.ctx.fillStyle = "white";
             this.ctx.textAlign = "left";
             this.ctx.font = "2opx alkhemikal";
             this.ctx.fillText("Combat log coming soon...",370,510);
-            
-
         }
     }
 
@@ -434,8 +410,6 @@ if (globals.player) {
 
     renderHighScore() {
         
-        //this.ctx.drawImage(this.highScoreBackgroundImg,this.ctx.canvas.width/2-1600/2,0,1600,this.ctx.canvas.height);
-        //this.ctx.drawImage(this.highScoreBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
         this.ctx.drawImage(this.storyBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
         
         this.ctx.fillStyle = '#d4af37';
@@ -464,7 +438,6 @@ if (globals.player) {
     renderHUD() {
         if (!globals.player) return;
         
-        // Background box
         this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
         this.ctx.fillRect(10, 5, 200, 50);
         this.ctx.strokeStyle = "white";
@@ -483,11 +456,9 @@ if (globals.player) {
         this.ctx.lineWidth = 2;
         this.ctx.strokeRect(590,5,200,50);
 
-        // HP Bar
         this.ctx.fillStyle = '#ff0000';
         this.ctx.fillRect(15, 30, 190, 15);
         
-        // HP Bar
         this.ctx.fillStyle = '#00ff00';
         var hpPercent = (globals.player.hp / 120);
         this.ctx.fillRect(15, 30, 190 * hpPercent, 15);
@@ -495,13 +466,11 @@ if (globals.player) {
         this.ctx.lineWidth = 2;
         this.ctx.strokeRect(15,30,190,15);
         
-        // HP Text
         this.ctx.fillStyle = 'white';
         this.ctx.font = '24px alkhemikal';
         this.ctx.textAlign = 'left';
         this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/120", 15, 25);
         
-        // Timer
         if (globals.gameInstance) {
             var timer = Math.max(0, Math.floor(globals.gameInstance.timer));
             this.ctx.fillStyle = 'white';
@@ -509,7 +478,6 @@ if (globals.player) {
             this.ctx.fillText("Time: " + timer, 15, 85);
         }
         
-        // Enemy counter
         if (globals.enemies) {
             let aliveCount = 0;
             for (let i = 0; i < globals.enemies.length; i++) {
@@ -519,7 +487,6 @@ if (globals.player) {
             this.ctx.fillText("Enemies: " + aliveCount, 15, 110);
         }
 
-        //Score and High score
         this.ctx.fillStyle = 'white';
         this.ctx.textAlign = 'left';
         this.ctx.fillText("Score: " + this.game.score, 600,25);
