@@ -336,24 +336,25 @@ if (globals.player) {
     }
 
     renderSettings() {
-        this.ctx.fillStyle = '#111';
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        
+        this.ctx.drawImage(this.storyBackgroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '20px emulogic';
+        this.ctx.font = '32px emulogic';
         this.ctx.textAlign = 'center';
-        this.ctx.fillText('CONTROLS', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 80);
+        this.ctx.fillText('CONTROLS', this.ctx.canvas.width / 2,80);
         
         this.ctx.font = '12px emulogic';
         this.ctx.fillStyle = '#aaa';
-        this.ctx.fillText('W / UP ARROW - Move Up', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 30);
-        this.ctx.fillText('S / DOWN ARROW - Move Down', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
-        this.ctx.fillText('A / LEFT ARROW - Move Left', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 30);
-        this.ctx.fillText('D / RIGHT ARROW - Move Right', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 60);
-        this.ctx.fillText('ENTER - Confirm/Action', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 90);
+        this.ctx.fillText('W - Move Up', this.ctx.canvas.width / 2, 170);
+        this.ctx.fillText('S - Move Down', this.ctx.canvas.width / 2, 200);
+        this.ctx.fillText('A - Move Left', this.ctx.canvas.width / 2, 230);
+        this.ctx.fillText('D - Move Right', this.ctx.canvas.width / 2, 260);
+        this.ctx.fillText('E - Inventory', this.ctx.canvas.width/ 2 , 290);
+        this.ctx.fillText('ENTER - Confirm/Action', this.ctx.canvas.width / 2, 360);
         
         this.ctx.fillStyle = 'yellow';
-        this.ctx.fillText('Press ENTER to go back', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 140);
+        this.ctx.fillText('Press ENTER to go back', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 270);
     }
 
     renderHistory() {
