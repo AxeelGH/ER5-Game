@@ -68,6 +68,7 @@ export default class CombatTurn{
 
         if(!this.enemy.isAlive){
             this.endCombat();
+            this.player.mana += 10;
             return;
         }
         this.enemyTurn();

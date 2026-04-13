@@ -15,6 +15,10 @@ export default class AttackPhase extends CombatPhase{
 
         const damage = 10 + this.dice.rollD6() + this.dice.rollD6();
         this.enemy.hp -= damage;
+        if(this.player.mana < (this.player.maxMana -5)){
+        this.player.mana += 5;
+        }
+     
 
         console.log("Damage: " +  damage);
 
