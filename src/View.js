@@ -12,6 +12,10 @@ export class View {
         this.mapView = new MapView(ctx);
         this.game = game;
 
+
+        //Main Screen background
+        this.mainbackgroundImg = new Image();
+        this.mainbackgroundImg.src = './images/MainBackground.png'
         //Combat background
         this.battlegroundImg = new Image();
         this.battlegroundImg.src = './images/Battleground.png';
@@ -81,18 +85,18 @@ export class View {
     }
 
     renderIntro() {
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        
+        this.ctx.drawImage(this.mainbackgroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '16px emulogic';
+        this.ctx.font = '32px emulogic';
         this.ctx.textAlign = 'center';
-        this.ctx.fillText('THE STORM', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 60);
-        this.ctx.fillText('OF THE', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 40);
-        this.ctx.fillText('ANCIENT WARRIORS', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 20);
+        this.ctx.fillText('THE STORM', this.ctx.canvas.width / 2,  60);
+        this.ctx.fillText('OF THE', this.ctx.canvas.width / 2, 100);
+        this.ctx.fillText('ANCIENT WARRIORS', this.ctx.canvas.width / 2, 140);
         
-        this.ctx.font = '12px emulogic';
-        this.ctx.fillText('Press ENTER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 80);
+        this.ctx.font = '20px emulogic';
+        this.ctx.fillText('Press ENTER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 200);
     }
 
     renderMenu() {
