@@ -7,10 +7,10 @@ import HitBox from "./HitBox.js";
 
 export default class Skeleton extends Enemy {
     constructor(xPos, yPos) {
-        const imageSet = new ImageSet(145, 0, 32, 48, 0, 0);
+        const imageSet = new ImageSet(217, 0, 32, 32, 0, 0);
         const frames = new Frames(4, 8);
         const physics = new Physics(0);
-        const hitBox = new HitBox(24, 44, 4, 2);
+        const hitBox = new HitBox(20, 30, 5, 3);
         
         super(SpriteID.SKELETON, State.SKELETON_STILL, xPos, yPos, imageSet, frames, physics, hitBox, 80);
     }

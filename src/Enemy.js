@@ -5,6 +5,7 @@ import ImageSet from "./ImageSet.js";
 import Frames from "./Frames.js";
 import Physics from "./Physics.js";
 import HitBox from "./HitBox.js";
+import globals from "./globals.js";
 
 export default class Enemy extends Sprite {
     constructor(id, state, xPos, yPos, imageSet, frames, physics, hitBox, hp) {
@@ -52,6 +53,23 @@ export default class Enemy extends Sprite {
             ctx.fillStyle = this.getColor();
             ctx.fillRect(x, y, this.hitBox.xSize, this.hitBox.ySize);
         }
+    }
+
+    drawSpriteRectangle(ctx) {
+        
+        const x = Math.floor(this.xPos);
+        const y = Math.floor(this.yPos);
+        ctx.fillStyle = "rgba(255, 0, 255, 0.5)";
+        ctx.fillRect(x, y, this.hitBox.xSize, this.hitBox.ySize);
+    }
+
+    drawHitBox(ctx) {
+        
+        const x = Math.floor(this.xPos) + this.hitBox.xOffset;
+        const y = Math.floor(this.yPos) + this.hitBox.yOffset;
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, this.hitBox.xSize, this.hitBox.ySize);
     }
 
     getColor() {

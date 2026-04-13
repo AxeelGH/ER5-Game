@@ -67,13 +67,13 @@ class Game {
         game.assets = new Asset();
         game.assets.loadAssets();
 
-        game.player = SpriteFactory.createPlayer(150, 50, 120, 70);
+        game.player = SpriteFactory.createPlayer(150, 300, 120, 70);
         globals.player = game.player;
         globals.sprites.push(globals.player);
         
         // ========== CREAR ENEMIGOS ==========
         // Slimes (verdes, más débiles)
-        const slime1 = SpriteFactory.createSlime(350, 50);
+        const slime1 = SpriteFactory.createSlime(350, 150);
         const slime2 = SpriteFactory.createSlime(550, 400);
         const slime3 = SpriteFactory.createSlime(150, 450);
         
@@ -82,8 +82,8 @@ class Game {
         const skeleton2 = SpriteFactory.createSkeleton(450, 500);
         
         // Mages (morados, rango medio)
-        const mage1 = SpriteFactory.createMage(100, 100);
-        const mage2 = SpriteFactory.createMage(200, 100);
+        const mage1 = SpriteFactory.createMage(650, 150);
+        const mage2 = SpriteFactory.createMage(200, 200);
         
         // Añadir enemigos al array global
         globals.enemies.push(slime1, slime2, slime3);

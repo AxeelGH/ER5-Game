@@ -7,10 +7,10 @@ import HitBox from "./HitBox.js";
 
 export default class Mage extends Enemy {
     constructor(xPos, yPos) {
-        const imageSet = new ImageSet(0, 0, 110, 110, 0, 0);
+        const imageSet = new ImageSet(33, 0, 48, 64, 0, 0);
         const frames = new Frames(4, 8);
         const physics = new Physics(0);
-        const hitBox = new HitBox(26, 44, 3, 2);
+        const hitBox = new HitBox(34, 56, 6, 7);
         
         super(SpriteID.MAGE, State.ENEMY_STILL, xPos, yPos, imageSet, frames, physics, hitBox, 60);
     }

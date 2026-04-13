@@ -146,6 +146,8 @@ export class View {
                 const enemy = globals.enemies[i];
                 if (enemy.isAlive && enemy.draw) {
                     enemy.draw(this.ctx);
+                    enemy.drawHitBox(this.ctx); 
+                    //enemy.drawSpriteRectangle(this.ctx);
                 }
             }
         }
@@ -153,6 +155,9 @@ export class View {
         
         //Render player
         if (globals.player) {
+            
+            //this.playerView.drawSpriteRectangle();
+            this.playerView.drawHitBox();
             this.playerView.render(); 
         }
         
