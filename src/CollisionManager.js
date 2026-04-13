@@ -1,10 +1,8 @@
-// CollisionManager.js
 import globals from './globals.js';
 import { GameState, SpriteID } from './constants.js';
 import CombatTurn from './CombatTurn.js';
 
 export default class CollisionManager {
-    
     
     static getSolidTileIds() {
         return [
@@ -12,171 +10,277 @@ export default class CollisionManager {
         ];
     }
     
-    // Obtener el ID del tile en una posición específica
-    static getTileIdAt(x, y) {
+    static getMapTileId(xPos, yPos) {
         const map = globals.map;
         if (!map || !map.data) return 0;
         
         const brickSize = map.imageSet.gridSize;
-        const col = Math.floor(x / brickSize);
-        const row = Math.floor(y / brickSize);
+        const fil = Math.floor(yPos / brickSize);
+        const col = Math.floor(xPos / brickSize);
         
-        // Verificar límites
-        if (row < 0 || row >= map.data.length || col < 0 || col >= map.data[0].length) {
-            return 0;
+        if (fil < 0 || fil >= map.data.length || col < 0 || col >= map.data[0].length) {
+            return -1;
         }
         
-        return map.data[row][col];
+        return map.data[fil][col];
     }
     
-    // Verificar si una posición colisiona con un obstáculo
-    static isCollidingWithObstacleAt(x, y) {
-        const tileId = this.getTileIdAt(x, y);
+    static isCollidingWithObstacleAt(xPos, yPos) {
+        const tileId = this.getMapTileId(xPos, yPos);
+        if (tileId === -1) return true;
         const solidTiles = this.getSolidTileIds();
         return solidTiles.includes(tileId);
     }
     
-    // Detectar colisiones entre un sprite y los obstáculos del mapa
     static detectCollisionWithMap(sprite) {
-        if (!sprite || !sprite.hitBox) return;
+        if (!sprite || !sprite.hitBox) return false;
         
-        const brickSize = globals.map.imageSet.gridSize;
-        
-        // Obtener los 4 puntos de la hitbox del sprite
-        const left = sprite.xPos + sprite.hitBox.xOffset;
-        const right = left + sprite.hitBox.xSize;
-        const top = sprite.yPos + sprite.hitBox.yOffset;
-        const bottom = top + sprite.hitBox.ySize;
-        
-        // Puntos de colisión (esquinas)
         const points = [
-            { x: left, y: top },      // Esquina superior izquierda
-            { x: right, y: top },     // Esquina superior derecha
-            { x: left, y: bottom },   // Esquina inferior izquierda
-            { x: right, y: bottom },  // Esquina inferior derecha
-            { x: left + sprite.hitBox.xSize / 2, y: top },     // Centro superior
-            { x: left + sprite.hitBox.xSize / 2, y: bottom },  // Centro inferior
-            { x: left, y: top + sprite.hitBox.ySize / 2 },     // Centro izquierdo
-            { x: right, y: top + sprite.hitBox.ySize / 2 }     // Centro derecho
+            { x: sprite.xPos + sprite.hitBox.xOffset, y: sprite.yPos + sprite.hitBox.yOffset },
+            { x: sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize - 1, y: sprite.yPos + sprite.hitBox.yOffset },
+            { x: sprite.xPos + sprite.hitBox.xOffset, y: sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize - 1 },
+            { x: sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize - 1, y: sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize - 1 },
+            { x: sprite.xPos + sprite.hitBox.xOffset + Math.floor(sprite.hitBox.xSize / 2), y: sprite.yPos + sprite.hitBox.yOffset },
+            { x: sprite.xPos + sprite.hitBox.xOffset + Math.floor(sprite.hitBox.xSize / 2), y: sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize - 1 },
+            { x: sprite.xPos + sprite.hitBox.xOffset, y: sprite.yPos + sprite.hitBox.yOffset + Math.floor(sprite.hitBox.ySize / 2) },
+            { x: sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize - 1, y: sprite.yPos + sprite.hitBox.yOffset + Math.floor(sprite.hitBox.ySize / 2) }
         ];
         
-        let hasCollision = false;
-        
-        // Verificar cada punto
         for (let point of points) {
             if (this.isCollidingWithObstacleAt(point.x, point.y)) {
-                hasCollision = true;
-                break;
+                return true;
             }
         }
-        
-        return hasCollision;
+        return false;
     }
     
-    //Map Collision
     static resolveMapCollision(sprite) {
         if (!sprite || !sprite.hitBox) return;
         
         const brickSize = globals.map.imageSet.gridSize;
-        let resolved = false;
+        const deltaTime = globals.deltaTime || 1/60;
         
-        // Guardar posición original
-        const originalX = sprite.xPos;
-        const originalY = sprite.yPos;
+        sprite.isCollidingWithObstacleOnTheBottom = false;
         
- 
-        let step = Math.abs(sprite.physics.vx * globals.deltaTime);
-        if (step < 1) step = 2;
-        
-        for (let i = 0; i < step && !resolved; i++) {
-            if (sprite.physics.vx > 0) {
-                // Movimiento hacia la derecha
-                const checkX = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize;
-                const checkY = sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize / 2;
-                if (this.isCollidingWithObstacleAt(checkX, checkY)) {
-                  
-                    const tileCol = Math.floor(checkX / brickSize);
-                    const tileX = tileCol * brickSize;
-                    sprite.xPos = tileX - sprite.hitBox.xOffset - sprite.hitBox.xSize;
+        if (sprite.physics.vx > 0) {
+            let xPos = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize - 1;
+            let yPos = sprite.yPos + sprite.hitBox.yOffset;
+            let isColliding = this.isCollidingWithObstacleAt(xPos, yPos);
+            
+            if (isColliding) {
+                let overlapX = Math.floor(xPos) % brickSize + 1;
+                let overlapY = brickSize - Math.floor(yPos) % brickSize;
+                if (overlapX <= overlapY) {
+                    sprite.xPos -= overlapX;
                     sprite.physics.vx = 0;
-                    resolved = true;
-                }
-            } 
-            else if (sprite.physics.vx < 0) {
-                // Movimiento hacia la izquierda
-                const checkX = sprite.xPos + sprite.hitBox.xOffset;
-                const checkY = sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize / 2;
-                if (this.isCollidingWithObstacleAt(checkX, checkY)) {
-                 
-                    const tileCol = Math.floor(checkX / brickSize);
-                    const tileX = (tileCol + 1) * brickSize;
-                    sprite.xPos = tileX - sprite.hitBox.xOffset;
-                    sprite.physics.vx = 0;
-                    resolved = true;
+                } else {
+                    sprite.yPos += overlapY;
+                    sprite.physics.vy = 0;
                 }
             }
             
-            if (!resolved) {
-                sprite.xPos += (sprite.physics.vx > 0 ? -1 : (sprite.physics.vx < 0 ? 1 : 0));
+            xPos = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize - 1;
+            yPos = sprite.yPos + sprite.hitBox.yOffset + Math.floor(sprite.hitBox.ySize / 2);
+            isColliding = this.isCollidingWithObstacleAt(xPos, yPos);
+            
+            if (isColliding) {
+                let overlapX = Math.floor(xPos) % brickSize + 1;
+                sprite.xPos -= overlapX;
+                sprite.physics.vx = 0;
+            }
+            
+            xPos = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize - 1;
+            yPos = sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize - 1;
+            isColliding = this.isCollidingWithObstacleAt(xPos, yPos);
+            
+            if (isColliding) {
+                let overlapX = Math.floor(xPos) % brickSize + 1;
+                let overlapY = Math.floor(yPos) % brickSize + 1;
+                if (overlapX <= overlapY) {
+                    sprite.xPos -= overlapX;
+                    sprite.physics.vx = 0;
+                } else {
+                    sprite.yPos -= overlapY;
+                    sprite.isCollidingWithObstacleOnTheBottom = true;
+                    sprite.physics.vy = 0;
+                }
+            }
+            
+            xPos = sprite.xPos + sprite.hitBox.xOffset;
+            yPos = sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize - 1;
+            isColliding = this.isCollidingWithObstacleAt(xPos, yPos);
+            
+            if (isColliding) {
+                let overlapY = Math.floor(yPos) % brickSize + 1;
+                sprite.yPos -= overlapY;
+                sprite.isCollidingWithObstacleOnTheBottom = true;
+                sprite.physics.vy = 0;
+            }
+            
+            xPos = sprite.xPos + sprite.hitBox.xOffset;
+            yPos = sprite.yPos + sprite.hitBox.yOffset + Math.floor(sprite.hitBox.ySize / 2);
+            isColliding = this.isCollidingWithObstacleAt(xPos, yPos);
+            
+            if (isColliding) {
+                let overlapX = brickSize - Math.floor(xPos) % brickSize;
+                sprite.xPos += overlapX;
+            }
+            
+            xPos = sprite.xPos + sprite.hitBox.xOffset;
+            yPos = sprite.yPos + sprite.hitBox.yOffset;
+            isColliding = this.isCollidingWithObstacleAt(xPos, yPos);
+            
+            if (isColliding) {
+                let overlapY = brickSize - Math.floor(yPos) % brickSize;
+                sprite.yPos += overlapY;
+                sprite.physics.vy = 0;
             }
         }
-        
-        
-        resolved = false;
-        
-        for (let i = 0; i < step && !resolved; i++) {
-            if (sprite.physics.vy > 0) {
-                // Movimiento hacia abajo
-                const checkX = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize / 2;
-                const checkY = sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize;
-                if (this.isCollidingWithObstacleAt(checkX, checkY)) {
-          
-                    const tileRow = Math.floor(checkY / brickSize);
-                    const tileY = tileRow * brickSize;
-                    sprite.yPos = tileY - sprite.hitBox.yOffset - sprite.hitBox.ySize;
+        else if (sprite.physics.vx < 0) {
+            let xPos = sprite.xPos + sprite.hitBox.xOffset;
+            let yPos = sprite.yPos + sprite.hitBox.yOffset;
+            let isColliding = this.isCollidingWithObstacleAt(xPos, yPos);
+            
+            if (isColliding) {
+                let overlapX = brickSize - Math.floor(xPos) % brickSize;
+                let overlapY = brickSize - Math.floor(yPos) % brickSize;
+                if (overlapX <= overlapY) {
+                    sprite.xPos += overlapX;
+                    sprite.physics.vx = 0;
+                } else {
+                    sprite.yPos += overlapY;
                     sprite.physics.vy = 0;
-                    resolved = true;
+                }
+            }
+            
+            xPos = sprite.xPos + sprite.hitBox.xOffset;
+            yPos = sprite.yPos + sprite.hitBox.yOffset + Math.floor(sprite.hitBox.ySize / 2);
+            isColliding = this.isCollidingWithObstacleAt(xPos, yPos);
+            
+            if (isColliding) {
+                let overlapX = brickSize - Math.floor(xPos) % brickSize;
+                sprite.xPos += overlapX;
+                sprite.physics.vx = 0;
+            }
+            
+            xPos = sprite.xPos + sprite.hitBox.xOffset;
+            yPos = sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize - 1;
+            isColliding = this.isCollidingWithObstacleAt(xPos, yPos);
+            
+            if (isColliding) {
+                let overlapX = brickSize - Math.floor(xPos) % brickSize;
+                let overlapY = Math.floor(yPos) % brickSize + 1;
+                if (overlapX <= overlapY) {
+                    sprite.xPos += overlapX;
+                    sprite.physics.vx = 0;
+                } else {
+                    sprite.yPos -= overlapY;
+                    sprite.isCollidingWithObstacleOnTheBottom = true;
+                    sprite.physics.vy = 0;
+                }
+            }
+            
+            xPos = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize - 1;
+            yPos = sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize - 1;
+            isColliding = this.isCollidingWithObstacleAt(xPos, yPos);
+            
+            if (isColliding) {
+                let overlapY = Math.floor(yPos) % brickSize + 1;
+                sprite.yPos -= overlapY;
+                sprite.isCollidingWithObstacleOnTheBottom = true;
+                sprite.physics.vy = 0;
+            }
+            
+            xPos = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize - 1;
+            yPos = sprite.yPos + sprite.hitBox.yOffset + Math.floor(sprite.hitBox.ySize / 2);
+            isColliding = this.isCollidingWithObstacleAt(xPos, yPos);
+            
+            if (isColliding) {
+                let overlapX = Math.floor(xPos) % brickSize + 1;
+                sprite.xPos -= overlapX;
+            }
+            
+            xPos = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize - 1;
+            yPos = sprite.yPos + sprite.hitBox.yOffset;
+            isColliding = this.isCollidingWithObstacleAt(xPos, yPos);
+            
+            if (isColliding) {
+                let overlapY = brickSize - Math.floor(yPos) % brickSize;
+                sprite.yPos += overlapY;
+                sprite.physics.vy = 0;
+            }
+        }
+        else {
+            const isFalling = sprite.physics.vy > 0;
+            
+            if (isFalling) {
+                let xPos = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize - 1;
+                let yPos = sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize - 1;
+                let isColliding1 = this.isCollidingWithObstacleAt(xPos, yPos);
+                
+                xPos = sprite.xPos + sprite.hitBox.xOffset;
+                yPos = sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize - 1;
+                let isColliding2 = this.isCollidingWithObstacleAt(xPos, yPos);
+                
+                if (isColliding1 || isColliding2) {
+                    let minOverlapY = Infinity;
+                    
+                    if (isColliding1) {
+                        xPos = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize - 1;
+                        yPos = sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize - 1;
+                        let overlapY = Math.floor(yPos) % brickSize + 1;
+                        minOverlapY = Math.min(minOverlapY, overlapY);
+                    }
+                    if (isColliding2) {
+                        xPos = sprite.xPos + sprite.hitBox.xOffset;
+                        yPos = sprite.yPos + sprite.hitBox.yOffset + sprite.hitBox.ySize - 1;
+                        let overlapY = Math.floor(yPos) % brickSize + 1;
+                        minOverlapY = Math.min(minOverlapY, overlapY);
+                    }
+                    
+                    sprite.yPos -= minOverlapY;
+                    sprite.isCollidingWithObstacleOnTheBottom = true;
+                    sprite.physics.vy = 0;
                 }
             }
             else if (sprite.physics.vy < 0) {
-                // Movimiento hacia arriba
-                const checkX = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize / 2;
-                const checkY = sprite.yPos + sprite.hitBox.yOffset;
-                if (this.isCollidingWithObstacleAt(checkX, checkY)) {
-                 
-                    const tileRow = Math.floor(checkY / brickSize);
-                    const tileY = (tileRow + 1) * brickSize;
-                    sprite.yPos = tileY - sprite.hitBox.yOffset;
+                let xPos = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize - 1;
+                let yPos = sprite.yPos + sprite.hitBox.yOffset;
+                let isColliding1 = this.isCollidingWithObstacleAt(xPos, yPos);
+                
+                xPos = sprite.xPos + sprite.hitBox.xOffset;
+                yPos = sprite.yPos + sprite.hitBox.yOffset;
+                let isColliding2 = this.isCollidingWithObstacleAt(xPos, yPos);
+                
+                if (isColliding1 || isColliding2) {
+                    let minOverlapY = Infinity;
+                    
+                    if (isColliding1) {
+                        xPos = sprite.xPos + sprite.hitBox.xOffset + sprite.hitBox.xSize - 1;
+                        yPos = sprite.yPos + sprite.hitBox.yOffset;
+                        let overlapY = brickSize - Math.floor(yPos) % brickSize;
+                        minOverlapY = Math.min(minOverlapY, overlapY);
+                    }
+                    if (isColliding2) {
+                        xPos = sprite.xPos + sprite.hitBox.xOffset;
+                        yPos = sprite.yPos + sprite.hitBox.yOffset;
+                        let overlapY = brickSize - Math.floor(yPos) % brickSize;
+                        minOverlapY = Math.min(minOverlapY, overlapY);
+                    }
+                    
+                    sprite.yPos += minOverlapY;
                     sprite.physics.vy = 0;
-                    resolved = true;
                 }
             }
-            
-            if (!resolved) {
-                sprite.yPos += (sprite.physics.vy > 0 ? -1 : (sprite.physics.vy < 0 ? 1 : 0));
-            }
-        }
-        
-        
-        if (this.detectCollisionWithMap(sprite)) {
-            sprite.xPos = originalX;
-            sprite.yPos = originalY;
-            sprite.physics.vx = 0;
-            sprite.physics.vy = 0;
         }
     }
     
-    //Main method for collisions
     static detectCollisions() {
         const player = globals.player;
         if (!player) return;
         
+        this.resolveMapCollision(player);
         
-        if (this.detectCollisionWithMap(player)) {
-            this.resolveMapCollision(player);
-        }
-        
-     
         const playerHitBox = {
             x: player.xPos + player.hitBox.xOffset,
             y: player.yPos + player.hitBox.yOffset,
@@ -184,12 +288,10 @@ export default class CollisionManager {
             h: player.hitBox.ySize
         };
         
-    
         for (let i = 0; i < globals.enemies.length; i++) {
             const enemy = globals.enemies[i];
             if (!enemy.isAlive) continue;
             
-        
             const enemyHitBox = {
                 x: enemy.xPos + enemy.hitBox.xOffset,
                 y: enemy.yPos + enemy.hitBox.yOffset,
@@ -197,7 +299,6 @@ export default class CollisionManager {
                 h: enemy.hitBox.ySize
             };
             
-        
             if (this.rectIntersect(playerHitBox, enemyHitBox)) {
                 if (!enemy.isCollidingWithPlayer) {
                     enemy.isCollidingWithPlayer = true;
@@ -209,7 +310,6 @@ export default class CollisionManager {
         }
 
         if (globals.object) {
-
             const potionHitBox = {
                 x: globals.object.xPos + globals.object.hitBox.xOffset,
                 y: globals.object.yPos + globals.object.hitBox.yOffset,
@@ -223,38 +323,30 @@ export default class CollisionManager {
         }
     }
     
-    // Detectar colisión entre dos rectángulos
     static rectIntersect(rect1, rect2) {
-        return !(rect2.x > rect1.x + rect1.w ||
-                 rect2.x + rect2.w < rect1.x ||
-                 rect2.y > rect1.y + rect1.h ||
-                 rect2.y + rect2.h < rect1.y);
+        return !(rect2.x >= rect1.x + rect1.w ||
+                 rect2.x + rect2.w <= rect1.x ||
+                 rect2.y >= rect1.y + rect1.h ||
+                 rect2.y + rect2.h <= rect1.y);
     }
     
-    // Manejar colisión con enemigo
     static onCollisionWithEnemy(enemy) {
         console.log("Collision with enemy:", enemy.id);
         
-        // Guardar el enemigo con el que se está combatiendo
         globals.currentEnemy = enemy;
         globals.gameState = GameState.COMBAT;
 
         if (globals.gameInstance) {
             globals.gameInstance.gameState = GameState.COMBAT;
-
-            globals.gameInstance.combatTurn = new CombatTurn(globals.player,enemy,globals.gameInstance.inputManager);
+            globals.gameInstance.combatTurn = new CombatTurn(globals.player, enemy, globals.gameInstance.inputManager);
         }
     }
 
     static onCollisionWithPotion() {
         console.log("Collision with potion");
-    
-    
         if (globals.inventory) {
             globals.inventory.addPotion();
         }
-    
         globals.object = null;
     }
-
 }
