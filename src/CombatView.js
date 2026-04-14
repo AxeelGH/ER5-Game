@@ -8,7 +8,7 @@ export default class CombatView {
 
     render() {
         const enemy = globals.currentEnemy;
-        this.drawEnemy(enemy, 300, 0, 500, 500);
+        this.drawEnemy(enemy, 450, 100, 500, 500);
     }
 
     drawEnemy(enemy, x, y, width = 120, height = 120) {
