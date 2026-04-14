@@ -93,24 +93,15 @@ export default class Player extends Sprite {
         }
     }
 
-    updateAnimationFrame(){
-        switch(this.state){
-            case State.STILL_UP:
-            case State.STILL_LEFT:
-            case State.STILL_DOWN:
-            case State.STILL_RIGHT:
-                this.frames.frameCounter = 0;
-                this.frames.frameChangeCounter = 0;
-                break;
-            default:
-                this.frames.frameChangeCounter++;
-                if(this.frames.frameChangeCounter >= this.frames.speed){
-                    this.frames.frameCounter++;
-                    this.frames.frameChangeCounter = 0;
-                }
-                if(this.frames.frameCounter >= this.frames.framesPerState){
-                    this.frames.frameCounter = 0;
-                }
-        }
+    
+updateAnimationFrame() {
+    this.frames.frameChangeCounter++;
+    if (this.frames.frameChangeCounter >= this.frames.speed) {
+        this.frames.frameCounter++;
+        this.frames.frameChangeCounter = 0;
     }
+    if (this.frames.frameCounter >= this.frames.framesPerState) {
+        this.frames.frameCounter = 0;
+    }
+}
 }
