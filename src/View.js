@@ -111,10 +111,10 @@ export class View {
         this.ctx.drawImage(this.mainBackgroundImg,0,0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '48px alkhemikal';
+        this.ctx.font = '5vw alkhemikal';
         this.ctx.textAlign = 'center';
-        this.ctx.fillText('THE STORM OF ', this.ctx.canvas.width / 2, 60);
-        this.ctx.fillText('THE ANCIENT WARRIORS',this.ctx.canvas.width / 2,  100);
+        this.ctx.fillText('THE STORM OF ', this.ctx.canvas.width / 2, this.ctx.canvas.height * 0.1);
+        this.ctx.fillText('THE ANCIENT WARRIORS',this.ctx.canvas.width / 2, this.ctx.canvas.height * 0.2 );
         
         const menuItems = ['Play', 'Story', 'Controls', 'High Score'];
         const startY = 450;
@@ -185,7 +185,8 @@ export class View {
     renderGameOver() {
         this.ctx.drawImage(this.mainBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
         this.ctx.fillStyle = '#310000ff';
-        this.ctx.font = '48px alkhemikal';
+        this.ctx.font = 'alkhemikal';
+        this.ctx.fontSize = '5em'; 
         this.ctx.textAlign = 'center';
         this.ctx.fillText('GAME OVER', this.ctx.canvas.width / 2,80);
         

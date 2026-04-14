@@ -7,9 +7,6 @@ body {
 }
 
 #gameScreen {
-  border: 1px solid white;
-  width: 1024px;
-  height: 768px;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;

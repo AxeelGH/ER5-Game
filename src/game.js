@@ -140,6 +140,8 @@ class Game {
                     this.gameState = GameState.INTRO;
                     globals.gameState = GameState.INTRO;
                     console.log("Game State: INTRO");
+                    console.log(screen.width);
+                    console.log(screen.height);
                 }
                 break;
 
