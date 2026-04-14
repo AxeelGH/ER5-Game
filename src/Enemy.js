@@ -30,17 +30,6 @@ export default class Enemy extends Sprite {
         this.updateAnimationFrame();
     }
 
-    updateAnimationFrame() {
-        this.frames.frameChangeCounter++;
-        if (this.frames.frameChangeCounter >= this.frames.speed) {
-            this.frames.frameCounter++;
-            this.frames.frameChangeCounter = 0;
-        }
-        if (this.frames.frameCounter >= this.frames.framesPerState) {
-            this.frames.frameCounter = 0;
-        }
-    }
-
     draw(ctx) {
         const x = Math.floor(this.xPos);
         const y = Math.floor(this.yPos);

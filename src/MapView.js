@@ -12,6 +12,9 @@ export default class MapView{
         const levelData = map.data;
 
         const img = globals.tileSets[1]; 
+        
+        // Calcular cuántos tiles caben por fila en el tileset
+        const tilesPerRow = Math.floor(img.width / brickSize);
 
         const num_fil = levelData.length;
         const num_col = levelData[0].length;
@@ -22,8 +25,16 @@ export default class MapView{
 
                 if (tileValue <= 0) continue;
 
-                const xTile = (tileValue - 1) * brickSize;
-                const yTile = 0;
+                // Calcular la posición en el tileset
+                const tileIndex = tileValue - 1;
+                
+                // Calcular columna y fila en el tileset
+                const col = tileIndex % tilesPerRow;
+                const row = Math.floor(tileIndex / tilesPerRow);
+                
+                // Coordenadas en píxeles dentro del tileset
+                const xTile = col * brickSize;
+                const yTile = row * brickSize;
 
                 const xPos = j * brickSize;
                 const yPos = i * brickSize;

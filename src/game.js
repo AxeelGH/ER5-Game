@@ -198,8 +198,20 @@ class Game {
                 }
 
                 if (globals.player) {
-                    globals.player.update();
-                }
+        globals.player.update();
+    }
+    
+    // Actualizar enemigos
+    for (let i = 0; i < globals.enemies.length; i++) {
+        if (globals.enemies[i].isAlive) {
+            globals.enemies[i].update();
+        }
+    }
+    
+    // Actualizar objeto
+    if (globals.object) {
+        globals.object.update();
+    }
                 
                 // Limitar movimiento del jugador dentro del canvas
                 if (globals.player) {
