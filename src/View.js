@@ -142,7 +142,7 @@ export class View {
                 const enemy = globals.enemies[i];
                 if (enemy.isAlive && enemy.draw) {
                     enemy.draw(this.ctx);
-                    enemy.drawHitBox(this.ctx);
+                    //enemy.drawHitBox(this.ctx);
                 }
             }
         }
@@ -153,12 +153,12 @@ export class View {
         }
         
         if (globals.player) {
-            this.playerView.drawHitBox();
+            //this.playerView.drawHitBox();
             this.playerView.render();
         }
 
         if (globals.object) {
-            this.objectView.drawHitBox();
+            //this.objectView.drawHitBox();
             this.objectView.render();
         }
     }
@@ -237,7 +237,7 @@ export class View {
             this.ctx.drawImage(
                 globals.tileSets[0],
                 56, 2817, 48, 81,
-                0, 150 / scale, 48, 81
+                0, 230 / scale, 48, 101
             );
             this.ctx.restore();
         }
@@ -270,12 +270,12 @@ export class View {
             
             this.ctx.fillStyle = enemyColor;
             this.ctx.font = '48px alkhemikal';
-            this.ctx.fillText(enemyName, 650, 50);
+            this.ctx.fillText(enemyName, 800, 50);
             
             const barWidth = 200;
             const barHeight = 20;
-            const barX = 570;
-            const barY = 430;
+            const barX = 670;
+            const barY = 530;
             
             this.ctx.fillStyle = '#330000';
             this.ctx.fillRect(barX, barY, barWidth, barHeight);
@@ -290,18 +290,18 @@ export class View {
             
             this.ctx.fillStyle = '#ffffff';
             this.ctx.font = '32px alkhemikal';
-            this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, 660, barY + 45);
+            this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, 760, barY + 45);
             
             if (globals.player) {
                 this.ctx.fillStyle = '#ff0000';
                 this.ctx.font = '28px alkhemikal';
                 this.ctx.textAlign = 'left';
-                this.ctx.fillText(`Your HP: ${Math.floor(globals.player.hp)}/${globals.player.maxHp}`, 20,440);
+                this.ctx.fillText(`Your HP: ${Math.floor(globals.player.hp)}/${globals.player.maxHp}`, 20,590);
             }
             if(globals.player) {
                 this.ctx.fillStyle='#41ddf8';
                 this.ctx.font = '28px alkhemikal';
-                this.ctx.fillText(`Your mana: ${Math.floor(globals.player.mana)}/${globals.player.maxMana}`, 20,470);
+                this.ctx.fillText(`Your mana: ${Math.floor(globals.player.mana)}/${globals.player.maxMana}`, 20,620);
             }
         }
 
@@ -312,19 +312,19 @@ export class View {
         if(!this.game.combatTurn) return;
 
         this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
-        this.ctx.fillRect(12, 480, 345, 110);
+        this.ctx.fillRect(12, 630, 345, 110);
         this.ctx.strokeStyle = "white";
         this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(12,480,345,110);
+        this.ctx.strokeRect(12, 630, 345, 110);
 
         const phaseIndex = this.game.combatTurn.phaseIndex;        
         const options = ["ATTACK", "ABILITY", "ITEM", "FLEE"];
 
         const positions = [
-            {x: 20, y: 490 },
-            {x: 190, y: 490},
-            {x: 20, y: 540},
-            {x: 190, y: 540},
+            {x: 20, y: 640 },
+            {x: 190, y: 640},
+            {x: 20, y: 690},
+            {x: 190, y: 690},
         ];
 
         const optWidth = 160;
@@ -352,15 +352,15 @@ export class View {
             this.ctx.fillText(options[i], x +70, y + 30);
 
             this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
-            this.ctx.fillRect(360, 480, 437, 110);
+            this.ctx.fillRect(360, 630, 437, 110);
             this.ctx.strokeStyle = "white";
             this.ctx.lineWidth = 2;
-            this.ctx.strokeRect(360,480,437,110);
+            this.ctx.strokeRect(360, 630, 437, 110);
 
             this.ctx.fillStyle = "white";
             this.ctx.textAlign = "left";
             this.ctx.font = "2opx alkhemikal";
-            this.ctx.fillText("Combat log coming soon...",370,510);
+            this.ctx.fillText("Combat log coming soon...",370,660);
         }
     }
 
@@ -459,10 +459,10 @@ export class View {
         this.ctx.strokeRect(10,60,200,60);
 
         this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
-        this.ctx.fillRect(590, 5, 200, 50);
+        this.ctx.fillRect(790, 5, 200, 50);
         this.ctx.strokeStyle = "white";
         this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(590,5,200,50);
+        this.ctx.strokeRect(790,5,200,50);
 
         this.ctx.fillStyle = '#ff0000';
         this.ctx.fillRect(15, 30, 190, 15);
@@ -497,7 +497,7 @@ export class View {
 
         this.ctx.fillStyle = 'white';
         this.ctx.textAlign = 'left';
-        this.ctx.fillText("Score: " + this.game.score, 600,25);
-        this.ctx.fillText("HighScore: " + this.game.highScore,600,45);
+        this.ctx.fillText("Score: " + this.game.score, 800, 25);
+        this.ctx.fillText("HighScore: " + this.game.highScore,800,45);
     }
 }
