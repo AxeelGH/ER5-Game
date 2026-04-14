@@ -17,8 +17,8 @@ import { Sound } from './constants.js';
 class Game {
 
     constructor(canvas) {
-        globals.canvas.width = 1024;
-        globals.canvas.height = 768;
+        globals.canvas.width = screen.width;
+        globals.canvas.height = screen.height;
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         globals.ctx = this.ctx;
