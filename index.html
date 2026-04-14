@@ -1,28 +1,29 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TSOTAW</title>
-    <link rel="stylesheet" href="./css/styles.css"/>
-</head>
-<body>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
     <canvas id="gameScreen" width="512" height="384"></canvas>
 
     <!-- script -->
-     
+
     <script type="module">
+      import globals from "./src/globals.js";
+      import { Game } from "./src/game.js";
 
-        import globals from './src/globals.js';
-        import { Game } from './src/game.js';
+      globals.canvas = document.getElementById("gameScreen");
+      globals.ctx = globals.canvas.getContext("2d");
 
-        globals.canvas = document.getElementById('gameScreen');
-        globals.ctx = globals.canvas.getContext('2d');
-
-        const game = Game.create(globals.canvas);
-        game.execute();
-
+      const game = Game.create(globals.canvas);
+      game.execute();
     </script>
-    
-</body>
+
+    <audio id="startMusic">
+      <source src="./sounds/StartMusic.mp3" type="audio/mp3" />
+    </audio>
+  </body>
 </html>

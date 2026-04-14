@@ -34,4 +34,8 @@ export default{
     inventory: null,
 
     ParticleSystem: new ParticleSystem(),
-}
+
+    sounds: [],
+
+    currentSound: -1,
+};

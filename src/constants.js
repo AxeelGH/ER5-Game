@@ -84,3 +84,8 @@ export const Key = {
     INVENTORY:   69,  //e
     CONFIRM: 13,      //enter
 }
+
+export const Sound = {
+    NO_MUSIC :-1,
+    START_MUSIC : 0,
+}

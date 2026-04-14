@@ -11,6 +11,7 @@ import ImageSet from './ImageSet.js';
 import CollisionManager from './CollisionManager.js';
 import CombatTurn from './CombatTurn.js'
 import Inventory from './Inventory.js';
+import { Sound } from './constants.js';
 
 
 class Game {
@@ -48,11 +49,13 @@ class Game {
             confirm: false,
         };
         
-        // Inicializar arrays de enemigos
+        //Initialize enemy array
         globals.enemies = [];
         globals.currentEnemy = null;
 
         this.combatTurn = null;
+
+        globals.currentSound= Sound.NO_SOUND;
     }
 
     static create(canvas) {
@@ -146,7 +149,10 @@ class Game {
                     this.gameState = GameState.MENU;   
                     globals.gameState = GameState.MENU;
                     globals.menuIndex = 0;
-                    globals.action.confirm = false;        
+                    globals.action.confirm = false;
+                    
+                    globals.sounds[Sound.START_MUSIC].play();
+                    globals.sounds[Sound.START_MUSIC].volume = 0.5;
                 }
                 break;
 

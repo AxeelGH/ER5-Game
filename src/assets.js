@@ -1,4 +1,5 @@
 import globals from './globals.js';
+import {updateMusic} from './Music.js';
 
 export default class Asset {
     constructor() {}
@@ -26,6 +27,14 @@ export default class Asset {
         tileSet.src = "./images/potion_life.png"; 
         globals.tileSets[2] = tileSet;
         globals.assetsToLoad.push(tileSet);
+
+     
+        let startMusic = document.querySelector("#startMusic");
+        startMusic.addEventListener("canplaythrough", this.tileSetLoader, false);
+        startMusic.addEventListener("timeupdate",updateMusic, false);
+        startMusic.load();
+        globals.sounds.push(startMusic);
+        globals.assetsToLoad.push(startMusic);
     }
 
     tileSetLoader() {
@@ -34,6 +43,10 @@ export default class Asset {
             console.log("Everything loaded.");
             if (globals.player) {
                 globals.player.imageSet.loaded = true;
+            }
+
+            for(let i = 0; i < globals.sounds.length;i++){
+                globals.sounds[i].removeEventListener("canplaythrough",this.tileSetLoader,false);
             }
         }
     }
