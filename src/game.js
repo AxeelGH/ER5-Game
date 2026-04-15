@@ -14,6 +14,7 @@ import Inventory from './Inventory.js';
 import { Sound } from './constants.js';
 
 
+
 class Game {
 
     constructor(canvas) {
@@ -73,9 +74,6 @@ class Game {
         game.assets = new Asset();
         game.assets.loadAssets();
 
-        canvas.style.width = screen.width;
-        canvas.style.height = screen.height;
-
         game.player = SpriteFactory.createPlayer(10, 220, 120, 70);
         globals.player = game.player;
         globals.sprites.push(globals.player);
@@ -98,6 +96,9 @@ class Game {
         globals.object = object;
         globals.sprites.push(object);
 
+        canvas.style.width = screen.width + "px";
+        canvas.style.height = screen.height +"px";
+        console.log(canvas.style.width);
         console.log("Ready to execute.");
         return game;
     }
