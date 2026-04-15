@@ -17,8 +17,7 @@ import { Sound } from './constants.js';
 class Game {
 
     constructor(canvas) {
-        globals.canvas.width = screen.width;
-        globals.canvas.height = screen.height;
+
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         globals.ctx = this.ctx;
@@ -73,6 +72,9 @@ class Game {
 
         game.assets = new Asset();
         game.assets.loadAssets();
+
+        canvas.style.width = screen.width;
+        canvas.style.height = screen.height;
 
         game.player = SpriteFactory.createPlayer(10, 220, 120, 70);
         globals.player = game.player;
@@ -140,8 +142,8 @@ class Game {
                     this.gameState = GameState.INTRO;
                     globals.gameState = GameState.INTRO;
                     console.log("Game State: INTRO");
-                    console.log(screen.width);
-                    console.log(screen.height);
+                    console.log(this.canvas.width);
+                    console.log(this.canvas.height);
                 }
                 break;
 

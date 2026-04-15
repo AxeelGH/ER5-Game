@@ -376,12 +376,12 @@ export class View {
         
         this.ctx.font = '24px alkhemikal';
         this.ctx.fillStyle = '#aaa';
-        this.ctx.fillText('W - Move Up', this.ctx.canvas.width / 2, 170);
-        this.ctx.fillText('S - Move Down', this.ctx.canvas.width / 2, 200);
-        this.ctx.fillText('A - Move Left', this.ctx.canvas.width / 2, 230);
-        this.ctx.fillText('D - Move Right', this.ctx.canvas.width / 2, 260);
-        this.ctx.fillText('E - Inventory', this.ctx.canvas.width/ 2 , 290);
-        this.ctx.fillText('ENTER - Confirm/Action', this.ctx.canvas.width / 2, 360);
+        this.ctx.fillText('W - Move Up', this.ctx.canvas.width / 2, 210);
+        this.ctx.fillText('S - Move Down', this.ctx.canvas.width / 2, 240);
+        this.ctx.fillText('A - Move Left', this.ctx.canvas.width / 2, 270);
+        this.ctx.fillText('D - Move Right', this.ctx.canvas.width / 2, 300);
+        this.ctx.fillText('E - Inventory', this.ctx.canvas.width/ 2 , 330);
+        this.ctx.fillText('ENTER - Confirm/Action', this.ctx.canvas.width / 2, 390);
         
         this.ctx.fillStyle = 'yellow';
         this.ctx.fillText('Press ENTER to go back', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 270);
@@ -410,7 +410,7 @@ export class View {
         ];
         
         for (var i = 0; i < story.length; i++) {
-            this.ctx.fillText(story[i], this.ctx.canvas.width / 2, 170 + (i * 25));
+            this.ctx.fillText(story[i], this.ctx.canvas.width / 2, 230 + (i * 25));
         }
         
         this.ctx.fillStyle = 'yellow';
