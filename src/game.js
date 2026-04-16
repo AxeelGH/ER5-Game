@@ -12,13 +12,15 @@ import CollisionManager from './CollisionManager.js';
 import CombatTurn from './CombatTurn.js'
 import Inventory from './Inventory.js';
 import { Sound } from './constants.js';
+import GameFactory from './GameFactory.js';
 
 
 
 class Game {
 
-    constructor(canvas) {
+    constructor(canvas, gameData) {
 
+        
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         globals.ctx = this.ctx;
@@ -26,8 +28,8 @@ class Game {
         this.gameState = GameState.LOADING;
         console.log("Game State: LOADING");
 
-        this.timer = 400;
-        this.score = 0;
+        this.score = gameData.game.score;
+        this.timer = gameData.game.time;
         this.highScore = this.score;
 
         // Managers 
@@ -58,9 +60,9 @@ class Game {
         globals.currentSound= Sound.NO_SOUND;
     }
 
-    static create(canvas) {
+    static create(canvas, gameData) {
         console.log("Initializing...");
-        const game = new Game(canvas);
+        const game = new Game(canvas, gameData);
 
         globals.gameInstance = game;
         
@@ -179,7 +181,7 @@ class Game {
                         case 0:
                             this.gameState = GameState.PLAYING;
                             globals.gameState = GameState.PLAYING;
-                            this.timer = 400; 
+                            //this.timer = 400; 
                             console.log("Game State: PLAYING");
                             break;
 
@@ -304,6 +306,19 @@ class Game {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.view.render();
     }
+}
+
+export function initGame(canvas) {
+
+  fetch('./src/gameData.json')
+    .then(response => response.json()) 
+    .then(data => {
+      console.log("JSON:", data);
+      const factory = new GameFactory(data);
+      const game = factory.create(canvas);
+      if (game) game.execute();
+    })
+    .catch(error => console.error('Failed to fetch data:', error));
 }
 
 export { Game };

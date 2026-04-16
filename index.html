@@ -11,16 +11,7 @@
 
     <!-- script -->
 
-    <script type="module">
-      import globals from "./src/globals.js";
-      import { Game } from "./src/game.js";
-
-      globals.canvas = document.getElementById("gameScreen");
-      globals.ctx = globals.canvas.getContext("2d");
-
-      const game = Game.create(globals.canvas);
-      game.execute();
-    </script>
+    <script type="module" src="./src/index.js"></script>
 
     <audio id="startMusic">
       <source src="./sounds/StartMusic.mp3" type="audio/mp3" />
