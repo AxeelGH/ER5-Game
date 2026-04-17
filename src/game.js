@@ -25,8 +25,7 @@ class Game {
         this.ctx = canvas.getContext('2d');
         globals.ctx = this.ctx;
 
-        this.gameState = GameState.GAME_OVER;
-        globals.gameState = GameState.GAME_OVER;
+        this.gameState = GameState.LOADING;
         console.log("Game State: LOADING");
 
         this.score = gameData.game.score;
