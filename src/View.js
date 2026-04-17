@@ -17,15 +17,19 @@ export class View {
         this.game = game;
 
         this.introBackgroundImg = new Image();
-        this.introBackgroundImg.src = './images/IntroBackground.png'
+        this.introBackgroundImg.src = './images/IntroBackground.png';
         this.mainBackgroundImg = new Image();
-        this.mainBackgroundImg.src = './images/MainBackground.png'
+        this.mainBackgroundImg.src = './images/MainBackground.png';
         this.battlegroundImg = new Image();
         this.battlegroundImg.src = './images/Battleground.png';
         this.storyBackgroundImg = new Image();
-        this.storyBackgroundImg.src = './images/StoryBackground.png'
+        this.storyBackgroundImg.src = './images/StoryBackground.png';
         this.highScoreBackgroundImg = new Image();
-        this.highScoreBackgroundImg.src = './images/HighScoreBackground.jpg'
+        this.highScoreBackgroundImg.src = './images/HighScoreBackground.jpg';
+        this.victoryBackgroundImg = new Image();
+        this.victoryBackgroundImg.src = './images/VictoryBackground.png';
+        this.gameOverBackgroundImg = new Image();
+        this.gameOverBackgroundImg.src = './images/GameOverBackground.png'
     }
 
     render() {
@@ -184,7 +188,7 @@ export class View {
     }
 
     renderGameOver() {
-        this.ctx.drawImage(this.mainBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
+        this.ctx.drawImage(this.gameOverBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
         this.ctx.fillStyle = 'rgb(179, 0, 0)';
         this.ctx.font = '48px alkhemikal';
         this.ctx.textAlign = 'center';
@@ -207,7 +211,7 @@ export class View {
 
     renderVictory() {
         
-        this.ctx.drawImage(this.mainBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
+        this.ctx.drawImage(this.victoryBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
         this.ctx.fillStyle = '#e9b200';
         this.ctx.font = '48px alkhemikal';
         this.ctx.textAlign = 'center';
