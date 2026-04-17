@@ -25,7 +25,8 @@ class Game {
         this.ctx = canvas.getContext('2d');
         globals.ctx = this.ctx;
 
-        this.gameState = GameState.LOADING;
+        this.gameState = GameState.GAME_OVER;
+        globals.gameState = GameState.GAME_OVER;
         console.log("Game State: LOADING");
 
         this.score = gameData.game.score;
@@ -214,19 +215,19 @@ class Game {
         globals.player.update();
     }
     
-    // Actualizar enemigos
+  
     for (let i = 0; i < globals.enemies.length; i++) {
         if (globals.enemies[i].isAlive) {
             globals.enemies[i].update();
         }
     }
     
-    // Actualizar objeto
+
     if (globals.object) {
         globals.object.update();
     }
                 
-                // Limitar movimiento del jugador dentro del canvas
+          
                 if (globals.player) {
                     globals.player.xPos = Math.max(0, Math.min(globals.player.xPos, globals.canvas.width - 50));
                     globals.player.yPos = Math.max(0, Math.min(globals.player.yPos, globals.canvas.height - 70));
@@ -288,6 +289,13 @@ class Game {
                     globals.action.confirm = false;
                 }
                 break;
+            
+            case GameState.VICTORY:
+                if(globals.action.confirm) {
+                    this.gameState = GameState.MENU;
+                    globals.gameState = GameState.MENU;
+                    globals.action.confirm = false;
+                }
 
             case GameState.GAME_OVER:
                 if (globals.action.confirm) {

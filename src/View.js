@@ -185,15 +185,14 @@ export class View {
 
     renderGameOver() {
         this.ctx.drawImage(this.mainBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
-        this.ctx.fillStyle = '#310000ff';
-        this.ctx.font = 'alkhemikal';
-        this.ctx.fontSize = '5em'; 
+        this.ctx.fillStyle = 'rgb(179, 0, 0)';
+        this.ctx.font = '48px alkhemikal';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('GAME OVER', this.ctx.canvas.width / 2,80);
         
         this.ctx.fillStyle = 'white';
-        this.ctx.font = '24px alkhemikal';
-        this.ctx.fillText('Press SPACE to continue',this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 270);
+        this.ctx.font = '32px alkhemikal';
+        this.ctx.fillText('Press SPACE to go back to main menu',this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 340);
     }
 
     renderPause() {
@@ -209,10 +208,16 @@ export class View {
     renderVictory() {
         
         this.ctx.drawImage(this.mainBackgroundImg,0,0,this.ctx.canvas.width,this.ctx.canvas.height);
-        this.ctx.fillStyle = '##e9b200';
+        this.ctx.fillStyle = '#e9b200';
         this.ctx.font = '48px alkhemikal';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('VICTORY!', this.ctx.canvas.width / 2,80);
+
+
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = '32px alkhemikal';
+        this.ctx.fillText('Your score: ' + this.game.score,this.ctx.canvas.width/2, 200)
+        this.ctx.fillText('Press SPACE to go back to main menu',this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 340);
         
     }
     
@@ -379,7 +384,7 @@ export class View {
         this.ctx.fillText('CONTROLS', this.ctx.canvas.width / 2,80);
         
         this.ctx.font = '32px alkhemikal';
-        this.ctx.fillStyle = '#aaa';
+        this.ctx.fillStyle = '#ffffff';
         this.ctx.fillText('W - Move Up', this.ctx.canvas.width / 2, 220);
         this.ctx.fillText('S - Move Down', this.ctx.canvas.width / 2, 270);
         this.ctx.fillText('A - Move Left', this.ctx.canvas.width / 2, 320);
