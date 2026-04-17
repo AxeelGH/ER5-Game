@@ -16,6 +16,7 @@ export default class CombatTurn{
 
         this.currentPhase = null;
         this.turnEnd = false;
+        this.currentTurn = 1;
 
         //Combat index
         this.phaseIndex = 0;
@@ -96,6 +97,7 @@ export default class CombatTurn{
         globals.gameInstance.gameState = GameState.GAME_OVER;
         globals.gameState = GameState.GAME_OVER;
     }
+        this.nextTurn();
     }
 
     finishTurn(){
@@ -103,10 +105,13 @@ export default class CombatTurn{
     }
 
     nextTurn(){
-
         this.currentPhase = null;
         this.turnEnd = false;
-
+        console.log(this.currentTurn);
+        this.currentTurn += 1;
         this.initPhases();
+        
     }
+
+
 }

@@ -5,6 +5,7 @@ import MapView from './MapView.js';
 import ObjectView from './ObjectView.js';
 
 import CombatView from './CombatView.js';
+import CombatTurn from './CombatTurn.js';
 
 export class View {
 
@@ -108,7 +109,7 @@ export class View {
         
         this.ctx.font = '40px alkhemikal';
         this.ctx.textAlign = 'center';
-        this.ctx.fillText('Press SPACE to start', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 300);
+        this.ctx.fillText('Press SPACE to start', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 350);
     }
 
     renderMenu() {
@@ -253,9 +254,14 @@ export class View {
             this.ctx.restore();
         }
         
-        this.ctx.fillStyle = '#ff4444';
+        this.ctx.fillStyle = '#ffffff';
         this.ctx.font = '48px alkhemikal';
         this.ctx.textAlign = 'center';
+
+        this.ctx.fillText(`Turn ${this.game.combatTurn.currentTurn}`,this.ctx.canvas.width/2,50);
+
+        this.ctx.fillStyle = '#ff4444';
+
         this.ctx.fillText('COMBAT', 120, 50);
         
         if (globals.currentEnemy) {
