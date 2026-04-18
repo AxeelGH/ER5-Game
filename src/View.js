@@ -26,6 +26,9 @@ export class View {
         this.storyBackgroundImg.src = './images/StoryBackground.png'
         this.highScoreBackgroundImg = new Image();
         this.highScoreBackgroundImg.src = './images/HighScoreBackground.jpg'
+        this.loginBackgroundImg = new Image();
+        this.loginBackgroundImg.src = './images/LoginBackground.png';
+
     }
 
     render() {
@@ -76,6 +79,14 @@ export class View {
 
             case GameState.PAUSE:
                 this.renderPause();
+                break;
+
+            case GameState.LOGIN:
+                this.renderLogin();
+                break;
+
+            case GameState.LOGIN_LOADING:
+                this.renderLoginLoading();
                 break;
         }
         
@@ -500,5 +511,53 @@ export class View {
         this.ctx.textAlign = 'left';
         this.ctx.fillText("Score: " + this.game.score, 800, 25);
         this.ctx.fillText("HighScore: " + this.game.highScore,800,45);
+    }
+
+    renderLogin() {
+        
+        const canvas = this.ctx.canvas;
+        const centerX = canvas.width / 2;
+    
+        //this.ctx.fillStyle = '#0b143af8';
+        this.ctx.drawImage(this.loginBackgroundImg, 0, 0, canvas.width, canvas.height);
+        
+    }
+
+    renderLoginLoading() {
+
+        const canvas = this.ctx.canvas;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = '32px alkhemikal';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText("Verifying credentials", centerX, centerY - 50);
+        
+        
+        const barWidth = 300;
+        const barHeight = 20;
+        const barX = centerX - barWidth / 2;
+        const barY = centerY;
+        
+        let progress = 0;
+        if (this.game && this.game.loginLoadingFrames) {
+            
+            progress = Math.min(1, this.game.loginLoadingFrames / 120.0);
+        }
+        
+        this.ctx.fillStyle = '#333333';
+        this.ctx.fillRect(barX, barY, barWidth, barHeight);
+        
+        this.ctx.fillStyle = '#d4af37';
+        this.ctx.fillRect(barX, barY, barWidth * progress, barHeight);
+        
+        this.ctx.strokeStyle = 'white';
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(barX, barY, barWidth, barHeight);
+        
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = '20px alkhemikal';
+        this.ctx.fillText(Math.floor(progress * 100) + "%", centerX, barY - 10);
     }
 }

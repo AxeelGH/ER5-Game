@@ -1,5 +1,5 @@
 import globals from './globals.js';
-import { GameState, Key, SpriteID } from './constants.js';
+import { GameState, Key, LoginData, SpriteID } from './constants.js';
 import { Events } from './Events.js';
 import { View } from './View.js';
 import Asset from './assets.js';
@@ -57,9 +57,12 @@ class Game {
         this.combatTurn = null;
 
         globals.currentSound= Sound.NO_SOUND;
+
+        this.loginLoadingFrames = 0;
     }
 
     static create(canvas, gameData) {
+        
         console.log("Initializing...");
         const game = new Game(canvas, gameData);
 
@@ -149,14 +152,50 @@ class Game {
             case GameState.INTRO:
                 if (globals.action.confirm) {
                     console.log("CONFIRM detected, changing to MENU...");
-                    this.gameState = GameState.MENU;   
-                    globals.gameState = GameState.MENU;
+                    this.gameState = GameState.LOGIN;   
+                    globals.gameState = GameState.LOGIN;
                     globals.menuIndex = 0;
                     globals.action.confirm = false;
                     
                     globals.sounds[Sound.START_MUSIC].play();
                     globals.sounds[Sound.START_MUSIC].volume = 0.5;
                 }
+                break;
+
+            case GameState.LOGIN:
+                
+                const form = document.querySelector("#formLogin");
+    
+                if (form && form.style.display !== "block") {
+                    form.style.display = "block";
+                }
+
+                if (globals.buttonStart && globals.buttonStart.clicked) {
+                    globals.buttonStart.clicked = false; 
+
+                    const email = document.getElementById("email").value;
+                    const password = document.getElementById("password").value;
+
+                    if (!email || !password) {
+
+                        alert("Please enter both email and password.");
+
+                    } else {
+
+                        this.login(email, password);
+                    }
+                }
+
+                break;
+
+            case GameState.LOGIN_LOADING:
+                
+                this.loginLoadingFrames += 1;
+    
+                if (this.loginLoadingFrames >= 120) {
+                    this.loginLoadingFrames = 0;
+                }
+                
                 break;
 
             case GameState.MENU:
@@ -301,6 +340,47 @@ class Game {
     render() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.view.render();
+    }
+
+    login(email, password) {
+
+        this.gameState = GameState.LOGIN_LOADING;
+        globals.gameState = GameState.LOGIN_LOADING;
+        this.loginLoadingFrames = 0;
+    
+        document.getElementById("formLogin").style.display = "none";
+
+        const data = {
+            email: email,
+            password: password
+        };
+
+        fetch(LoginData, {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Not authorized");
+            return response.json();
+        })
+        .then(json => {
+            console.log("Login OK", json);
+            this.gameState = GameState.MENU;
+            globals.gameState = GameState.MENU;
+        })
+        .catch(error => {
+            alert("Error: Invalid username or password.");
+            console.error(error);
+        
+            this.gameState = GameState.LOGIN;
+            globals.gameState = GameState.LOGIN;
+            document.getElementById("formLogin").style.display = "block";
+        });
+        
     }
 }
 
