@@ -15,11 +15,12 @@ import { Sound } from './constants.js';
 import GameFactory from './GameFactory.js';
 
 
+
 class Game {
 
     constructor(canvas, gameData) {
-        globals.canvas.width = screen.width;
-        globals.canvas.height = screen.height;
+
+        
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         globals.ctx = this.ctx;
@@ -100,6 +101,9 @@ class Game {
         globals.object = object;
         globals.sprites.push(object);
 
+        canvas.style.width = screen.width + "px";
+        canvas.style.height = screen.height +"px";
+        console.log(canvas.style.width);
         console.log("Ready to execute.");
         return game;
     }
@@ -144,8 +148,8 @@ class Game {
                     this.gameState = GameState.INTRO;
                     globals.gameState = GameState.INTRO;
                     console.log("Game State: INTRO");
-                    console.log(screen.width);
-                    console.log(screen.height);
+                    console.log(this.canvas.width);
+                    console.log(this.canvas.height);
                 }
                 break;
 
@@ -249,19 +253,19 @@ class Game {
         globals.player.update();
     }
     
-    // Actualizar enemigos
+  
     for (let i = 0; i < globals.enemies.length; i++) {
         if (globals.enemies[i].isAlive) {
             globals.enemies[i].update();
         }
     }
     
-    // Actualizar objeto
+
     if (globals.object) {
         globals.object.update();
     }
                 
-                // Limitar movimiento del jugador dentro del canvas
+          
                 if (globals.player) {
                     globals.player.xPos = Math.max(0, Math.min(globals.player.xPos, globals.canvas.width - 50));
                     globals.player.yPos = Math.max(0, Math.min(globals.player.yPos, globals.canvas.height - 70));
@@ -323,6 +327,13 @@ class Game {
                     globals.action.confirm = false;
                 }
                 break;
+            
+            case GameState.VICTORY:
+                if(globals.action.confirm) {
+                    this.gameState = GameState.MENU;
+                    globals.gameState = GameState.MENU;
+                    globals.action.confirm = false;
+                }
 
             case GameState.GAME_OVER:
                 if (globals.action.confirm) {

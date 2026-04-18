@@ -1,5 +1,5 @@
-import { SpriteID } from './constants.js';
 import globals from './globals.js';
+import { SpriteID } from './constants.js';
 
 export default class CombatView {
     constructor(ctx) {
@@ -8,7 +8,16 @@ export default class CombatView {
 
     render() {
         const enemy = globals.currentEnemy;
-        this.drawEnemy(enemy, 450, 100, 500, 500);
+        
+        if (enemy.id === SpriteID.MAGE) {
+            this.drawEnemy(enemy, 450, 150,500,500);
+            console.log("Draw enemy called")
+        } else if (enemy.id === SpriteID.SLIME){
+            this.drawEnemy(enemy,250, -50, 700, 700);
+        } else {
+            this.drawEnemy(enemy, 300, 100, 700, 700);
+        }
+        
     }
 
     drawEnemy(enemy, x, y, width = 120, height = 120) {
@@ -21,8 +30,9 @@ export default class CombatView {
         
         const col = enemy.combatImageSet.initCol + frameIndex;
         const row = enemy.combatImageSet.initFil + enemy.state;
-
-        this.ctx.drawImage(
+   
+        if(enemy.id === SpriteID.SKELETON){
+            this.ctx.drawImage(
             img,
             col * originalWidth,
             row * originalHeight,
@@ -31,6 +41,18 @@ export default class CombatView {
             x, y,
             width, height
         );
+        } else {
+            this.ctx.drawImage(
+            img,
+            col * originalWidth,
+            row * originalHeight,
+            originalWidth,
+            originalHeight,
+            x, y,
+            width, height
+        );
+        }
+  
     }
 
 }

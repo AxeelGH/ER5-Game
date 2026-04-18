@@ -84,7 +84,7 @@ export const Key = {
     DOWN:   83,       //s
     RIGHT:  68,       //d
     INVENTORY:   69,  //e
-    CONFIRM: 13,      //enter
+    CONFIRM: 32,      //Space
 }
 
 export const Sound = {
