@@ -7,6 +7,9 @@ export default class AbilityPhase extends CombatPhase{
 
     performAction(){
         console.log("Executing ability");
+        
+        this.player.state = 4; 
+        this.player.animationTimer = 30;
 
         if(this.player.mana >= 20 ){
         const damage = 20 + this.dice.rollD6() + this.dice.rollD6();

@@ -249,21 +249,19 @@ export class View {
         this.combatView.render();
 
 
-        if (globals.player) {
-            const scale = 3;
-            this.ctx.save();
-            this.ctx.translate(100 + 48 * scale, 30);
-            this.ctx.scale(-scale, scale);
+        // if (globals.player) {
+        //     const scale = 3;
+        //     this.ctx.save();
+        //     this.ctx.translate(100 + 48 * scale, 30);
+        //     this.ctx.scale(-scale, scale);
 
-                       
-
-            this.ctx.drawImage(
-                globals.tileSets[0],
-                56, 2817, 48, 81,
-                0, 230 / scale, 48, 101
-            );
-            this.ctx.restore();
-        }
+        //     this.ctx.drawImage(
+        //         globals.tileSets[0],
+        //         56, 2817, 48, 81,
+        //         0, 230 / scale, 48, 101
+        //     );
+        //     this.ctx.restore();
+        // }
         
         this.ctx.fillStyle = '#ff4444';
         this.ctx.font = '48px alkhemikal';

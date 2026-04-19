@@ -1,4 +1,3 @@
-// Enemy.js
 import Sprite from "./Sprite.js";
 import { SpriteID } from "./constants.js";
 import ImageSet from "./ImageSet.js";
@@ -23,11 +22,26 @@ export default class Enemy extends Sprite {
         this.maxHp = hp;
         this.isAlive = true;
         this.isCollidingWithPlayer = false;
+        this.animationTimer = 0;
     }
 
     update() {
         
         this.updateAnimationFrame();
+    }
+
+    combatUpdate() {
+    
+        if (this.animationTimer > 0) {
+
+            this.animationTimer--;
+            this.updateAnimationFrame();
+
+        } else {
+        
+            this.state = 0;
+        }
+    
     }
 
     draw(ctx) {
