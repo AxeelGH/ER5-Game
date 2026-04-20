@@ -153,6 +153,8 @@ export default class CombatTurn{
         globals.gameInstance.gameState = GameState.PLAYING;
         globals.gameState = GameState.PLAYING;
 
+
+
     }
 
     enemyTurn(){

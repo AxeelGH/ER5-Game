@@ -47,10 +47,10 @@ export default class Enemy extends Sprite {
     draw(ctx) {
         const x = Math.floor(this.xPos);
         const y = Math.floor(this.yPos);
-        
         if (this.imageSet && this.imageSet.loaded) {
             const frameIndex = this.frames.frameCounter;
-            this.imageSet.draw(ctx, x, y, frameIndex, this.state);
+            const row = Math.max(0, Math.min(this.state, 2));
+            this.imageSet.draw(ctx, x, y, frameIndex, row);
         } else {
             
             ctx.fillStyle = this.getColor();
@@ -83,4 +83,5 @@ export default class Enemy extends Sprite {
             default: return "#ff0000";
         }
     }
+
 }
