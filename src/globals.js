@@ -33,6 +33,7 @@ export default{
 
     object: null,
     inventory: null,
+    potionDrops: [],
 
     ParticleSystem: new ParticleSystem(),
 

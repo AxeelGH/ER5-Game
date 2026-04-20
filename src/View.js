@@ -164,6 +164,16 @@ export class View {
                 }
             }
         }
+
+        for (let i = 0; i < globals.potionDrops.length; i++) {
+            const potion = globals.potionDrops[i];
+            const img = globals.tileSets[2]; 
+        
+            if (img && img.complete) {
+            
+                this.ctx.drawImage(img, 0, 0, 16, 16, potion.xPos, potion.yPos, 16, 16);
+            }
+        }
    
         if (globals.ParticleSystem) {
             globals.ParticleSystem.update();
