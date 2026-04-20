@@ -325,6 +325,8 @@ export default class CollisionManager {
                 this.onCollisionWithPotion();
             }
         }
+
+        this.collisionDropPotion();
     }
     
     static rectIntersect(rect1, rect2) {
@@ -352,5 +354,34 @@ export default class CollisionManager {
             globals.inventory.addPotion();
         }
         globals.object = null;
+    }
+
+    static collisionDropPotion() {
+        
+        for (let i = 0; i < globals.potionDrops.length; i++) {
+        
+            const potion = globals.potionDrops[i];
+
+            const playerX = globals.player.xPos + globals.player.hitBox.xOffset;
+            const playerY = globals.player.yPos + globals.player.hitBox.yOffset;
+            const playerW = globals.player.hitBox.xSize;
+            const playerH = globals.player.hitBox.ySize;
+
+            const potionX = potion.xPos + potion.hitBox.xOffset;
+            const potionY = potion.yPos + potion.hitBox.yOffset;
+            const potionW = potion.hitBox.xSize;
+            const potionH = potion.hitBox.ySize;
+        
+            if (playerX < potionX + potionW && 
+                playerX + playerW > potionX && 
+                playerY < potionY + potionH && 
+                playerY + playerH > potionY) {
+            
+                globals.inventory.addPotion();
+                console.log("Picked up a potion from the ground");
+                globals.potionDrops.splice(i, 1);
+                i--;
+            }
+        }
     }
 }

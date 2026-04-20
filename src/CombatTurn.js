@@ -5,6 +5,7 @@ import AttackPhase from "./AttackPhase.js";
 import InventoryPhase from "./InventoryPhase.js";
 import FleePhase from "./FleePhase.js";
 import { GameState } from "./constants.js";
+import SpriteFactory from "./SpriteFactory.js";
 
 
 export default class CombatTurn{
@@ -99,9 +100,41 @@ export default class CombatTurn{
         if(!this.enemy.isAlive){
             this.endCombat();
             this.player.mana += 10;
+            globals.gameInstance.score += 100;
+
+            const dropChance = 0.3;
+            const randomValue = Math.random();
+    
+            if (randomValue < dropChance && globals.inventory) {
+
+                this.createPotionDrop();
+                //globals.inventory.addPotion();
+                console.log("dropped a potion");
+
+            } else {
+                console.log("No item dropped");
+            }
+
             return;
         }
         this.enemyTurn();
+    }
+
+    createPotionDrop() {
+        
+        const dropX = this.enemy.xPos + 20;
+        const dropY = this.enemy.yPos + 20;
+        
+        const potion = SpriteFactory.createObject(dropX, dropY);
+        
+        if (!globals.potionDrops) {
+
+            globals.potionDrops = [];
+        }
+
+        globals.potionDrops.push(potion);
+        
+        console.log("Potion dropped at: " + dropX + ", " + dropY);
     }
 
     endCombat(){
