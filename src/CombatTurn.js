@@ -38,7 +38,9 @@ export default class CombatTurn{
     
     combatMenu() {
 
-
+        if(this.currentTurn === 1 && !this.combatStarted){
+            this.startCombat();
+        } 
         if(globals.action.moveUp){
             globals.action.moveUp = false;
             this.phaseIndex = (this.phaseIndex > 0) ? this.phaseIndex -1: this.phases.length -1;
@@ -56,13 +58,8 @@ export default class CombatTurn{
 
             this.currentPhase = this.combatPhases[selectedPhase];
             console.log("Turn: " + this.currentTurn);
-            if(this.currentTurn === 1){
-                this.startCombat();
-            } else {
-                this.executePhase();
-            }
-         
-     
+
+                this.executePhase(); 
         }
 
         
@@ -73,13 +70,16 @@ export default class CombatTurn{
         const playerNum = this.dice.rollD6();
         const enemyNum = this.dice.rollD6();
 
+        console.log("Player num: " + playerNum);
+        console.log("Enemy num: " + enemyNum);
+
         if (enemyNum > playerNum) {
             console.log("The enemy got a higher roll and attacks first!");
             this.enemyTurn();
         }
         else {
-            console.log("The player got a higher roll and attacks first!");
-            this.executePhase();
+            console.log("The player got a higher roll and goes first!");
+            this.combatStarted = true;      
         }
     }
 
