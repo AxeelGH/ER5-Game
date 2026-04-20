@@ -1,3 +1,4 @@
+
 export default class Dice{
 
     rollDice(number){
@@ -7,19 +8,21 @@ export default class Dice{
     }
 
     evaluateFlee(){
-        
-    const roll = this.rollDice(10);
-    let result;
+    let turn = 1;
+    let roll = this.rollDice(10);
+    let fleeRoll = this.rollDice(10);
+    console.log("Turn: " + turn);
+    if (roll <= turn) {
+      return 3;
+    } else if (roll > turn) {
+      console.log("Flee roll: " + fleeRoll);
+      if (fleeRoll > 6) {
+      return 1;
+    } else {
+      return 2;
+    }
+    }
 
-      if(roll === 1 || roll === 2 ){
-        result = 1
-      } else if (roll === 3 || roll === 4) {
-        result = 2;
-      } else {
-        result = 3;
-      }
-
-      return result;
     }
 }
 

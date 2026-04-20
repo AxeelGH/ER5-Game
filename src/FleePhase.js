@@ -5,16 +5,22 @@ import CombatTurn from "./CombatTurn.js";
 
 export default class FleePhase extends CombatPhase{
 
-   
-
+    
     handleSelection(){}
 
-    performAction(){
+    performAction(){    
+    
+        console.log("Tried to flee: " + this.triedToFlee);
+        if (!this.triedToFlee) {
+           
         const fleeResult = this.dice.evaluateFlee();
-
+        console.log("Flee result: " + fleeResult);
+        this.triedToFlee = true;
+        console.log("Tried to flee: " + this.triedToFlee);
         if (fleeResult === 1) {
             console.log("You fled succesfully");
             this.fled = true;
+            
         } else if (fleeResult === 2) {
             console.log("You fled but received damage");
             this.player.hp -= 5 + this.dice.rollDice(6);
@@ -28,8 +34,14 @@ export default class FleePhase extends CombatPhase{
         if (this.fled === true) {
             this.echoesOfTheCoward();
         }
+        
+        } else {
+            console.log("You already tried to flee and the enemy has traped you, you can't flee!!");
+            this.cancelled = true;
+        }
 
         this.state = "resolve";
+      
     }
 
     resolve(){
