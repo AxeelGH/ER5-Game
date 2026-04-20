@@ -18,6 +18,7 @@ export default class CombatTurn{
         this.turnEnd = false;
         this.currentTurn = 1;
 
+
         //Combat index
         this.phaseIndex = 0;
         this.phases = ["Attack", "Ability", "Inventory", "Flee"];
@@ -37,6 +38,7 @@ export default class CombatTurn{
     
     combatMenu() {
 
+
         if(globals.action.moveUp){
             globals.action.moveUp = false;
             this.phaseIndex = (this.phaseIndex > 0) ? this.phaseIndex -1: this.phases.length -1;
@@ -53,13 +55,36 @@ export default class CombatTurn{
             console.log("Selected phase: " + selectedPhase);
 
             this.currentPhase = this.combatPhases[selectedPhase];
-            this.executePhase();
+            console.log("Turn: " + this.currentTurn);
+            if(this.currentTurn === 1){
+                this.startCombat();
+            } else {
+                this.executePhase();
+            }
+         
+     
         }
 
         
     }
 
-    executePhase() {      
+    startCombat(){
+
+        const playerNum = this.dice.rollD6();
+        const enemyNum = this.dice.rollD6();
+
+        if (enemyNum > playerNum) {
+            console.log("The enemy got a higher roll and attacks first!");
+            this.enemyTurn();
+        }
+        else {
+            console.log("The player got a higher roll and attacks first!");
+            this.executePhase();
+        }
+    }
+
+    executePhase() {     
+         
         this.currentPhase.execute();
 
         if(this.currentPhase.cancelled){
@@ -80,13 +105,16 @@ export default class CombatTurn{
     }
 
     endCombat(){
+
         globals.currentEnemy = null;
         globals.gameInstance.combatTurn = null;
         globals.gameInstance.gameState = GameState.PLAYING;
         globals.gameState = GameState.PLAYING;
+
     }
 
     enemyTurn(){
+
         const damage = 10+ this.dice.rollD6();
 
         this.player.hp -= damage;
@@ -107,7 +135,6 @@ export default class CombatTurn{
     nextTurn(){
         this.currentPhase = null;
         this.turnEnd = false;
-        console.log(this.currentTurn);
         this.currentTurn += 1;
         this.initPhases();
         
