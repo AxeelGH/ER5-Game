@@ -392,7 +392,37 @@ class Game {
         });
         
     }
+
+    changeLevel(direction) {
+        
+        console.log("canging level, direction:", direction);
+        console.log("level:", this.levelFactory.currentLevelIndex);
+        
+        const currentIndex = this.levelFactory.currentLevelIndex;
+        let newIndex = currentIndex + direction;
+        
+        console.log("New index:", newIndex);
+        console.log("Total levels:", this.levelFactory.levels.length);
+        
+        if (newIndex >= 0 && newIndex < this.levelFactory.levels.length) {
+
+            this.levelFactory.currentLevelIndex = newIndex;
+            const newLevel = this.levelFactory.levels[newIndex];
+            
+            globals.map = newLevel;
+            globals.enemies = newLevel.enemies;
+            
+            console.log("Level changed to:", newLevel.name);
+            return true;
+
+        } else {
+
+            console.log("not level", newIndex);
+            return false;
+        }
+    }
 }
+
 
 export function initGame(canvas) {
 

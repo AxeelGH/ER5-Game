@@ -73,23 +73,25 @@ export default class Player extends Sprite {
         if (CollisionManager.detectCollisionWithMap(this)) {
             CollisionManager.resolveMapCollision(this);
         }
+        
+        this.checkLevelTransition();
 
         this.updateAnimationFrame();
     }
 
     combatUpdate() {
 
-    if (this.animationTimer > 0) {
+        if (this.animationTimer > 0) {
 
-        this.animationTimer--;
-        this.updateAnimationFrame();
+            this.animationTimer--;
+            this.updateAnimationFrame();
 
-    } else {
-        
-        this.state = State.LEFT; 
-    }
+        } else {
+            
+            this.state = State.LEFT; 
+        }
     
-}
+    }
 
     readKeyboardAndAssignState(){
         if (globals.action.moveLeft) {
@@ -110,14 +112,52 @@ export default class Player extends Sprite {
     }
 
     
-updateAnimationFrame() {
-    this.frames.frameChangeCounter++;
-    if (this.frames.frameChangeCounter >= this.frames.speed) {
-        this.frames.frameCounter++;
-        this.frames.frameChangeCounter = 0;
+    updateAnimationFrame() {
+        this.frames.frameChangeCounter++;
+        if (this.frames.frameChangeCounter >= this.frames.speed) {
+            this.frames.frameCounter++;
+            this.frames.frameChangeCounter = 0;
+        }
+        if (this.frames.frameCounter >= this.frames.framesPerState) {
+            this.frames.frameCounter = 0;
+        }
     }
-    if (this.frames.frameCounter >= this.frames.framesPerState) {
-        this.frames.frameCounter = 0;
+
+    checkLevelTransition() {
+
+        const canvasWidth = 1024;
+        const canvasHeight = 768;
+        const exitZone = 720;
+        const safeZone = 100;
+    
+        if (this.yPos + this.hitBox.ySize >= exitZone) {
+            console.log("next level");
+
+            if (globals.gameInstance) {
+                const success = globals.gameInstance.changeLevel(1);
+                if (success) {
+                    
+                    this.yPos = 150;  
+                    this.xPos = 400;
+                    this.levelTransitionCooldown = 1.0;
+                    console.log("next level");
+                }
+            }
+        }
+        
+        else if (this.yPos <= 50) {
+            console.log("level back");
+
+            if (globals.gameInstance) {
+                const success = globals.gameInstance.changeLevel(-1);
+                if (success) {
+                    
+                    this.yPos = canvasHeight - 150;  
+                    this.xPos = 400;
+                    this.levelTransitionCooldown = 1.0;
+                    console.log("level 1");
+                }
+            }
+        }
     }
-}
 }
