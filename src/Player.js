@@ -25,7 +25,7 @@ export default class Player extends Sprite {
         this.imageSet = new ImageSet(39, 0, 48, 64, 0, 0); 
         this.combatImageSet = new ImageSet(33, 0, 160, 120, 0, 0); 
         this.frames = new Frames(3, 12); 
-        this.physics = new Physics(100); 
+        this.physics = new Physics(0,0,100); 
         this.hitBox = new HitBox(34, 36, 6, 25);
         this.animationTimer = 0;
 
