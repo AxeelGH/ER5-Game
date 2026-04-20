@@ -57,4 +57,16 @@ export default class Map {
         }
         return false;
     }
+
+    loadPreviousLevel() {
+        if (this.currentLevelIndex - 1 >= 0) {
+            this.currentLevelIndex--;
+            let prevLevel = this.levels[this.currentLevelIndex];
+            this.data = prevLevel.data;
+            this.enemies = prevLevel.enemies;
+            this.name = prevLevel.name;
+            return true;
+        }
+        return false;
+    }
 }
