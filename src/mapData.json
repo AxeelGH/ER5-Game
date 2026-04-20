@@ -1,0 +1,42 @@
+{
+    "maps": [
+        {
+            "id": 1,
+            "name": "Starteer village",
+            "enemies": [
+                {
+                    "type": "slime",
+                    "xPos": 270,
+                    "yPos": 550,
+                    "hp": 50
+                },
+                {
+                    "type": "mage",
+                    "xPos": 300,
+                    "yPos": 400,
+                    "hp": 50
+                }
+            ]
+            
+        },
+        {
+            "id": 2,
+            "name": "First challenge",
+            "enemies": [
+                {
+                    "type": "mage",
+                    "xPos": 270,
+                    "yPos": 550,
+                    "hp": 50
+                },
+                {
+                    "type": "slime",
+                    "xPos": 300,
+                    "yPos": 400,
+                    "hp": 50
+                }
+            ]
+            
+        }
+    ]
+}

@@ -5,7 +5,7 @@ import { View } from './View.js';
 import Asset from './assets.js';
 import SpriteFactory from './SpriteFactory.js';
 import playerView from './PlayerView.js';
-import Map, { mapData} from './Map.js';
+import Map from './Map.js';
 import MapView from './MapView.js';
 import ImageSet from './ImageSet.js';
 import CollisionManager from './CollisionManager.js';
@@ -13,7 +13,7 @@ import CombatTurn from './CombatTurn.js'
 import Inventory from './Inventory.js';
 import { Sound } from './constants.js';
 import GameFactory from './GameFactory.js';
-
+import LevelFactory from './levelFactory.js';
 
 
 class Game {
@@ -32,12 +32,13 @@ class Game {
         this.timer = gameData.game.time;
         this.highScore = this.score;
 
+        this.levelFactory = new LevelFactory();
+
         // Managers 
         this.inputManager = new Events();
         this.view = new View(this.ctx,this);
 
-        const mapImageSet = new ImageSet(0, 0, 32, 32, 0, 0, 32); 
-        globals.map = new Map(mapData, mapImageSet);
+        globals.map = null;
 
         this.mapView = new MapView(this.ctx);
         this.playerView = new playerView(this.ctx);
@@ -63,50 +64,39 @@ class Game {
     }
 
     static create(canvas, gameData) {
-        
-        console.log("Initializing...");
-        const game = new Game(canvas, gameData);
+    
+    console.log("Initializing...");
+    const game = new Game(canvas, gameData);
 
-        globals.gameInstance = game;
-        
-        globals.sprites = [];
-        globals.tileSets = [];
-        globals.assetsToLoad = [];
-        globals.assetsLoaded = 0;
+    globals.gameInstance = game;
+    
+    globals.sprites = [];
+    globals.tileSets = [];
+    globals.assetsToLoad = [];
+    globals.assetsLoaded = 0;
 
-        globals.inventory = new Inventory();
+    globals.inventory = new Inventory();
 
-        game.assets = new Asset();
-        game.assets.loadAssets();
+    game.assets = new Asset();
+    game.assets.loadAssets();
 
-        game.player = SpriteFactory.createPlayer(10, 220, 120, 70);
-        globals.player = game.player;
-        globals.sprites.push(globals.player);
-        
-        //Create enemies
-        const slime1 = SpriteFactory.createSlime(270, 550);
-        const skeleton1 = SpriteFactory.createSkeleton(740, 560);
-        const mage1 = SpriteFactory.createMage(455, 220);
-       
-        
-        //Add enemies to global array
-        globals.enemies.push(slime1);
-        globals.enemies.push(skeleton1);
-        globals.enemies.push(mage1);
-        
-        console.log("Enemies created:", globals.enemies.length);
-        // ====================================
+    game.player = SpriteFactory.createPlayer(100, 220, 120, 70);
+    globals.player = game.player;
+    globals.sprites.push(globals.player);       
+    
+    // Inicializar niveles (esto carga los enemigos automáticamente)
+    game.initializeLevels();
 
-        const object = SpriteFactory.createObject(470, 100);
-        globals.object = object;
-        globals.sprites.push(object);
+    const object = SpriteFactory.createObject(470, 100);
+    globals.object = object;
+    globals.sprites.push(object);
 
-        canvas.style.width = screen.width + "px";
-        canvas.style.height = screen.height +"px";
-        console.log(canvas.style.width);
-        console.log("Ready to execute.");
-        return game;
-    }
+    canvas.style.width = screen.width + "px";
+    canvas.style.height = screen.height +"px";
+    console.log(canvas.style.width);
+    console.log("Ready to execute.");
+    return game;
+}
 
     execute() {
         globals.previousCycleMilliseconds = 0;
@@ -145,8 +135,8 @@ class Game {
 
             case GameState.LOADING:
                 if (globals.assetsLoaded >= globals.assetsToLoad.length && globals.assetsToLoad.length > 0) {
-                    this.gameState = GameState.INTRO;
-                    globals.gameState = GameState.INTRO;
+                    this.gameState = GameState.MENU;
+                    globals.gameState = GameState.MENU;
                     console.log("Game State: INTRO");
                     console.log(this.canvas.width);
                     console.log(this.canvas.height);
@@ -346,6 +336,14 @@ class Game {
             default:
                 break;
         }
+    }
+
+    initializeLevels() {
+    let levels = this.levelFactory.loadLevels('./src/mapData.json');
+    if (levels.length > 0) {
+        globals.map = levels[0];
+        globals.enemies = levels[0].enemies;
+    }
     }
 
     render() {
