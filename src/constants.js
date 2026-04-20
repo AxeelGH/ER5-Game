@@ -11,7 +11,9 @@ export const GameState = {
     PAUSE: 8,         
     HIGHSCORE: 9,      
     INSERT_NAME: 10,    
-    VICTORY: 11         
+    VICTORY: 11,
+    LOGIN: 12,
+    LOGIN_LOADING: 13         
 };
 
 export const FPS = 60; 
@@ -89,3 +91,5 @@ export const Sound = {
     NO_MUSIC :-1,
     START_MUSIC : 0,
 }
+
+export const LoginData = "https://er5game.free.laravel.cloud/api/login";

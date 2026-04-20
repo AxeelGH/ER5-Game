@@ -8,6 +8,12 @@ export default class AttackPhase extends CombatPhase{
     performAction(){
         console.log("Executing attack");
 
+        this.enemy.state = 2;
+        this.enemy.animationTimer = 20;
+        
+        this.player.state = 4; 
+        this.player.animationTimer = 30;
+
         const damage = 10 + this.dice.rollD6() + this.dice.rollD6();
         this.enemy.hp -= damage;
         if(this.player.mana < (this.player.maxMana -5)){

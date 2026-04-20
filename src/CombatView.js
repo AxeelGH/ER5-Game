@@ -8,18 +8,22 @@ export default class CombatView {
 
     render() {
         const enemy = globals.currentEnemy;
-        
+        const player = globals.player;
+        enemy.combatUpdate();
+        player.combatUpdate();
+
         if (enemy.id === SpriteID.MAGE) {
             this.drawEnemy(enemy, 450, 150,500,500);
         } else if (enemy.id === SpriteID.SLIME){
-            this.drawEnemy(enemy,250, -50, 700, 700);
+            this.drawEnemy(enemy, 500, 50, 500, 500);
         } else {
             this.drawEnemy(enemy, 300, 100, 700, 700);
         }
-        
+
+        this.drawPlayer(player, 80, 180, 500, 500);
     }
 
-    drawEnemy(enemy, x, y, width = 120, height = 120) {
+    drawEnemy(enemy, x, y, width, height) {
 
         const frameIndex = enemy.frames.frameCounter;
         const img = globals.tileSets[0];
@@ -52,6 +56,25 @@ export default class CombatView {
         );
         }
   
+    }
+
+    drawPlayer(player, x, y, width, height) {
+
+        const frameIndex = player.frames.frameCounter;
+        const img = globals.tileSets[0]; 
+        
+        const originalWidth = player.combatImageSet.xSize;
+        const originalHeight = player.combatImageSet.ySize;
+        
+        const col = player.combatImageSet.initCol + frameIndex;
+        const row = player.combatImageSet.initFil + player.state;
+
+        this.ctx.drawImage(
+            img,
+            col * originalWidth, row * originalHeight,
+            originalWidth, originalHeight,
+            x, y, width, height
+        );
     }
 
 }

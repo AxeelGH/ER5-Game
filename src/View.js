@@ -26,6 +26,10 @@ export class View {
         this.storyBackgroundImg = new Image();
         this.storyBackgroundImg.src = './images/StoryBackground.png';
         this.highScoreBackgroundImg = new Image();
+        this.highScoreBackgroundImg.src = './images/HighScoreBackground.jpg'
+        this.loginBackgroundImg = new Image();
+        this.loginBackgroundImg.src = './images/LoginBackground.png';
+
         this.highScoreBackgroundImg.src = './images/HighScoreBackground.jpg';
         this.victoryBackgroundImg = new Image();
         this.victoryBackgroundImg.src = './images/VictoryBackground.png';
@@ -81,6 +85,14 @@ export class View {
 
             case GameState.PAUSE:
                 this.renderPause();
+                break;
+
+            case GameState.LOGIN:
+                this.renderLogin();
+                break;
+
+            case GameState.LOGIN_LOADING:
+                this.renderLoginLoading();
                 break;
         }
         
@@ -238,21 +250,19 @@ export class View {
         this.combatView.render();
 
 
-        if (globals.player) {
-            const scale = 3;
-            this.ctx.save();
-            this.ctx.translate(100 + 48 * scale, 30);
-            this.ctx.scale(-scale, scale);
+        // if (globals.player) {
+        //     const scale = 3;
+        //     this.ctx.save();
+        //     this.ctx.translate(100 + 48 * scale, 30);
+        //     this.ctx.scale(-scale, scale);
 
-                       
-
-            this.ctx.drawImage(
-                globals.tileSets[0],
-                56, 2817, 48, 81,
-                0, 230 / scale, 48, 101
-            );
-            this.ctx.restore();
-        }
+        //     this.ctx.drawImage(
+        //         globals.tileSets[0],
+        //         56, 2817, 48, 81,
+        //         0, 230 / scale, 48, 101
+        //     );
+        //     this.ctx.restore();
+        // }
         
         this.ctx.fillStyle = '#ffffff';
         this.ctx.font = '48px alkhemikal';
@@ -524,5 +534,53 @@ export class View {
         this.ctx.textAlign = 'left';
         this.ctx.fillText("Score: " + this.game.score, 805, 30);
         this.ctx.fillText("HighScore: " + this.game.highScore,805,60);
+    }
+
+    renderLogin() {
+        
+        const canvas = this.ctx.canvas;
+        const centerX = canvas.width / 2;
+    
+        //this.ctx.fillStyle = '#0b143af8';
+        this.ctx.drawImage(this.loginBackgroundImg, 0, 0, canvas.width, canvas.height);
+        
+    }
+
+    renderLoginLoading() {
+
+        const canvas = this.ctx.canvas;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = '32px alkhemikal';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText("Verifying credentials", centerX, centerY - 50);
+        
+        
+        const barWidth = 300;
+        const barHeight = 20;
+        const barX = centerX - barWidth / 2;
+        const barY = centerY;
+        
+        let progress = 0;
+        if (this.game && this.game.loginLoadingFrames) {
+            
+            progress = Math.min(1, this.game.loginLoadingFrames / 120.0);
+        }
+        
+        this.ctx.fillStyle = '#333333';
+        this.ctx.fillRect(barX, barY, barWidth, barHeight);
+        
+        this.ctx.fillStyle = '#d4af37';
+        this.ctx.fillRect(barX, barY, barWidth * progress, barHeight);
+        
+        this.ctx.strokeStyle = 'white';
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(barX, barY, barWidth, barHeight);
+        
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = '20px alkhemikal';
+        this.ctx.fillText(Math.floor(progress * 100) + "%", centerX, barY - 10);
     }
 }

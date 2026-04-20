@@ -38,4 +38,7 @@ export default{
     sounds: [],
 
     currentSound: -1,
+
+    buttonStart: {},
+    buttonStartClicked: false,
 };

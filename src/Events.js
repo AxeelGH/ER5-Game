@@ -10,6 +10,15 @@ export class Events {
 
     initEvents() {
 
+        globals.buttonStart = document.getElementById('btnStart');
+        
+        if (globals.buttonStart) {
+            globals.buttonStart.addEventListener("click", this.btnStartClick, false);
+            globals.buttonStart.addEventListener("mouseout", this.btnStartOut, false);
+        } else {
+            console.warn("btnStart not found in DOM");
+        }
+        
         window.addEventListener("keydown", this.keyDown, false);
         window.addEventListener("keyup", this.keyUp, false);
     }
@@ -62,5 +71,19 @@ export class Events {
                 globals.action.confirm = false;
                 break;
         }
+    }
+
+    btnStartOut(event){
+
+        document.getElementById("btnStart").innerHTML = "START";
+    }
+
+    btnStartClick(event) {
+        console.log("START button clicked");
+        globals.buttonStart.clicked = true;
+    
+        if (globals.gameState === 12) {
+            globals.action.confirm = true;
+        } 
     }
 }

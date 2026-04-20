@@ -115,6 +115,10 @@ export default class CombatTurn{
 
     enemyTurn(){
 
+
+        this.enemy.state = 1; 
+        this.enemy.animationTimer = 60;
+
         const damage = 10+ this.dice.rollD6();
 
         this.player.hp -= damage;
