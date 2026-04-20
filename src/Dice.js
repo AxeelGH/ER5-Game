@@ -7,8 +7,7 @@ export default class Dice{
         return roll;
     }
 
-    evaluateFlee(){
-    let turn = 1;
+    evaluateFlee(turn){
     let roll = this.rollDice(10);
     let fleeRoll = this.rollDice(10);
     console.log("Turn: " + turn);

@@ -17,6 +17,8 @@ export default class CombatTurn{
         this.currentPhase = null;
         this.turnEnd = false;
         this.currentTurn = 1;
+        globals.triedToFlee = false;
+        this.waitingForPlayer = false;
 
 
         //Combat index
@@ -24,6 +26,7 @@ export default class CombatTurn{
         this.phases = ["Attack", "Ability", "Inventory", "Flee"];
 
         this.initPhases();
+        this.startCombat();
     }
 
     initPhases() {
@@ -37,6 +40,10 @@ export default class CombatTurn{
 
     
     combatMenu() {
+
+        if(!this.waitingForPlayer) {
+            return;
+        }
 
         if(this.currentTurn === 1 && !this.combatStarted){
             this.startCombat();
@@ -58,8 +65,7 @@ export default class CombatTurn{
 
             this.currentPhase = this.combatPhases[selectedPhase];
             console.log("Turn: " + this.currentTurn);
-
-                this.executePhase(); 
+            this.executePhase(); 
         }
 
         
@@ -76,18 +82,21 @@ export default class CombatTurn{
         if (enemyNum > playerNum) {
             console.log("The enemy got a higher roll and attacks first!");
             this.enemyTurn();
+            this.waitingForPlayer=true;
         }
         else {
             console.log("The player got a higher roll and goes first!");
-            this.combatStarted = true;      
+            this.waitingForPlayer = true;      
         }
     }
 
-    executePhase() {     
-         
+    executePhase() { 
+
+        this.waitingForPlayer = false;
         this.currentPhase.execute();
 
         if(this.currentPhase.cancelled){
+            this.waitingForPlayer = true;
             return;
         }
 
@@ -138,8 +147,8 @@ export default class CombatTurn{
 
     nextTurn(){
         this.currentPhase = null;
-        this.turnEnd = false;
         this.currentTurn += 1;
+        this.waitingForPlayer = true;
         this.initPhases();
         
     }

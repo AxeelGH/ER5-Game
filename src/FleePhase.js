@@ -10,13 +10,11 @@ export default class FleePhase extends CombatPhase{
 
     performAction(){    
     
-        console.log("Tried to flee: " + this.triedToFlee);
-        if (!this.triedToFlee) {
-           
-        const fleeResult = this.dice.evaluateFlee();
+        if (!globals.triedToFlee) {          
+        const fleeResult = this.dice.evaluateFlee(globals.gameInstance.combatTurn.currentTurn);
+        globals.triedToFlee = true;
         console.log("Flee result: " + fleeResult);
-        this.triedToFlee = true;
-        console.log("Tried to flee: " + this.triedToFlee);
+        console.log("Tried to flee: " + globals.triedToFlee);
         if (fleeResult === 1) {
             console.log("You fled succesfully");
             this.fled = true;
