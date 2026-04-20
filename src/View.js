@@ -503,7 +503,7 @@ export class View {
         this.ctx.fillRect(7, 40, 190, 20);
         
         this.ctx.fillStyle = '#00ff00';
-        var hpPercent = (globals.player.hp / 120);
+        var hpPercent = (globals.player.hp / globals.player.maxHp);
         this.ctx.fillRect(7, 40, 190 * hpPercent, 20);
         this.ctx.strokeStyle = "grey";
         this.ctx.lineWidth = 2;
@@ -512,7 +512,7 @@ export class View {
         this.ctx.fillStyle = 'white';
         this.ctx.font = '32px alkhemikal';
         this.ctx.textAlign = 'left';
-        this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/120", 7, 30);
+        this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/" + globals.player.maxHp, 7, 30);
         
         if (globals.gameInstance) {
             var timer = Math.max(0, Math.floor(globals.gameInstance.timer));
