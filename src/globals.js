@@ -29,6 +29,7 @@ export default{
 
     enemies: [],
     currentEnemy: null,
+    triedToFlee: false,
 
     object: null,
     inventory: null,

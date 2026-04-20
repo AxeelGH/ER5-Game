@@ -1,25 +1,27 @@
+
 export default class Dice{
 
-    rollD6(){
-        let roll = Math.floor(Math.random()*6)+1;
+    rollDice(number){
+        let roll = Math.floor(Math.random()*number)+1;
 
         return roll;
     }
 
-    evaluateFlee(){
-        
-    const roll = this.rollD6();
-    let result;
+    evaluateFlee(turn){
+    let roll = this.rollDice(10);
+    let fleeRoll = this.rollDice(10);
+    console.log("Turn: " + turn);
+    if (roll <= turn) {
+      return 3;
+    } else if (roll > turn) {
+      console.log("Flee roll: " + fleeRoll);
+      if (fleeRoll > 6) {
+      return 1;
+    } else {
+      return 2;
+    }
+    }
 
-      if(roll === 1 || roll === 2 ){
-        result = 1
-      } else if (roll === 3 || roll === 4) {
-        result = 2;
-      } else {
-        result = 3;
-      }
-
-      return result;
     }
 }
 

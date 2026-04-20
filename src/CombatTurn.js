@@ -18,6 +18,8 @@ export default class CombatTurn{
         this.currentPhase = null;
         this.turnEnd = false;
         this.currentTurn = 1;
+        globals.triedToFlee = false;
+        this.waitingForPlayer = false;
 
 
         //Combat index
@@ -25,6 +27,7 @@ export default class CombatTurn{
         this.phases = ["Attack", "Ability", "Inventory", "Flee"];
 
         this.initPhases();
+        this.startCombat();
     }
 
     initPhases() {
@@ -39,7 +42,13 @@ export default class CombatTurn{
     
     combatMenu() {
 
+        if(!this.waitingForPlayer) {
+            return;
+        }
 
+        if(this.currentTurn === 1 && !this.combatStarted){
+            this.startCombat();
+        } 
         if(globals.action.moveUp){
             globals.action.moveUp = false;
             this.phaseIndex = (this.phaseIndex > 0) ? this.phaseIndex -1: this.phases.length -1;
@@ -57,13 +66,7 @@ export default class CombatTurn{
 
             this.currentPhase = this.combatPhases[selectedPhase];
             console.log("Turn: " + this.currentTurn);
-            if(this.currentTurn === 1){
-                this.startCombat();
-            } else {
-                this.executePhase();
-            }
-         
-     
+            this.executePhase(); 
         }
 
         
@@ -71,24 +74,30 @@ export default class CombatTurn{
 
     startCombat(){
 
-        const playerNum = this.dice.rollD6();
-        const enemyNum = this.dice.rollD6();
+        const playerNum = this.dice.rollDice(6);
+        const enemyNum = this.dice.rollDice(6);
+
+        console.log("Player num: " + playerNum);
+        console.log("Enemy num: " + enemyNum);
 
         if (enemyNum > playerNum) {
             console.log("The enemy got a higher roll and attacks first!");
             this.enemyTurn();
+            this.waitingForPlayer=true;
         }
         else {
-            console.log("The player got a higher roll and attacks first!");
-            this.executePhase();
+            console.log("The player got a higher roll and goes first!");
+            this.waitingForPlayer = true;      
         }
     }
 
-    executePhase() {     
-         
+    executePhase() { 
+
+        this.waitingForPlayer = false;
         this.currentPhase.execute();
 
         if(this.currentPhase.cancelled){
+            this.waitingForPlayer = true;
             return;
         }
 
@@ -152,7 +161,7 @@ export default class CombatTurn{
         this.enemy.state = 1; 
         this.enemy.animationTimer = 60;
 
-        const damage = 10+ this.dice.rollD6();
+        const damage = 10+ this.dice.rollDice(6);
 
         this.player.hp -= damage;
 
@@ -171,8 +180,8 @@ export default class CombatTurn{
 
     nextTurn(){
         this.currentPhase = null;
-        this.turnEnd = false;
         this.currentTurn += 1;
+        this.waitingForPlayer = true;
         this.initPhases();
         
     }
