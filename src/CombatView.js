@@ -14,7 +14,6 @@ export default class CombatView {
 
         if (enemy.id === SpriteID.MAGE) {
             this.drawEnemy(enemy, 450, 150,500,500);
-            console.log("Draw enemy called")
         } else if (enemy.id === SpriteID.SLIME){
             this.drawEnemy(enemy, 500, 50, 500, 500);
         } else {

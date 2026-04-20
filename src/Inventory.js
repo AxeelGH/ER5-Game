@@ -6,7 +6,7 @@ export default class Inventory {
     
     addPotion() {
         this.potions++;
-        console.log("total potions:" + this.potions);
+        console.log("Total potions:" + this.potions);
     }
     
     usePotion(player) {
@@ -30,5 +30,9 @@ export default class Inventory {
     
     getPotions() {
         return this.potions;
+    }
+
+    removePotion() {
+        this.potions --;
     }
 }

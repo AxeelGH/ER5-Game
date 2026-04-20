@@ -28,7 +28,6 @@ export default class Asset {
         globals.tileSets[2] = tileSet;
         globals.assetsToLoad.push(tileSet);
 
-     
         let startMusic = document.querySelector("#startMusic");
         startMusic.addEventListener("canplaythrough", this.tileSetLoader, false);
         startMusic.addEventListener("timeupdate",updateMusic, false);
