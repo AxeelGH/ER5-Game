@@ -67,8 +67,8 @@ export default class CombatTurn{
 
     startCombat(){
 
-        const playerNum = this.dice.rollD6();
-        const enemyNum = this.dice.rollD6();
+        const playerNum = this.dice.rollDice(6);
+        const enemyNum = this.dice.rollDice(6);
 
         console.log("Player num: " + playerNum);
         console.log("Enemy num: " + enemyNum);
@@ -119,7 +119,7 @@ export default class CombatTurn{
         this.enemy.state = 1; 
         this.enemy.animationTimer = 60;
 
-        const damage = 10+ this.dice.rollD6();
+        const damage = 10+ this.dice.rollDice(6);
 
         this.player.hp -= damage;
 

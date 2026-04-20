@@ -12,7 +12,7 @@ export default class AbilityPhase extends CombatPhase{
         this.player.animationTimer = 30;
 
         if(this.player.mana >= 20 ){
-        const damage = 20 + this.dice.rollD6() + this.dice.rollD6();
+        const damage = 20 + this.dice.rollDice(6) + this.dice.rollDice(6);
         this.enemy.hp -= damage;
         this.player.mana -= 20;
 

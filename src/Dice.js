@@ -1,14 +1,14 @@
 export default class Dice{
 
-    rollD6(){
-        let roll = Math.floor(Math.random()*6)+1;
+    rollDice(number){
+        let roll = Math.floor(Math.random()*number)+1;
 
         return roll;
     }
 
     evaluateFlee(){
         
-    const roll = this.rollD6();
+    const roll = this.rollDice(10);
     let result;
 
       if(roll === 1 || roll === 2 ){
