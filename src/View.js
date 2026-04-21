@@ -160,7 +160,18 @@ export class View {
                 const enemy = globals.enemies[i];
                 if (enemy.isAlive && enemy.draw) {
                     enemy.draw(this.ctx);
-                    //enemy.drawHitBox(this.ctx);
+                    enemy.drawHitBox(this.ctx);
+                }
+            }
+        }
+        if (globals.objects) {
+            for (let i = 0; i < globals.objects.length; i++) {
+                const obj = globals.objects[i];
+                if (obj && obj.imageSet) {
+                    const img = globals.tileSets[2];
+                    if (img && img.complete) {
+                        this.ctx.drawImage(img, 0, 0, 16, 16, obj.xPos, obj.yPos, 16, 16);
+                    }
                 }
             }
         }
@@ -181,7 +192,7 @@ export class View {
         }
         
         if (globals.player) {
-            //this.playerView.drawHitBox();
+            this.playerView.drawHitBox();
             this.playerView.render();
         }
 

@@ -25,15 +25,22 @@
             "enemies": [
                 {
                     "type": "mage",
-                    "xPos": 270,
-                    "yPos": 550,
+                    "xPos": 570,
+                    "yPos": 610,
                     "hp": 50
                 },
                 {
-                    "type": "slime",
-                    "xPos": 300,
-                    "yPos": 400,
+                    "type": "skeleton",
+                    "xPos": 160,
+                    "yPos": 300,
                     "hp": 50
+                }
+            ],
+            "objects": [
+                {
+                    "type": "potion",
+                    "xPos": 570,
+                    "yPos": 610
                 }
             ]
             

@@ -8,7 +8,7 @@ import globals from "./globals.js";
 
 export default class Slime extends Enemy {
     constructor(xPos, yPos) {
-        const imageSet = new ImageSet(142, 0, 24, 48, 0, 0);
+        const imageSet = new ImageSet(142, 0, 64, 48, 0, 0);
         const combatImageSet = new ImageSet(40.5, 0, 200, 150, 0, 0, 32);
         const frames = new Frames(4, 20);
         const physics = new Physics(20,0,20); 

@@ -1,7 +1,7 @@
 import globals from './globals.js';
 
 export default class Map {
-    constructor(id, name, mapData, imageSet, enemies = []) {
+    constructor(id, name, mapData, imageSet, enemies = [], objects = []) {
         this.id = id;
         this.name = name;
         this.data = mapData;
@@ -9,6 +9,7 @@ export default class Map {
         this.enemies = enemies;
         this.isCompleted = false;
         this.levels = [];
+        this.objects = objects;
         this.currentLevelIndex = 0;
     }
 

@@ -38,17 +38,33 @@ export default class LevelFactory {
         
         let mapData = this.getMapDataForLevel(mapConfig.id);
         
-        let enemies = this.createEnemiesFromConfig(mapConfig.enemies || []);
+        let enemies = this.createEnemiesFromConfig(mapConfig.enemies ? mapConfig.enemies : []);
+
+        let objects = this.createObjectsFromConfig(mapConfig.objects ? mapConfig.objects : []);
         
         let level = new Map(
             mapConfig.id,
             mapConfig.name,
             mapData,
             mapImageSet,
-            enemies
+            enemies,
+            objects
         );
         
         return level;
+    }
+
+    createObjectsFromConfig(objectsConfig) {
+        let objects = [];
+        for (let i = 0; i < objectsConfig.length; i++) {
+            let objectConfig = objectsConfig[i];
+            let object = null;
+            if (objectConfig.type.toLowerCase() === 'potion') {
+                object = SpriteFactory.createObject(objectConfig.xPos, objectConfig.yPos);
+            }
+            objects.push(object);
+    }
+    return objects;
     }
     
     createEnemiesFromConfig(enemiesConfig) {
