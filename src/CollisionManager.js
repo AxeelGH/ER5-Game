@@ -284,52 +284,76 @@ export default class CollisionManager {
   static detectCollisions() {
     const player = globals.player;
     if (!player) return;
-
+    
     this.resolveMapCollision(player);
-
+    
     const playerHitBox = {
-      x: player.xPos + player.hitBox.xOffset,
-      y: player.yPos + player.hitBox.yOffset,
-      w: player.hitBox.xSize,
-      h: player.hitBox.ySize,
+        x: player.xPos + player.hitBox.xOffset,
+        y: player.yPos + player.hitBox.yOffset,
+        w: player.hitBox.xSize,
+        h: player.hitBox.ySize
     };
-
+    
     for (let i = 0; i < globals.enemies.length; i++) {
-      const enemy = globals.enemies[i];
-      if (!enemy.isAlive) continue;
-
-      const enemyHitBox = {
-        x: enemy.xPos + enemy.hitBox.xOffset,
-        y: enemy.yPos + enemy.hitBox.yOffset,
-        w: enemy.hitBox.xSize,
-        h: enemy.hitBox.ySize,
-      };
-
-      if (this.rectIntersect(playerHitBox, enemyHitBox)) {
-        if (!enemy.isCollidingWithPlayer) {
-          enemy.isCollidingWithPlayer = true;
-          this.onCollisionWithEnemy(enemy);
+        const enemy = globals.enemies[i];
+        if (!enemy.isAlive) continue;
+        
+        const enemyHitBox = {
+            x: enemy.xPos + enemy.hitBox.xOffset,
+            y: enemy.yPos + enemy.hitBox.yOffset,
+            w: enemy.hitBox.xSize,
+            h: enemy.hitBox.ySize
+        };
+        
+        if (this.rectIntersect(playerHitBox, enemyHitBox)) {
+            if (!enemy.isCollidingWithPlayer) {
+                enemy.isCollidingWithPlayer = true;
+                this.onCollisionWithEnemy(enemy);
+            }
+        } else {
+            enemy.isCollidingWithPlayer = false;
         }
-      } else {
-        enemy.isCollidingWithPlayer = false;
-      }
     }
 
-    if (globals.object) {
-      const potionHitBox = {
-        x: globals.object.xPos + globals.object.hitBox.xOffset,
-        y: globals.object.yPos + globals.object.hitBox.yOffset,
-        w: globals.object.hitBox.xSize,
-        h: globals.object.hitBox.ySize,
-      };
+    if (globals.objects && globals.objects.length > 0) {
+        for (let i = 0; i < globals.objects.length; i++) {
+            const obj = globals.objects[i];
+            if (!obj || obj.isCollected) continue;
+            
+            const objectHitBox = {
+                x: obj.xPos + obj.hitBox.xOffset,
+                y: obj.yPos + obj.hitBox.yOffset,
+                w: obj.hitBox.xSize,
+                h: obj.hitBox.ySize
+            };
+            
+            if (this.rectIntersect(playerHitBox, objectHitBox)) {
+                console.log("Potion collected from level");
+                if (globals.inventory) {
+                    globals.inventory.addPotion();
+                }
+                globals.objects.splice(i, 1);
+                i--; 
+            }
+        }
+    }
 
-      if (this.rectIntersect(playerHitBox, potionHitBox)) {
-        this.onCollisionWithPotion();
-      }
+    
+    if (globals.object) {
+        const potionHitBox = {
+            x: globals.object.xPos + globals.object.hitBox.xOffset,
+            y: globals.object.yPos + globals.object.hitBox.yOffset,
+            w: globals.object.hitBox.xSize,
+            h: globals.object.hitBox.ySize
+        };
+    
+        if (this.rectIntersect(playerHitBox, potionHitBox)) {
+            this.onCollisionWithPotion();
+        }
     }
 
     this.collisionDropPotion();
-  }
+}
 
   static rectIntersect(rect1, rect2) {
     return !(rect2.x >= rect1.x + rect1.w || rect2.x + rect2.w <= rect1.x || rect2.y >= rect1.y + rect1.h || rect2.y + rect2.h <= rect1.y);
