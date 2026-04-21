@@ -32,6 +32,7 @@ class Game {
         this.score = gameData.game.score;
         this.timer = gameData.game.time;
         this.highScore = this.score;
+        this.masterVolume = gameData.audio.masterVolume;
 
         this.levelFactory = new LevelFactory();
 
@@ -85,7 +86,6 @@ class Game {
     globals.player = game.player;
     globals.sprites.push(globals.player);       
     
-    // Inicializar niveles (esto carga los enemigos automáticamente)
     game.initializeLevels();
 
     const object = SpriteFactory.createObject(470, 100);
@@ -153,7 +153,7 @@ class Game {
                     globals.action.confirm = false;
                     
                     globals.sounds[Sound.START_MUSIC].play();
-                    globals.sounds[Sound.START_MUSIC].volume = 0.5;
+                    globals.sounds[Sound.START_MUSIC].volume = this.masterVolume;
                 }
                 break;
 
