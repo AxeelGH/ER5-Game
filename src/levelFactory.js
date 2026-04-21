@@ -1,133 +1,122 @@
-import Map from './Map.js';
-import ImageSet from './ImageSet.js';
-import SpriteFactory from './SpriteFactory.js';
-import globals from './globals.js';
+import Map from "./Map.js";
+import ImageSet from "./ImageSet.js";
+import SpriteFactory from "./SpriteFactory.js";
+import globals from "./globals.js";
 
 export default class LevelFactory {
-    
-    constructor() {
-        this.levels = [];
-        this.currentLevelIndex = 0;
-    }
-    
-    loadLevels(mapDataPath) {
-        let request = new XMLHttpRequest();
-        request.open('GET', mapDataPath, false);
-        request.send(null);
-        
-        if (request.status === 200) {
-            let data = JSON.parse(request.responseText);
-            let maps = data.maps;
-            
-            for (let i = 0; i < maps.length; i++) {
-                let mapConfig = maps[i];
-                let level = this.createLevel(mapConfig);
-                this.levels.push(level);
-            }
-            
-            console.log(`Cargados niveles`);
-            return this.levels;
-        } else {
-            console.error('Error cargando niveles');
-            return [];
-        }
-    }
-    
-    createLevel(mapConfig) {
-        let mapImageSet = new ImageSet(0, 0, 32, 32, 0, 0, 32);
-        
-        let mapData = this.getMapDataForLevel(mapConfig.id);
-        
-        let enemies = this.createEnemiesFromConfig(mapConfig.enemies ? mapConfig.enemies : []);
+  constructor() {
+    this.levels = [];
+    this.currentLevelIndex = 0;
+  }
 
-        let objects = this.createObjectsFromConfig(mapConfig.objects ? mapConfig.objects : []);
-        
-        let level = new Map(
-            mapConfig.id,
-            mapConfig.name,
-            mapData,
-            mapImageSet,
-            enemies,
-            objects
-        );
-        
-        return level;
-    }
+  loadLevels(mapDataPath) {
+    let request = new XMLHttpRequest();
+    request.open("GET", mapDataPath, false);
+    request.send(null);
 
-    createObjectsFromConfig(objectsConfig) {
-        let objects = [];
-        for (let i = 0; i < objectsConfig.length; i++) {
-            let objectConfig = objectsConfig[i];
-            let object = null;
-            if (objectConfig.type.toLowerCase() === 'potion') {
-                object = SpriteFactory.createObject(objectConfig.xPos, objectConfig.yPos);
-            }
-            objects.push(object);
+    if (request.status === 200) {
+      let data = JSON.parse(request.responseText);
+      let maps = data.maps;
+
+      for (let i = 0; i < maps.length; i++) {
+        let mapConfig = maps[i];
+        let level = this.createLevel(mapConfig);
+        this.levels.push(level);
+      }
+
+      console.log(`Cargados niveles`);
+      return this.levels;
+    } else {
+      console.error("Error cargando niveles");
+      return [];
+    }
+  }
+
+  createLevel(mapConfig) {
+    let mapImageSet = new ImageSet(0, 0, 32, 32, 0, 0, 32);
+
+    let mapData = this.getMapDataForLevel(mapConfig.id);
+
+    let enemies = this.createEnemiesFromConfig(mapConfig.enemies ? mapConfig.enemies : []);
+
+    let objects = this.createObjectsFromConfig(mapConfig.objects ? mapConfig.objects : []);
+
+    let level = new Map(mapConfig.id, mapConfig.name, mapData, mapImageSet, enemies, objects);
+
+    return level;
+  }
+
+  createObjectsFromConfig(objectsConfig) {
+    let objects = [];
+    for (let i = 0; i < objectsConfig.length; i++) {
+      let objectConfig = objectsConfig[i];
+      let object = null;
+      if (objectConfig.type.toLowerCase() === "potion") {
+        object = SpriteFactory.createObject(objectConfig.xPos, objectConfig.yPos);
+      }
+      objects.push(object);
     }
     return objects;
+  }
+
+  createEnemiesFromConfig(enemiesConfig) {
+    let enemies = [];
+
+    for (let i = 0; i < enemiesConfig.length; i++) {
+      let enemyConfig = enemiesConfig[i];
+      let enemy = null;
+
+      let enemyType = enemyConfig.type.toLowerCase();
+
+      if (enemyType === "slime") {
+        enemy = SpriteFactory.createSlime(enemyConfig.xPos, enemyConfig.yPos);
+      } else if (enemyType === "skeleton") {
+        enemy = SpriteFactory.createSkeleton(enemyConfig.xPos, enemyConfig.yPos);
+      } else if (enemyType === "mage") {
+        enemy = SpriteFactory.createMage(enemyConfig.xPos, enemyConfig.yPos);
+      } else {
+        console.warn(`Tipo enemigo desconocido: ${enemyConfig.type}`);
+        continue;
+      }
+
+      if (enemyConfig.hp && enemy) {
+        enemy.hp = enemyConfig.hp;
+        enemy.maxHp = enemyConfig.hp;
+      }
+
+      enemies.push(enemy);
     }
-    
-    createEnemiesFromConfig(enemiesConfig) {
-        let enemies = [];
-        
-        for (let i = 0; i < enemiesConfig.length; i++) {
-            let enemyConfig = enemiesConfig[i];
-            let enemy = null;
-            
-            let enemyType = enemyConfig.type.toLowerCase();
-            
-            if (enemyType === 'slime') {
-                enemy = SpriteFactory.createSlime(enemyConfig.xPos, enemyConfig.yPos);
-            }
-            else if (enemyType === 'skeleton') {
-                enemy = SpriteFactory.createSkeleton(enemyConfig.xPos, enemyConfig.yPos);
-            }
-            else if (enemyType === 'mage') {
-                enemy = SpriteFactory.createMage(enemyConfig.xPos, enemyConfig.yPos);
-            }
-            else {
-                console.warn(`Tipo enemigo desconocido: ${enemyConfig.type}`);
-                continue;
-            }
-            
-            if (enemyConfig.hp && enemy) {
-                enemy.hp = enemyConfig.hp;
-                enemy.maxHp = enemyConfig.hp;
-            }
-            
-            enemies.push(enemy);
-        }
-        
-        return enemies;
-    }
-    
-    getMapDataForLevel(levelId) {
+
+    return enemies;
+  }
+
+  getMapDataForLevel(levelId) {
     let mapLayouts = {
-        1: [
-            [1501,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1503,1504,1505,1506],
-            [1601,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1606],
-            [1601,2,1501,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1506,2,1606],
-            [1601,2,1601,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1606,2,1606],
-            [1601,2,1601,20,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,18,1606,2,1606],
-            [1601,2,1601,27,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,25,1606,2,1606],
-            [1601,2,1601,27,3,7,9,9,9,9,9,9,9,9,9,10,3,7,9,9,9,9,9,9,9,9,10,3,25,1606,2,1606],
-            [1601,2,1601,27,3,25,2,2,2,20,22,22,22,22,22,24,3,21,22,22,22,22,18,2,2,2,17,3,25,1606,2,1606],
-            [1601,2,1601,27,3,25,2,2,2,27,3,3,3,3,3,3,3,3,3,3,3,3,25,2,2,2,27,3,25,1606,2,1606],
-            [1601,2,1601,27,3,25,2,2,2,27,3,7,8,8,8,8,8,8,8,8,10,3,25,2,2,2,27,3,25,1606,2,1606],
-            [1601,2,1601,27,3,25,2,2,2,27,3,25,30,31,31,31,31,31,31,32,27,3,21,22,22,22,24,3,25,1606,2,1606],
-            [1601,2,1601,27,3,25,2,2,2,27,3,25,75,5,5,5,5,5,5,72,27,3,3,3,3,3,3,3,25,1606,2,1606],
-            [1601,2,1601,27,3,21,22,22,22,24,3,25,75,5,5,5,5,5,5,72,27,3,7,9,9,9,9,9,11,1606,2,1606],
-            [1601,2,1601,27,3,3,3,3,3,3,3,25,75,5,5,5,5,5,5,72,27,3,25,2,2,2,2,2,2,1606,2,1606],
-            [1601,2,1601,13,8,8,8,8,8,10,3,25,75,5,5,5,5,5,5,72,27,3,25,2,2,2,2,2,2,1606,2,1606],
-            [1601,2,1601,2,2,2,2,2,2,27,3,25,75,5,5,5,5,5,5,72,27,3,25,2,2,2,2,2,2,1606,2,1606],
-            [1601,2,1601,2,2,2,2,2,2,27,3,25,42,43,43,43,43,43,43,44,27,3,25,2,2,2,2,2,2,1606,2,1606],
-            [1601,2,1601,20,22,22,22,22,22,24,3,21,23,23,23,23,23,23,23,23,24,3,21,23,23,23,23,23,18,1606,2,1606],
-            [1601,2,1601,27,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,25,1606,2,1606],
-            [1601,2,1601,13,8,9,9,8,8,8,8,8,8,8,8,10,7,9,9,9,9,9,9,9,9,9,9,9,11,1606,2,1606],
-            [1601,2,1601,2,2,2,2,2,2,2,2,2,2,2,2,1703,1704,2,2,2,2,2,2,2,2,2,2,2,2,1606,2,1606],
-            [1601,2,1801,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1803,1804,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1806,2,1606],
-            [1601,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1703,1704,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1706],
-            [1801,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1803,1804,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1806]
+                1: [
+    [1501,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1503,1504,1505,1506],
+    [1601,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1606],
+    [1601,2,1501,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1506,2,1606],
+    [1601,2,1601,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1606,2,1606],
+    [1601,2,1601,20,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,18,1606,2,1606],
+    [1601,2,1601,27,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,25,1606,2,1606],
+    [1601,2,1601,27,3,7,9,9,9,9,9,9,9,9,9,10,3,7,9,9,9,9,9,9,9,9,10,3,25,1606,2,1606],
+    [1601,2,1601,27,3,25,2,2,2,20,22,22,22,22,22,24,3,21,22,22,22,22,18,2,2,2,17,3,25,1606,2,1606],
+    [1601,2,1601,27,3,25,2,2,2,27,3,3,3,3,3,3,3,3,3,3,3,3,25,2,2,2,27,3,25,1606,2,1606],
+    [1601,2,1601,27,3,25,2,2,2,27,3,7,8,8,8,8,8,8,8,8,10,3,25,2,2,2,27,3,25,1606,2,1606],
+    [1601,2,1601,27,3,25,2,2,2,27,3,25,30,31,31,31,31,31,31,32,27,3,21,22,22,22,24,3,25,1606,2,1606],
+    [1601,2,1601,27,3,25,2,2,2,27,3,25,75,5,5,5,5,5,5,72,27,3,3,3,3,3,3,3,25,1606,2,1606],
+    [1601,2,1601,27,3,21,22,22,22,24,3,25,75,5,5,5,5,5,5,72,27,3,7,9,9,9,9,9,11,1606,2,1606],
+    [1601,2,1601,27,3,3,3,3,3,3,3,25,75,5,5,5,5,5,5,72,27,3,25,2,2,2,2,2,2,1606,2,1606],
+    [1601,2,1601,13,8,8,8,8,8,10,3,25,75,5,5,5,5,5,5,72,27,3,25,2,2,2,2,2,2,1606,2,1606],
+    [1601,2,1601,2,2,2,2,2,2,27,3,25,75,5,5,5,5,5,5,72,27,3,25,2,2,2,2,2,2,1606,2,1606],
+    [1601,2,1601,2,2,2,2,2,2,27,3,25,42,43,43,43,43,43,43,44,27,3,25,2,2,2,2,2,2,1606,2,1606],
+    [1601,2,1601,20,22,22,22,22,22,24,3,21,23,23,23,23,23,23,23,23,24,3,21,23,23,23,23,23,18,1606,2,1606],
+    [1601,2,1601,27,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,25,1606,2,1606],
+    [1601,2,1601,13,8,9,9,8,8,8,8,8,8,8,8,10,7,9,9,9,9,9,9,9,9,9,9,9,11,1606,2,1606],
+    [1601,2,1601,2,2,2,2,2,2,2,2,2,2,2,2,1703,1704,2,2,2,2,2,2,2,2,2,2,2,2,1606,2,1606],
+    [1601,2,1801,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1803,1804,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1806,2,1606],
+    [1601,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1703,1704,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1706],
+    [1801,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1803,1804,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1806]
         ],
         2: [
     [2,1501,1505,1505,1505,1505,1505,1505,1505,1505,1505,1505,1505,1607,27,3,25,1608,1505,1506,2,2,2,1501,1505,1505,1505,1505,1505,1505,1505,1505],
@@ -157,7 +146,7 @@ export default class LevelFactory {
 ]
 
     };
-    
+
     return mapLayouts[levelId] || mapLayouts[1];
-}
+  }
 }

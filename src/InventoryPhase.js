@@ -1,31 +1,24 @@
 import globals from "./globals.js";
 import CombatPhase from "./CombatPhase.js";
 
-export default class InventoryPhase extends CombatPhase{
+export default class InventoryPhase extends CombatPhase {
+  handleSelection() {}
 
+  performAction() {
+    console.log("use item");
 
-    handleSelection(){}
-
-    performAction(){
-        console.log("use item");
-        
-        if (globals.inventory && globals.inventory.getPotions() > 0) {
-            globals.inventory.usePotion(this.player);
-            console.log("You used a potion, gained 30 HP");
-           
-        } else {
-            console.log("Error: No inventory found");
-           
-        }
-
-        this.cancelled = true;
-        this.state = "resolve";
+    if (globals.inventory && globals.inventory.getPotions() > 0) {
+      globals.inventory.usePotion(this.player);
+      console.log("You used a potion, gained 30 HP");
+    } else {
+      console.log("Error: No inventory found");
     }
 
-    resolve(){
+    this.cancelled = true;
+    this.state = "resolve";
+  }
 
-        this.state = "end";
-    }
-    
-
+  resolve() {
+    this.state = "end";
+  }
 }

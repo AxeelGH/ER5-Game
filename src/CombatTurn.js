@@ -7,186 +7,164 @@ import FleePhase from "./FleePhase.js";
 import { GameState } from "./constants.js";
 import SpriteFactory from "./SpriteFactory.js";
 
+export default class CombatTurn {
+  dice = new Dice();
+  constructor(player, enemy, input) {
+    this.player = player;
+    this.enemy = enemy;
+    this.input = input;
 
-export default class CombatTurn{
-    dice = new Dice();
-    constructor(player, enemy,input) {
-        this.player = player;
-        this.enemy = enemy;
-        this.input = input;
+    this.currentPhase = null;
+    this.turnEnd = false;
+    this.currentTurn = 1;
+    globals.triedToFlee = false;
+    this.waitingForPlayer = false;
 
-        this.currentPhase = null;
-        this.turnEnd = false;
-        this.currentTurn = 1;
-        globals.triedToFlee = false;
-        this.waitingForPlayer = false;
+    //Combat index
+    this.phaseIndex = 0;
+    this.phases = ["Attack", "Ability", "Inventory", "Flee"];
 
+    this.initPhases();
+    this.startCombat();
+  }
 
-        //Combat index
-        this.phaseIndex = 0;
-        this.phases = ["Attack", "Ability", "Inventory", "Flee"];
+  initPhases() {
+    this.combatPhases = {
+      Attack: new AttackPhase(this.player, this.enemy, this.input, this.dice),
+      Ability: new AbilityPhase(this.player, this.enemy, this.input, this.dice),
+      Inventory: new InventoryPhase(this.player, this.enemy, this.input, this.dice),
+      Flee: new FleePhase(this.player, this.enemy, this.input, this.dice),
+    };
+  }
 
-        this.initPhases();
-        this.startCombat();
+  combatMenu() {
+    if (!this.waitingForPlayer) {
+      return;
     }
 
-    initPhases() {
-        this.combatPhases ={
-            Attack: new AttackPhase(this.player, this.enemy, this.input, this.dice),
-            Ability: new AbilityPhase(this.player, this.enemy, this.input, this.dice),
-            Inventory: new InventoryPhase(this.player, this.enemy, this.input, this.dice),
-            Flee: new FleePhase(this.player, this.enemy, this.input, this.dice),
-        };
+    if (this.currentTurn === 1 && !this.combatStarted) {
+      this.startCombat();
+    }
+    if (globals.action.moveUp) {
+      globals.action.moveUp = false;
+      this.phaseIndex = this.phaseIndex > 0 ? this.phaseIndex - 1 : this.phases.length - 1;
+    }
+    if (globals.action.moveDown) {
+      globals.action.moveDown = false;
+      this.phaseIndex = this.phaseIndex < this.phases.length - 1 ? this.phaseIndex + 1 : 0;
     }
 
-    
-    combatMenu() {
+    if (globals.action.confirm) {
+      globals.action.confirm = false;
 
-        if(!this.waitingForPlayer) {
-            return;
-        }
+      const selectedPhase = this.phases[this.phaseIndex];
+      console.log("Selected phase: " + selectedPhase);
 
-        if(this.currentTurn === 1 && !this.combatStarted){
-            this.startCombat();
-        } 
-        if(globals.action.moveUp){
-            globals.action.moveUp = false;
-            this.phaseIndex = (this.phaseIndex > 0) ? this.phaseIndex -1: this.phases.length -1;
-        }
-        if(globals.action.moveDown){
-            globals.action.moveDown = false;
-            this.phaseIndex = (this.phaseIndex < this.phases.length -1) ? this.phaseIndex +1 : 0;
-        }
-        
-        if(globals.action.confirm){
-            globals.action.confirm = false;
+      this.currentPhase = this.combatPhases[selectedPhase];
+      console.log("Turn: " + this.currentTurn);
+      this.executePhase();
+    }
+  }
 
-            const selectedPhase = this.phases[this.phaseIndex];
-            console.log("Selected phase: " + selectedPhase);
+  startCombat() {
+    const playerNum = this.dice.rollDice(6);
+    const enemyNum = this.dice.rollDice(6);
 
-            this.currentPhase = this.combatPhases[selectedPhase];
-            console.log("Turn: " + this.currentTurn);
-            this.executePhase(); 
-        }
+    console.log("Player num: " + playerNum);
+    console.log("Enemy num: " + enemyNum);
 
-        
+    if (enemyNum > playerNum) {
+      console.log("The enemy got a higher roll and attacks first!");
+      this.enemyTurn();
+      this.waitingForPlayer = true;
+    } else {
+      console.log("The player got a higher roll and goes first!");
+      this.waitingForPlayer = true;
+    }
+  }
+
+  executePhase() {
+    this.waitingForPlayer = false;
+    this.currentPhase.execute();
+
+    if (this.currentPhase.cancelled) {
+      this.waitingForPlayer = true;
+      return;
     }
 
-    startCombat(){
-
-        const playerNum = this.dice.rollDice(6);
-        const enemyNum = this.dice.rollDice(6);
-
-        console.log("Player num: " + playerNum);
-        console.log("Enemy num: " + enemyNum);
-
-        if (enemyNum > playerNum) {
-            console.log("The enemy got a higher roll and attacks first!");
-            this.enemyTurn();
-            this.waitingForPlayer=true;
-        }
-        else {
-            console.log("The player got a higher roll and goes first!");
-            this.waitingForPlayer = true;      
-        }
+    if (this.currentPhase.fled) {
+      this.endCombat();
+      return;
     }
 
-    executePhase() { 
+    if (!this.enemy.isAlive) {
+      this.endCombat();
+      this.player.mana += 10;
+      globals.gameInstance.score += 100;
 
-        this.waitingForPlayer = false;
-        this.currentPhase.execute();
+      const dropChance = 0.3;
+      const randomValue = Math.random();
 
-        if(this.currentPhase.cancelled){
-            this.waitingForPlayer = true;
-            return;
-        }
+      if (randomValue < dropChance && globals.inventory) {
+        this.createPotionDrop();
+        //globals.inventory.addPotion();
+        console.log("dropped a potion");
+      } else {
+        console.log("No item dropped");
+      }
 
-        if(this.currentPhase.fled){
-            this.endCombat();
-            return;
-        }
+      return;
+    }
+    this.enemyTurn();
+  }
 
-        if(!this.enemy.isAlive){
-            this.endCombat();
-            this.player.mana += 10;
-            globals.gameInstance.score += 100;
+  createPotionDrop() {
+    const dropX = this.enemy.xPos + 20;
+    const dropY = this.enemy.yPos + 20;
 
-            const dropChance = 0.3;
-            const randomValue = Math.random();
-    
-            if (randomValue < dropChance && globals.inventory) {
+    const potion = SpriteFactory.createObject(dropX, dropY);
 
-                this.createPotionDrop();
-                //globals.inventory.addPotion();
-                console.log("dropped a potion");
-
-            } else {
-                console.log("No item dropped");
-            }
-
-            return;
-        }
-        this.enemyTurn();
+    if (!globals.potionDrops) {
+      globals.potionDrops = [];
     }
 
-    createPotionDrop() {
-        
-        const dropX = this.enemy.xPos + 20;
-        const dropY = this.enemy.yPos + 20;
-        
-        const potion = SpriteFactory.createObject(dropX, dropY);
-        
-        if (!globals.potionDrops) {
+    globals.potionDrops.push(potion);
 
-            globals.potionDrops = [];
-        }
+    console.log("Potion dropped at: " + dropX + ", " + dropY);
+  }
 
-        globals.potionDrops.push(potion);
-        
-        console.log("Potion dropped at: " + dropX + ", " + dropY);
+  endCombat() {
+    globals.currentEnemy = null;
+    globals.gameInstance.combatTurn = null;
+    globals.gameInstance.gameState = GameState.PLAYING;
+    globals.gameState = GameState.PLAYING;
+  }
+
+  enemyTurn() {
+    this.enemy.state = 1;
+    this.enemy.animationTimer = 60;
+
+    const damage = 10 + this.dice.rollDice(6);
+
+    this.player.hp -= damage;
+
+    if (this.player.hp <= 0) {
+      this.player.hp = 0;
+      globals.gameInstance.combatTurn = null;
+      globals.gameInstance.gameState = GameState.GAME_OVER;
+      globals.gameState = GameState.GAME_OVER;
     }
+    this.nextTurn();
+  }
 
-    endCombat(){
+  finishTurn() {
+    this.turnEnd = true;
+  }
 
-        globals.currentEnemy = null;
-        globals.gameInstance.combatTurn = null;
-        globals.gameInstance.gameState = GameState.PLAYING;
-        globals.gameState = GameState.PLAYING;
-
-
-
-    }
-
-    enemyTurn(){
-
-
-        this.enemy.state = 1; 
-        this.enemy.animationTimer = 60;
-
-        const damage = 10+ this.dice.rollDice(6);
-
-        this.player.hp -= damage;
-
-        if (this.player.hp <= 0) {
-        this.player.hp = 0;
-        globals.gameInstance.combatTurn = null;
-        globals.gameInstance.gameState = GameState.GAME_OVER;
-        globals.gameState = GameState.GAME_OVER;
-    }
-        this.nextTurn();
-    }
-
-    finishTurn(){
-       this.turnEnd = true;
-    }
-
-    nextTurn(){
-        this.currentPhase = null;
-        this.currentTurn += 1;
-        this.waitingForPlayer = true;
-        this.initPhases();
-        
-    }
-
-
+  nextTurn() {
+    this.currentPhase = null;
+    this.currentTurn += 1;
+    this.waitingForPlayer = true;
+    this.initPhases();
+  }
 }

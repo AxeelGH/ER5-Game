@@ -1,46 +1,44 @@
 import globals from "./globals.js";
 import CombatPhase from "./CombatPhase.js";
 
-export default class AbilityPhase extends CombatPhase{
+export default class AbilityPhase extends CombatPhase {
+  handleSelection() {}
 
-    handleSelection(){}
+  performAction() {
+    console.log("Executing ability");
 
-    performAction(){
-        console.log("Executing ability");
-        
-        this.player.state = 4; 
-        this.player.animationTimer = 30;
+    this.player.state = 4;
+    this.player.animationTimer = 30;
 
-        if(this.player.mana >= 20 ){
-        const damage = 20 + this.dice.rollDice(6) + this.dice.rollDice(6);
-        this.enemy.hp -= damage;
-        this.player.mana -= 20;
+    if (this.player.mana >= 20) {
+      const damage = 20 + this.dice.rollDice(6) + this.dice.rollDice(6);
+      this.enemy.hp -= damage;
+      this.player.mana -= 20;
 
-        console.log("Damage: " +  damage);
-        
-        if (globals.ParticleSystem) {
-            const explosionX = 580;
-            const explosionY = 340;
-            const intensity = Math.min(1.5, damage / 30);
-            globals.ParticleSystem.createExplosion(explosionX, explosionY, 1.5);
-        }
-        } else { 
-            console.log("Not enough mana to use ability");
-            this.cancelled = true;
-        }
-      
+      console.log("Damage: " + damage);
 
-        this.state = "resolve";
+      if (globals.ParticleSystem) {
+        const explosionX = 580;
+        const explosionY = 340;
+        const intensity = Math.min(1.5, damage / 30);
+        globals.ParticleSystem.createExplosion(explosionX, explosionY, 1.5);
+      }
+    } else {
+      console.log("Not enough mana to use ability");
+      this.cancelled = true;
     }
 
-    resolve(){
-        console.log("Resolving ability");
+    this.state = "resolve";
+  }
 
-        if(this.enemy.hp <=0){
-            this.enemy.isAlive = false;
-            console.log("Enemy defeated");
-        }
+  resolve() {
+    console.log("Resolving ability");
 
-        this.state="end";
+    if (this.enemy.hp <= 0) {
+      this.enemy.isAlive = false;
+      console.log("Enemy defeated");
     }
+
+    this.state = "end";
+  }
 }

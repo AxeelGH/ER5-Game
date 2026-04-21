@@ -1,46 +1,45 @@
 import { FPS, GameState } from "./constants.js";
 import { ParticleSystem } from "./Particles.js";
 
-export default{
+export default {
+  canvas: {},
+  ctx: {},
+  previousCycleMilliseconds: 0,
+  deltaTime: 0,
+  cycleRealTime: 0,
+  frameTimeObj: 1 / FPS,
+  gameInstance: 0,
+  gameState: GameState.INVALID,
 
-    canvas: {},
-    ctx: {},
-    previousCycleMilliseconds: 0,
-    deltaTime: 0,
-    cycleRealTime: 0,
-    frameTimeObj: 1 / FPS,
-    gameInstance: 0,   
-    gameState: GameState.INVALID,
-    
-    action: {},
+  action: {},
 
-    menuIndex: 0,
-    subMenuIndex: 0,
+  menuIndex: 0,
+  subMenuIndex: 0,
 
-    tileSet: {},
-    tileSets: [],
+  tileSet: {},
+  tileSets: [],
 
-    assetsToLoad: [],
-    assetsLoaded: 0,
+  assetsToLoad: [],
+  assetsLoaded: 0,
 
-    sprites: [],
-    player: null,
-    map: null,
+  sprites: [],
+  player: null,
+  map: null,
 
-    enemies: [],
-    currentEnemy: null,
-    triedToFlee: false,
+  enemies: [],
+  currentEnemy: null,
+  triedToFlee: false,
 
-    object: null,
-    inventory: null,
-    potionDrops: [],
+  object: null,
+  inventory: null,
+  potionDrops: [],
 
-    ParticleSystem: new ParticleSystem(),
+  ParticleSystem: new ParticleSystem(),
 
-    sounds: [],
+  sounds: [],
 
-    currentSound: -1,
+  currentSound: -1,
 
-    buttonStart: {},
-    buttonStartClicked: false,
+  buttonStart: {},
+  buttonStartClicked: false,
 };

@@ -1,10 +1,9 @@
 {
-    "game": {
-        "score": 0,
-        "time": 400
-    },
-    "audio": {
-        "masterVolume": 0.5
-    }
-    
+  "game": {
+    "score": 0,
+    "time": 400
+  },
+  "audio": {
+    "masterVolume": 0.5
+  }
 }

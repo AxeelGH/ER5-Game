@@ -1,48 +1,39 @@
-class CombatPhase{
-    constructor(player,enemy,input,dice){
+class CombatPhase {
+  constructor(player, enemy, input, dice) {
+    this.player = player;
+    this.enemy = enemy;
+    this.input = input;
+    this.dice = dice;
 
-        this.player = player;
-        this.enemy = enemy;
-        this.input = input;
-        this.dice = dice;
+    this.state = "init";
+    this.finished = false;
+  }
 
-        this.state = "init";
-        this.finished = false;
-    }
+  init() {
+    this.state = "select";
+  }
 
+  handleSelection() {}
 
-    init(){
-        this.state = "select";
-    }
+  performAction() {}
 
-    
-    handleSelection(){
+  resolve() {}
 
-    }
+  end() {
+    this.finished = true;
+  }
 
-    performAction(){
+  isFinished() {
+    return this.finished;
+  }
 
-    }
-
-    resolve(){
-
-    }
-
-    end(){
-        this.finished = true;
-    }
-
-    isFinished(){
-        return this.finished;
-    }
-
-    execute(){
-        this.init();
-        this.handleSelection();
-        this.performAction();
-        this.resolve();
-        this.end();
-    }
+  execute() {
+    this.init();
+    this.handleSelection();
+    this.performAction();
+    this.resolve();
+    this.end();
+  }
 }
 
 export default CombatPhase;
