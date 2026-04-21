@@ -127,8 +127,8 @@ export default class Player extends Sprite {
 
         const canvasWidth = 1024;
         const canvasHeight = 768;
-        const exitZone = 720;
-        const safeZone = 100;
+        const exitZone = 730;
+        const safeZone = 20;
     
         if (this.yPos + this.hitBox.ySize >= exitZone) {
             console.log("next level");
@@ -137,15 +137,15 @@ export default class Player extends Sprite {
                 const success = globals.gameInstance.changeLevel(1);
                 if (success) {
                     
-                    this.yPos = 150;  
-                    this.xPos = 400;
+                    this.yPos = 30;  
+                    this.xPos = 500;
                     this.levelTransitionCooldown = 1.0;
                     console.log("next level");
                 }
             }
         }
         
-        else if (this.yPos <= 50) {
+        else if (this.yPos <= 5) {
             console.log("level back");
 
             if (globals.gameInstance) {
@@ -153,7 +153,7 @@ export default class Player extends Sprite {
                 if (success) {
                     
                     this.yPos = canvasHeight - 150;  
-                    this.xPos = 400;
+                    this.xPos = 500;
                     this.levelTransitionCooldown = 1.0;
                     console.log("level 1");
                 }
