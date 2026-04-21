@@ -16,6 +16,13 @@
           "yPos": 400,
           "hp": 50
         }
+      ],
+       "objects": [
+        {
+          "type": "potion",
+          "xPos": 500,
+          "yPos": 610
+        }
       ]
     },
     {

@@ -27,6 +27,7 @@ export default {
   map: null,
 
   enemies: [],
+  objects: [],
   currentEnemy: null,
   triedToFlee: false,
 

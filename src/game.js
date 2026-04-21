@@ -83,9 +83,6 @@ class Game {
 
     game.initializeLevels();
 
-    const object = SpriteFactory.createObject(470, 100);
-    globals.object = object;
-    globals.sprites.push(object);
 
     canvas.style.width = screen.width + "px";
     canvas.style.height = screen.height + "px";
@@ -325,6 +322,7 @@ class Game {
     if (levels.length > 0) {
       globals.map = levels[0];
       globals.enemies = levels[0].enemies;
+      globals.objects = levels[0].objects ? levels[0].objects : [];
     }
   }
 
@@ -390,6 +388,7 @@ class Game {
 
       globals.map = newLevel;
       globals.enemies = newLevel.enemies;
+      globals.objects = newLevel.objects ? newLevel.objects : [];
 
       console.log("Level changed to:", newLevel.name);
       return true;
