@@ -25,17 +25,17 @@ class Game {
     globals.gameState = GameState.MENU;
     console.log("Game State: LOADING");
 
-    this.score = gameData.game.score;
+    this.score = 0;
     this.timer = gameData.game.time;
     this.highScore = this.score;
     this.masterVolume = gameData.audio.masterVolume;
-    this.difficulty = "hard";
+    this.difficulty = "Hard";
 
-    if (this.difficulty === "easy") {
+    if (this.difficulty === "Easy") {
       this.enemyHPMultiplier = gameData.difficulty.easy.enemyHPMultiplier;
       this.enemyAttackMultiplier = gameData.difficulty.easy.enemyAttackMultiplier;
       this.playerHPMultiplier = gameData.difficulty.easy.playerHPMultiplier;
-    } else if (this.difficulty === "hard") {
+    } else if (this.difficulty === "Hard") {
       this.enemyHPMultiplier = gameData.difficulty.hard.enemyHPMultiplier;
       this.enemyAttackMultiplier = gameData.difficulty.hard.enemyAttackMultiplier;
       this.playerHPMultiplier = gameData.difficulty.hard.playerHPMultiplier;
@@ -87,16 +87,11 @@ class Game {
 
     game.assets = new Asset();
     game.assets.loadAssets();
-
-    this.playerHP = 120;
-    console.log("HP mult: "+this.playerHPMultiplier);
-    console.log(this.playerHP);
-    game.player = SpriteFactory.createPlayer(100, 220, this.playerHP, 70);
+    game.player = SpriteFactory.createPlayer(100, 220, 120, 70);
     globals.player = game.player;
     globals.sprites.push(globals.player);
 
     game.initializeLevels();
-
 
     canvas.style.width = screen.width + "px";
     canvas.style.height = screen.height + "px";
@@ -145,6 +140,9 @@ class Game {
           console.log("Game State: INTRO");
           console.log(this.canvas.width);
           console.log(this.canvas.height);
+
+          console.log("Current difficulty setting: " + this.difficulty);
+
         }
         break;
 
@@ -212,6 +210,13 @@ class Game {
               globals.gameState = GameState.PLAYING;
               //this.timer = 400;
               console.log("Game State: PLAYING");
+              for (let i = 0; i < globals.enemies.length; i++) {
+                globals.enemies[i].hp *= this.enemyHPMultiplier;
+                globals.enemies[i].maxHp = globals.enemies[i].hp;  
+                console.log("Enemy " + 1 + ": " + globals.enemies[i].hp);
+              }
+              this.player.hp *= this.playerHPMultiplier;
+              this.player.maxHp = this.player.hp;
               break;
 
             case 1:
