@@ -362,6 +362,7 @@ class Game {
         globals.menuIndex = 0;
         globals.action.confirm = false;
       })
+      
       .catch(error => {
         alert("Error: Invalid username or password.");
         console.error(error);
