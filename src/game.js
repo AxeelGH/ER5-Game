@@ -21,14 +21,25 @@ class Game {
     this.ctx = canvas.getContext("2d");
     globals.ctx = this.ctx;
 
-    this.gameState = GameState.LOADING;
-    globals.gameState = GameState.LOADING;
+    this.gameState = GameState.MENU;
+    globals.gameState = GameState.MENU;
     console.log("Game State: LOADING");
 
     this.score = gameData.game.score;
     this.timer = gameData.game.time;
     this.highScore = this.score;
     this.masterVolume = gameData.audio.masterVolume;
+    this.difficulty = "hard";
+
+    if (this.difficulty === "easy") {
+      this.enemyHPMultiplier = gameData.difficulty.easy.enemyHPMultiplier;
+      this.enemyAttackMultiplier = gameData.difficulty.easy.enemyAttackMultiplier;
+      this.playerHPMultiplier = gameData.difficulty.easy.playerHPMultiplier;
+    } else if (this.difficulty === "hard") {
+      this.enemyHPMultiplier = gameData.difficulty.hard.enemyHPMultiplier;
+      this.enemyAttackMultiplier = gameData.difficulty.hard.enemyAttackMultiplier;
+      this.playerHPMultiplier = gameData.difficulty.hard.playerHPMultiplier;
+    }
 
     this.levelFactory = new LevelFactory();
 
@@ -77,7 +88,10 @@ class Game {
     game.assets = new Asset();
     game.assets.loadAssets();
 
-    game.player = SpriteFactory.createPlayer(100, 220, 120, 70);
+    this.playerHP = 120;
+    console.log("HP mult: "+this.playerHPMultiplier);
+    console.log(this.playerHP);
+    game.player = SpriteFactory.createPlayer(100, 220, this.playerHP, 70);
     globals.player = game.player;
     globals.sprites.push(globals.player);
 
@@ -362,7 +376,7 @@ class Game {
         globals.menuIndex = 0;
         globals.action.confirm = false;
       })
-      
+
       .catch(error => {
         alert("Error: Invalid username or password.");
         console.error(error);

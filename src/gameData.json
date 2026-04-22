@@ -1,9 +1,20 @@
 {
   "game": {
-    "score": 0,
     "time": 400
   },
   "audio": {
     "masterVolume": 0.5
+  },
+  "difficulty": {
+    "easy":{
+      "enemyHPMultiplier":1,
+      "enemyAttackMultiplier": 1,
+      "playerHPMultiplier": 1
+    },
+    "hard": {
+      "enemyHPMultiplier":1.2,
+      "enemyAttackMultiplier": 1.1,
+      "playerHPMultiplier": 0.95
+    }
   }
 }
