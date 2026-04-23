@@ -10,16 +10,13 @@ export default class LevelFactory {
     this.currentLevelIndex = 0;
   }
 
-  loadLevels(mapDataPath) {
+  async loadLevels(mapDataPath) {
 
-    this.loadEnemies();
+    const enemies = await this.loadEnemies();
 
-    let request = new XMLHttpRequest();
-    request.open("GET", mapDataPath, false);
-    request.send(null);
-
-    if (request.status === 200) {
-      let data = JSON.parse(request.responseText);
+    fetch("./src/mapData.json")
+    .then(response => response.json())
+    .then(data => {
       let maps = data.maps;
 
       for (let i = 0; i < maps.length; i++) {
@@ -28,28 +25,25 @@ export default class LevelFactory {
         this.levels.push(level);
       }
 
-      console.log(`Cargados niveles`);
-      return this.levels;
-    } else {
-      console.error("Error cargando niveles");
+      console.log("loading levels...");
+    })
+    .catch(error => {
+      console.error("Error:", error);
       return [];
-    }
+    });
   }
 
   loadEnemies() {
-    let request = new XMLHttpRequest();
-    request.open("GET", "./src/enemyData.json", false);
-    request.send(null);
-
-    if (request.status === 200) {
-      this.enemyData = JSON.parse(request.responseText);
+    fetch("./src/enemyData.json")
+    .then(response => response.json())
+    .then(data => {
+      this.enemyData = data;
       console.log("Enemies loaded:", this.enemyData);
-      return this.enemyData;
-    } else {
-      console.error("Failed to load enemies");
+    })
+    .catch(error => {
+      console.error("Failed to load enemies:", error);
       this.enemyData = { enemies: [] };
-      return this.enemyData;
-    }
+    });
   }
 
   createLevel(mapConfig) {
