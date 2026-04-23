@@ -3,26 +3,14 @@
     {
       "id": 1,
       "name": "Starter village",
-      "enemies": [1,2],
-       "objects": [
-        {
-          "type": "potion",
-          "xPos": 500,
-          "yPos": 610
-        }
-      ]
+      "enemies": [1, 2],
+      "objects": [1]
     },
     {
       "id": 2,
       "name": "First challenge",
-      "enemies": [3,4],
-      "objects": [
-        {
-          "type": "potion",
-          "xPos": 570,
-          "yPos": 610
-        }
-      ]
+      "enemies": [3, 4],
+      "objects": [2]
     }
   ]
 }
