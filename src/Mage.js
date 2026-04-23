@@ -9,7 +9,7 @@ import globals from "./globals.js";
 export default class Mage extends Enemy {
   constructor(xPos, yPos) {
     const imageSet = new ImageSet(33, 0, 48, 64, 0, 0);
-    const combatImageSet = new ImageSet(0.5, 0, 140, 140, 0, 0, 32);
+    const combatImageSet = new ImageSet(0, 0, 160, 160, 0, 0, 32);
     const frames = new Frames(3, 20);
 
     const initAngle = (90 * Math.PI) / 180;

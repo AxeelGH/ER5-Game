@@ -135,8 +135,8 @@ class Game {
     switch (this.gameState) {
       case GameState.LOADING:
         if (globals.assetsLoaded >= globals.assetsToLoad.length && globals.assetsToLoad.length > 0) {
-          this.gameState = GameState.INTRO;
-          globals.gameState = GameState.INTRO;
+          this.gameState = GameState.MENU;
+          globals.gameState = GameState.MENU;
           console.log("Game State: INTRO");
           console.log(this.canvas.width);
           console.log(this.canvas.height);
