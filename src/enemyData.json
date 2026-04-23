@@ -8,21 +8,21 @@
       "hp": 50
     },
     "enemy2": {
-      "id": 1,
+      "id": 2,
       "type": "mage",
       "xPos": 300,
       "yPos": 400,
       "hp": 60
     },
     "enemy3": {
-      "id": 2,
+      "id": 3,
       "type": "mage",
       "xPos": 570,
       "yPos": 610,
       "hp": 50
     },
     "enemy4": {
-      "id": 2,
+      "id": 4,
       "type": "skeleton",
       "xPos": 160,
       "yPos": 300,

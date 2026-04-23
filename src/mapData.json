@@ -3,6 +3,7 @@
     {
       "id": 1,
       "name": "Starter village",
+      "enemies": [1,2],
        "objects": [
         {
           "type": "potion",
@@ -14,6 +15,7 @@
     {
       "id": 2,
       "name": "First challenge",
+      "enemies": [3,4],
       "objects": [
         {
           "type": "potion",
