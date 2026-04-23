@@ -65,6 +65,7 @@ export default class CollisionManager {
 
   static resolveMapCollision(sprite) {
     if (!sprite || !sprite.hitBox) return;
+    if (!globals.map || !globals.map.imageSet) return;
 
     const brickSize = globals.map.imageSet.gridSize;
     const deltaTime = globals.deltaTime || 1 / 60;
@@ -284,6 +285,7 @@ export default class CollisionManager {
   static detectCollisions() {
     const player = globals.player;
     if (!player) return;
+    if (!globals.map || !globals.map.imageSet) return;
     
     this.resolveMapCollision(player);
     

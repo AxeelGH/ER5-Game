@@ -21,8 +21,8 @@ class Game {
     this.ctx = canvas.getContext("2d");
     globals.ctx = this.ctx;
 
-    this.gameState = GameState.LOADING;
-    globals.gameState = GameState.LOADING;
+    this.gameState = GameState.MENU;
+    globals.gameState = GameState.MENU;
     console.log("Game State: LOADING");
 
     this.score = 0;
@@ -72,7 +72,7 @@ class Game {
     this.loginLoadingFrames = 0;
   }
 
-  static create(canvas, gameData) {
+  static async create(canvas, gameData) {
     console.log("Initializing...");
     const game = new Game(canvas, gameData);
 
@@ -92,7 +92,7 @@ class Game {
     globals.sprites.push(globals.player);
     console.log(globals.sprites[0]);
 
-    game.initializeLevels();
+    await game.initializeLevels();
 
     canvas.style.width = screen.width + "px";
     canvas.style.height = screen.height + "px";
@@ -268,6 +268,10 @@ class Game {
 
         let allEnemiesDead = true;
 
+        if(globals.enemies.length === 0) {
+          allEnemiesDead = false;
+        }
+
         for (let i = 0; i < globals.enemies.length; i++) {
           if (globals.enemies[i].isAlive === true) {
             allEnemiesDead = false;
@@ -337,12 +341,12 @@ class Game {
     }
   }
 
-  initializeLevels() {
-    let levels = this.levelFactory.loadLevels("./src/mapData.json");
-    if (levels.length > 0) {
-      globals.map = levels[0];
-      globals.enemies = levels[0].enemies;
-      globals.objects = levels[0].objects ? levels[0].objects : [];
+  async initializeLevels() {
+    await this.levelFactory.loadLevels("./src/mapData.json");
+    if (this.levelFactory.levels.length > 0) {
+        globals.map = this.levelFactory.levels[0];
+        globals.enemies = this.levelFactory.levels[0].enemies;
+        globals.objects = this.levelFactory.levels[0].objects ? this.levelFactory.levels[0].objects : [];
     }
   }
 
@@ -423,10 +427,10 @@ class Game {
 export function initGame(canvas) {
   fetch("./src/gameData.json")
     .then(response => response.json())
-    .then(data => {
+    .then( async data => {
       console.log("JSON:", data);
       const factory = new GameFactory(data);
-      const game = factory.create(canvas);
+      const game = await factory.create(canvas);
       if (game) game.execute();
     })
     .catch(error => console.error("Failed to fetch data:", error));

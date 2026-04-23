@@ -5,7 +5,7 @@ export default class GameFactory {
     this.gameData = data;
   }
 
-  create(canvas) {
-    return Game.create(canvas, this.gameData);
+  async create(canvas) {
+    return await Game.create(canvas, this.gameData);
   }
 }

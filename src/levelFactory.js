@@ -10,41 +10,25 @@ export default class LevelFactory {
     this.currentLevelIndex = 0;
   }
 
-  async loadLevels(mapDataPath) {
+async loadLevels(mapDataPath) {
+    await this.loadEnemies();
 
-    const enemies = await this.loadEnemies();
-
-    fetch("./src/mapData.json")
-    .then(response => response.json())
-    .then(data => {
-      let maps = data.maps;
-
-      for (let i = 0; i < maps.length; i++) {
-        let mapConfig = maps[i];
-        let level = this.createLevel(mapConfig);
+    const response = await fetch("./src/mapData.json");
+    const data = await response.json();
+    
+    for (let i = 0; i < data.maps.length; i++) {
+        let level = this.createLevel(data.maps[i]);
         this.levels.push(level);
-      }
+    }
+    console.log("loading levels...", this.levels.length);
+}
 
-      console.log("loading levels...");
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      return [];
-    });
-  }
-
-  loadEnemies() {
-    fetch("./src/enemyData.json")
-    .then(response => response.json())
-    .then(data => {
-      this.enemyData = data;
-      console.log("Enemies loaded:", this.enemyData);
-    })
-    .catch(error => {
-      console.error("Failed to load enemies:", error);
-      this.enemyData = { enemies: [] };
-    });
-  }
+async loadEnemies() {
+    const response = await fetch("./src/enemyData.json");
+    const data = await response.json();
+    this.enemyData = data;
+    console.log("Enemies loaded:", this.enemyData);
+}
 
   createLevel(mapConfig) {
     let mapImageSet = new ImageSet(0, 0, 32, 32, 0, 0, 32);
