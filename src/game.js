@@ -13,7 +13,7 @@ import CombatTurn from "./CombatTurn.js";
 import Inventory from "./Inventory.js";
 import { Sound } from "./constants.js";
 import GameFactory from "./GameFactory.js";
-import LevelFactory from "./levelFactory.js";
+import LevelFactory  from "./levelFactory.js";
 
 class Game {
   constructor(canvas, gameData) {
