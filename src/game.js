@@ -90,6 +90,7 @@ class Game {
     game.player = SpriteFactory.createPlayer(100, 220, 120, 70);
     globals.player = game.player;
     globals.sprites.push(globals.player);
+    console.log(globals.sprites[0]);
 
     game.initializeLevels();
 

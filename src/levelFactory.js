@@ -6,6 +6,7 @@ import globals from "./globals.js";
 export default class LevelFactory {
   constructor() {
     this.levels = [];
+    this.enemies = [];
     this.currentLevelIndex = 0;
   }
 
@@ -32,12 +33,23 @@ export default class LevelFactory {
     }
   }
 
+  loadEnemies() {
+     fetch("./src/enemyData.json")
+      .then(response => response.json())
+      .then(data => {
+        this.enemies = data.enemies;
+      })
+      .catch(error => console.error("Failed to fetch data:", error));
+  }
+
   createLevel(mapConfig) {
     let mapImageSet = new ImageSet(0, 0, 32, 32, 0, 0, 32);
 
     let mapData = this.getMapDataForLevel(mapConfig.id);
 
-    let enemies = this.createEnemiesFromConfig(mapConfig.enemies ? mapConfig.enemies : []);
+    let enemiesData = mapConfig.enemies ? mapConfig.enemies : this.enemies; 
+
+    let enemies = this.createEnemiesFromConfig(enemiesData);
 
     let objects = this.createObjectsFromConfig(mapConfig.objects ? mapConfig.objects : []);
 
@@ -60,14 +72,16 @@ export default class LevelFactory {
   }
 
   createEnemiesFromConfig(enemiesConfig) {
+   
     let enemies = [];
 
     for (let i = 0; i < enemiesConfig.length; i++) {
       let enemyConfig = enemiesConfig[i];
+      console.log("Enemy config: " + enemyConfig);
       let enemy = null;
 
-      let enemyType = enemyConfig.type.toLowerCase();
-
+      let enemyType = enemyConfig.type;
+      console.log("Enemy type: " + enemyType);
       if (enemyType === "slime") {
         enemy = SpriteFactory.createSlime(enemyConfig.xPos, enemyConfig.yPos);
       } else if (enemyType === "skeleton") {
@@ -75,7 +89,7 @@ export default class LevelFactory {
       } else if (enemyType === "mage") {
         enemy = SpriteFactory.createMage(enemyConfig.xPos, enemyConfig.yPos);
       } else {
-        console.warn(`Tipo enemigo desconocido: ${enemyConfig.type}`);
+        console.warn(`Unknown enemy type: ${enemyConfig.type}`);
         continue;
       }
 
@@ -92,7 +106,8 @@ export default class LevelFactory {
 
   getMapDataForLevel(levelId) {
     let mapLayouts = {
-                1: [
+    1:
+    [
     [1501,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1503,1504,1505,1506],
     [1601,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1606],
     [1601,2,1501,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1506,2,1606],
@@ -117,8 +132,9 @@ export default class LevelFactory {
     [1601,2,1801,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1803,1804,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1805,1806,2,1606],
     [1601,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1703,1704,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1706],
     [1801,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1803,1804,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1802,1806]
-        ],
-        2: [
+    ],
+    2: 
+    [
     [2,1501,1505,1505,1505,1505,1505,1505,1505,1505,1505,1505,1505,1607,27,3,25,1608,1505,1506,2,2,2,1501,1505,1505,1505,1505,1505,1505,1505,1505],
     [2,1601,2,2,2,2,2,2,2,2,2,2,2,2,27,3,25,2,2,1606,2,2,2,1601,2,2,2,2,2,2,2,2],
     [2,1601,2,2,2,2,2,2,2,2,2,2,2,2,27,3,25,2,2,1606,2,2,2,1601,2,2,2,2,2,2,2,2],
@@ -143,8 +159,7 @@ export default class LevelFactory {
     [2,2,2,2,2,2,2,2,2,2,2,1301,1302,1303,2,2,2,2,2,2,2,2,75,5,5,72,27,3,3,3,3,3],
     [2,2,2,2,2,2,2,2,2,2,2,75,5,72,2,2,2,2,2,2,2,2,75,5,5,72,13,8,8,8,8,8],
     [2,2,2,2,2,2,2,2,2,2,2,75,5,76,77,77,77,77,77,77,77,77,79,5,5,76,78,78,78,78,78,78]
-]
-
+    ],
     };
 
     return mapLayouts[levelId] || mapLayouts[1];
