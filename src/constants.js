@@ -14,6 +14,7 @@ export const GameState = {
   VICTORY: 11,
   LOGIN: 12,
   LOGIN_LOADING: 13,
+  LOAD_SCREEN: 14,
 };
 
 export const FPS = 60;
@@ -92,3 +93,77 @@ export const Sound = {
 };
 
 export const LoginData = "https://er5game.free.laravel.cloud/api/login";
+
+export const mapID = {
+  INVALID: -1,
+  START: 0,
+  FOREST: 1,
+  VILLAGE: 2,
+  CASTLE: 3,
+  RIDE: 4,
+  CEMETERY: 5,
+  BEACH: 6,
+  FINAL: 7
+};
+
+export const Border =[ 
+  {
+  //START MAP 0
+  left: mapID.INVALID,
+  up: mapID.INVALID,
+  right: mapID.INVALID,
+  down: mapID.FOREST
+
+},
+{
+  //FOREST 1 
+  left: mapID.INVALID,
+  up: mapID.START,
+  right: mapID.VILLAGE,
+  down: mapID.INVALID,
+
+},
+{
+  //VILLAGE 2 
+  left: mapID.FOREST,
+  up: mapID.INVALID,
+  right: mapID.CASTLE,
+  down: mapID.RIDE
+
+},
+{
+  //CASTLE 3
+  left: mapID.VILLAGE,
+  up: mapID.INVALID,
+  right: mapID.INVALID,
+  down: mapID.INVALID
+},
+{
+  //RIDE 4
+  left: mapID.INVALID,
+  up: mapID.VILLAGE,
+  right: mapID.INVALID,
+  down: mapID.CEMETERY
+},
+{
+  //CEMETERY 5
+  left: mapID.INVALID,
+  up: mapID.RIDE,
+  right: mapID.INVALID,
+  down: mapID.FINAL
+},
+{
+  //Beach 6
+  left: mapID.CEMETERY,
+  up: mapID.INVALID,
+  right: mapID.INVALID,
+  down: mapID.INVALID
+},
+{
+  //Final 7
+  left: mapID.INVALID,
+  up: mapID.CEMETERY,
+  right: mapID.INVALID,
+  down: mapID.INVALID
+}
+];

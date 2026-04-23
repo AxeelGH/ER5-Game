@@ -43,4 +43,6 @@ export default {
 
   buttonStart: {},
   buttonStartClicked: false,
+
+  currentScreen: null,
 };

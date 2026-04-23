@@ -91,6 +91,10 @@ export class View {
       case GameState.LOGIN_LOADING:
         this.renderLoginLoading();
         break;
+
+      case GameState.LOAD_SCREEN:
+        this.renderLoadScreen();
+        break;       
     }
   }
 
@@ -574,5 +578,16 @@ export class View {
     this.ctx.fillStyle = "white";
     this.ctx.font = "20px alkhemikal";
     this.ctx.fillText(Math.floor(progress * 100) + "%", centerX, barY - 10);
+  }
+
+  renderLoadScreen() {
+    
+    this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+    this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    
+    this.ctx.fillStyle = "white";
+    this.ctx.font = "32px alkhemikal";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText("LOADING...", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
   }
 }

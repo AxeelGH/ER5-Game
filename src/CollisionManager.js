@@ -1,5 +1,5 @@
 import globals from "./globals.js";
-import { GameState, SpriteID } from "./constants.js";
+import { GameState, SpriteID, mapID, Border } from "./constants.js";
 import CombatTurn from "./CombatTurn.js";
 
 export default class CollisionManager {
@@ -286,6 +286,8 @@ export default class CollisionManager {
     if (!player) return;
     
     this.resolveMapCollision(player);
+
+    this.checkBorderCollision(player);
     
     const playerHitBox = {
         x: player.xPos + player.hitBox.xOffset,
@@ -401,4 +403,107 @@ export default class CollisionManager {
       }
     }
   }
+
+  static calculateNewScreen(direction) {
+
+    let newScreen = mapID.INVALID;
+
+    switch(direction) {
+
+      case 'left':
+        newScreen = Border[globals.currentScreen].left;
+        return newScreen;
+
+      case 'right':
+        newScreen = Border[globals.currentScreen].right;
+        return newScreen;
+
+      case 'up':
+        newScreen = Border[globals.currentScreen].up;
+        return newScreen;
+
+      case 'down':
+        newScreen = Border[globals.currentScreen].down;
+        return newScreen;
+
+      default:
+        return newScreen;
+    }
+  }
+
+  static checkBorderCollision(sprite) {
+  
+    const canvas = globals.canvas;
+    const borderSize = 5;
+    
+    
+    if (sprite.isCollidingWithRightBorder) {
+
+      this.changeScreen(sprite, 'right');
+
+    } else if (sprite.isCollidingWithLeftBorder) {
+
+      this.changeScreen(sprite, 'left');
+
+    } else if (sprite.isCollidingWithTopBorder) {
+
+      this.changeScreen(sprite, 'up');
+
+    } else if (sprite.isCollidingWithBottomBorder) {
+
+      this.changeScreen(sprite, 'down');
+
+    }
+  }
+
+  static calculatePlayerNewPosition(sprite, direction, newScreen) {
+    
+    const canvas = globals.canvas;
+    const borderOffset = 40;
+    
+    if (direction === 'left') {
+      
+      sprite.xPos = canvas.width - sprite.hitBox.xSize - sprite.hitBox.xOffset - borderOffset;
+
+    } else if (direction === 'right') {
+      
+      sprite.xPos = borderOffset - sprite.hitBox.xOffset;
+
+    } else if (direction === 'up') {
+      
+      sprite.yPos = canvas.height - sprite.hitBox.ySize - sprite.hitBox.yOffset - borderOffset;
+
+    } else if (direction === 'down') {
+      
+      sprite.yPos = borderOffset - sprite.hitBox.yOffset;
+    }
+  }
+
+  static changeScreen(sprite, direction) {
+    console.log("direction: " + direction);
+    
+    let newScreen = this.calculateNewScreen(direction);
+    console.log("newScreen: " + direction + " : " + newScreen);
+    
+    if (newScreen !== mapID.INVALID) {
+    
+      globals.currentScreen = newScreen;
+      console.log("currentScreen: " + newScreen);
+      
+      this.calculatePlayerNewPosition(sprite, direction, newScreen);
+      
+      if (globals.gameInstance) {
+        
+        globals.gameInstance.gameState = GameState.LOAD_SCREEN;
+        globals.gameState = GameState.LOAD_SCREEN;
+        console.log("Loading new screen: " + newScreen);
+        
+        globals.gameInstance.loadScreen(newScreen);
+      }
+    } else {
+
+      console.log("no valid direction");
+    }
+  }
+  
 }
