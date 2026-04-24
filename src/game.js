@@ -13,7 +13,7 @@ import CombatTurn from "./CombatTurn.js";
 import Inventory from "./Inventory.js";
 import { Sound } from "./constants.js";
 import GameFactory from "./GameFactory.js";
-import LevelFactory from "./levelFactory.js";
+import LevelFactory  from "./levelFactory.js";
 
 class Game {
   constructor(canvas, gameData) {
@@ -21,8 +21,8 @@ class Game {
     this.ctx = canvas.getContext("2d");
     globals.ctx = this.ctx;
 
-    this.gameState = GameState.LOADING;
-    globals.gameState = GameState.LOADING;
+    this.gameState = GameState.MENU;
+    globals.gameState = GameState.MENU;
     console.log("Game State: LOADING");
 
     this.score = 0;
@@ -70,9 +70,11 @@ class Game {
     globals.currentSound = Sound.NO_SOUND;
 
     this.loginLoadingFrames = 0;
+    this.pendingScreen = null;      
+    this.loadScreenFrames = 0;
   }
 
-  static create(canvas, gameData) {
+  static async create(canvas, gameData) {
     console.log("Initializing...");
     const game = new Game(canvas, gameData);
 
@@ -90,8 +92,9 @@ class Game {
     game.player = SpriteFactory.createPlayer(100, 220, 120, 70);
     globals.player = game.player;
     globals.sprites.push(globals.player);
+    console.log(globals.sprites[0]);
 
-    game.initializeLevels();
+    await game.initializeLevels();
 
     canvas.style.width = screen.width + "px";
     canvas.style.height = screen.height + "px";
@@ -237,6 +240,40 @@ class Game {
         }
         break;
 
+      case GameState.LOAD_SCREEN:
+
+        this.loadScreenFrames++;
+        
+        if (this.pendingScreen !== null && this.loadScreenFrames >= 30) {
+          
+          let level = this.levelFactory.getLevelById(this.pendingScreen);
+          
+          if (level) {
+            globals.map = level;
+            globals.enemies = level.enemies;
+            globals.objects = level.objects;
+            
+            console.log("loadScreen: " + level.name);
+            console.log("Enemies: " + globals.enemies.length);
+            
+            this.pendingScreen = null;
+            this.loadScreenFrames = 0;
+            
+            this.gameState = GameState.PLAYING;
+            globals.gameState = GameState.PLAYING;
+            console.log("Game State: PLAYING");
+
+          } else {
+
+            console.error("Error loading screen: " + this.pendingScreen);
+            this.pendingScreen = null;
+            this.loadScreenFrames = 0;
+            this.gameState = GameState.PLAYING;
+            globals.gameState = GameState.PLAYING;
+          }
+        }
+        break;
+
       case GameState.PLAYING:
         this.timer -= dt;
         if (this.timer <= 0) {
@@ -266,6 +303,10 @@ class Game {
         CollisionManager.detectCollisions();
 
         let allEnemiesDead = true;
+
+        if(globals.enemies.length === 0) {
+          allEnemiesDead = false;
+        }
 
         for (let i = 0; i < globals.enemies.length; i++) {
           if (globals.enemies[i].isAlive === true) {
@@ -336,13 +377,33 @@ class Game {
     }
   }
 
-  initializeLevels() {
-    let levels = this.levelFactory.loadLevels("./src/mapData.json");
-    if (levels.length > 0) {
-      globals.map = levels[0];
-      globals.enemies = levels[0].enemies;
-      globals.objects = levels[0].objects ? levels[0].objects : [];
+  async initializeLevels() {
+    await this.levelFactory.loadLevels("./src/mapData.json");
+    if (this.levelFactory.levels.length > 0) {
+        globals.map = this.levelFactory.levels[0];
+        globals.enemies = this.levelFactory.levels[0].enemies;
+        globals.objects = this.levelFactory.levels[0].objects ? this.levelFactory.levels[0].objects : [];
     }
+  }
+
+    loadScreen(newScreen) {
+      console.log("loading Screen: " + newScreen);
+      
+      let level = this.levelFactory.getLevelById(newScreen);
+      
+      if (level) {
+        globals.map = level;
+        globals.enemies = level.enemies;
+        globals.objects = level.objects;
+        
+        console.log("Screen: " + level.name);
+        console.log("Enemies: " + globals.enemies.length);
+        
+        this.gameState = GameState.PLAYING;
+        globals.gameState = GameState.PLAYING;
+      } else {
+        console.log("error: " + newScreen);
+      }
   }
 
   render() {
@@ -392,40 +453,15 @@ class Game {
       });
   }
 
-  changeLevel(direction) {
-    console.log("canging level, direction:", direction);
-    console.log("level:", this.levelFactory.currentLevelIndex);
-
-    const currentIndex = this.levelFactory.currentLevelIndex;
-    let newIndex = currentIndex + direction;
-
-    console.log("New index:", newIndex);
-    console.log("Total levels:", this.levelFactory.levels.length);
-
-    if (newIndex >= 0 && newIndex < this.levelFactory.levels.length) {
-      this.levelFactory.currentLevelIndex = newIndex;
-      const newLevel = this.levelFactory.levels[newIndex];
-
-      globals.map = newLevel;
-      globals.enemies = newLevel.enemies;
-      globals.objects = newLevel.objects ? newLevel.objects : [];
-
-      console.log("Level changed to:", newLevel.name);
-      return true;
-    } else {
-      console.log("not level", newIndex);
-      return false;
-    }
-  }
 }
 
 export function initGame(canvas) {
   fetch("./src/gameData.json")
     .then(response => response.json())
-    .then(data => {
+    .then( async data => {
       console.log("JSON:", data);
       const factory = new GameFactory(data);
-      const game = factory.create(canvas);
+      const game = await factory.create(canvas);
       if (game) game.execute();
     })
     .catch(error => console.error("Failed to fetch data:", error));
