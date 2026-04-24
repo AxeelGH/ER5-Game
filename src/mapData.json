@@ -4,83 +4,37 @@
       "id": 1,
       "name": "Starter village",
       "enemies": [1,2],
-       "objects": [
-        {
-          "type": "potion",
-          "xPos": 500,
-          "yPos": 610
-        }
-      ]
+       "objects": [1]
     },
     {
       "id": 2,
       "name": "First challenge",
       "enemies": [3,4],
-      "objects": [
-        {
-          "type": "potion",
-          "xPos": 570,
-          "yPos": 610
-        }
-      ]
+      "objects": [2]
     },
     {
       "id": 3,
       "name": "Castle",
-      "enemies": [
-        { 
-          "type": "skeleton", 
-          "xPos": 400, 
-          "yPos": 500, 
-          "hp": 80 
-        }
-      ],
+      "enemies": [5],
       "objects": []
     },
     {
       "id": 4,
       "name": "Ride",
-      "enemies": [
-        { 
-          "type": "slime", 
-          "xPos": 200, 
-          "yPos": 400, 
-          "hp": 50 
-        }
-      ],
-      "objects": []
+      "enemies": [6],
+      "objects": [3]
     },
     {
       "id": 5,
       "name": "Cemetery",
-      "enemies": [
-        { 
-          "type": "skeleton", 
-          "xPos": 300, 
-          "yPos": 350, 
-          "hp": 80 
-        },
-        { 
-          "type": "mage", 
-          "xPos": 500, 
-          "yPos": 450, 
-          "hp": 60 
-        }
-      ],
+      "enemies": [7,8],
       "objects": []
     },
     {
       "id": 6,
       "name": "Beach",
-      "enemies": [
-        { 
-          "type": "slime", 
-          "xPos": 400, 
-          "yPos": 500, 
-          "hp": 50 
-        }
-      ],
-      "objects": []
+      "enemies": [9],
+      "objects": [4,5]
     }
   ]
 }
