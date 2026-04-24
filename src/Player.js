@@ -76,7 +76,7 @@ export default class Player extends Sprite {
       this.animationTimer--;
       this.updateAnimationFrame();
     } else {
-      this.state = State.LEFT;
+      this.state = State.RIGHT;
     }
   }
 

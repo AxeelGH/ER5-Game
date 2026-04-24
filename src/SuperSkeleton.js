@@ -8,12 +8,12 @@ import globals from "./globals.js";
 
 export default class SuperSkeleton extends Enemy {
   constructor(xPos, yPos) {
-    const imageSet = new ImageSet(142, 0, 64, 48, 0, 0);
-    const frames = new Frames(4, 20);
+    const imageSet = new ImageSet(40, 0, 160, 128, 0, 0);
+    const frames = new Frames(8, 8);
     const physics = new Physics(20, 0, 20);
     const hitBox = new HitBox(25, 25, 20, 20);
 
-    super(SpriteID.SUPER_SKELETON, State.SUPER_SKELETON_ATTACK, xPos, yPos, imageSet, frames, physics, hitBox, 50);
+    super(SpriteID.SUPER_SKELETON, State.SUPER_SKELETON_STILL, xPos, yPos, imageSet, frames, physics, hitBox, 50);
 
     this.baseX = xPos;
     this.range = 60;

@@ -15,6 +15,12 @@
           "xPos": 300,
           "yPos": 400,
           "hp": 60
+        },
+        {
+          "type": "skeleton",
+          "xPos": 200,
+          "yPos": 400,
+          "hp": 60
         }
       ],
        "objects": [
