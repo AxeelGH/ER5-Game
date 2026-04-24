@@ -7,11 +7,13 @@ export default class LevelFactory {
   constructor() {
     this.levels = [];
     this.enemyData = [];
+    this.itemData = [];
     this.currentLevelIndex = 0;
   }
 
 async loadLevels(mapDataPath) {
     await this.loadEnemies();
+    await this.loadObjects();
 
     const response = await fetch("./src/mapData.json");
     const data = await response.json();
@@ -28,6 +30,13 @@ async loadEnemies() {
     const data = await response.json();
     this.enemyData = data;
     console.log("Enemies loaded:", this.enemyData);
+}
+
+async loadObjects() { 
+    const response = await fetch("./src/objectData.json");
+    const data = await response.json();
+    this.objectData = data;
+    console.log("Items loaded:", this.objectData);
 }
 
   getLevelById(levelId) {
@@ -50,9 +59,11 @@ async loadEnemies() {
 
     let enemiesData = mapConfig.enemies ? mapConfig.enemies : this.enemyData;
 
+    let objectsData = mapConfig.objects ? mapConfig.objects : this.objectData;
+
     let enemies = this.createEnemiesFromConfig(enemiesData);
 
-    let objects = this.createObjectsFromConfig(mapConfig.objects ? mapConfig.objects : []);
+    let objects = this.createObjectsFromConfig(objectsData);
 
     let level = new Map(mapConfig.id, mapConfig.name, mapData, mapImageSet, enemies, objects);
 
@@ -60,16 +71,29 @@ async loadEnemies() {
   }
 
   createObjectsFromConfig(objectsConfig) {
+
     let objects = [];
+
     for (let i = 0; i < objectsConfig.length; i++) {
-      let objectConfig = objectsConfig[i];
-      let object = null;
-      if (objectConfig.type.toLowerCase() === "potion") {
-        object = SpriteFactory.createObject(objectConfig.xPos, objectConfig.yPos);
+      let objectId = objectsConfig[i];
+      let objectData = null;
+
+      for(let j = 0; j < this.objectData.objects.length; j++){
+        if(this.objectData.objects[j].id === objectId){
+        objectData = this.objectData.objects[j];
+        break;
+        }
       }
+
+      let object = null;
+
+      object = SpriteFactory.createObject(objectData.xPos, objectData.yPos);
+
       objects.push(object);
+      console.log("Created ", objects.length, " items");
+      return objects;
+
     }
-    return objects;
   }
 
   createEnemiesFromConfig(enemiesConfig) {

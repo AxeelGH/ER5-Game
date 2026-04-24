@@ -1,0 +1,34 @@
+{
+  "objects": [
+    {
+      "id": 1,
+      "type": "potion",
+      "xPos": 500,
+      "yPos": 610
+    },
+    {
+      "id": 2,
+      "type": "potion",
+      "xPos": 570,
+      "yPos": 610
+    },
+    {
+      "id": 3,
+      "type": "potion",
+      "xPos": 420,
+      "yPos": 310
+    },
+    {
+      "id": 4,
+      "type": "potion",
+      "xPos": 430,
+      "yPos": 400
+    },
+    {
+      "id": 5,
+      "type": "potion",
+      "xPos": 500,
+      "yPos": 610
+    }
+  ]
+}
