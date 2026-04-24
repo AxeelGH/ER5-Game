@@ -26,6 +26,11 @@ export default class Player extends Sprite {
     this.hitBox = new HitBox(32, 32, 7.5, 29);
     this.animationTimer = 0;
 
+    this.isCollidingWithRightBorder = false;
+    this.isCollidingWithLeftBorder = false;
+    this.isCollidingWithTopBorder = false;
+    this.isCollidingWithBottomBorder = false;
+
     console.log("Player created with HP:", this.hp, "at", this.xPos, this.yPos);
   }
 
@@ -66,7 +71,7 @@ export default class Player extends Sprite {
       CollisionManager.resolveMapCollision(this);
     }
 
-    this.checkLevelTransition();
+    this.detectBorderCollision();
 
     this.updateAnimationFrame();
   }
