@@ -71,7 +71,7 @@ export default class Player extends Sprite {
       CollisionManager.resolveMapCollision(this);
     }
 
-    this.detectBorderCollision();
+    //this.detectBorderCollision();
 
     this.updateAnimationFrame();
   }
