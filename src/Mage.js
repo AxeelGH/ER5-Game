@@ -9,7 +9,6 @@ import globals from "./globals.js";
 export default class Mage extends Enemy {
   constructor(xPos, yPos) {
     const imageSet = new ImageSet(33, 0, 48, 64, 0, 0);
-    const combatImageSet = new ImageSet(0, 0, 160, 160, 0, 0, 32);
     const frames = new Frames(3, 20);
 
     const initAngle = (90 * Math.PI) / 180;
@@ -19,7 +18,7 @@ export default class Mage extends Enemy {
     const physics = new Physics(0, 0, 0, omega, initAngle, xRotCenter, yRotCenter);
     const hitBox = new HitBox(34, 56, 6, 7);
 
-    super(SpriteID.MAGE, State.ENEMY_STILL, xPos, yPos, imageSet, frames, physics, hitBox, 60, combatImageSet);
+    super(SpriteID.MAGE, State.ENEMY_STILL, xPos, yPos, imageSet, frames, physics, hitBox, 60);
 
     this.baseX = xPos;
     this.baseY = yPos;

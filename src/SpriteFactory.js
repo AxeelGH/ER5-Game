@@ -22,6 +22,18 @@ export default class SpriteFactory {
     return new Mage(xPos, yPos);
   }
 
+  static createSuperSlime(xPos, yPos) {
+    return new SuperSlime(xPos, yPos);
+  }
+
+  static createSuperMage(xPos, yPos) {
+    return new SuperMage(xPos, yPos);
+  }
+
+  static createSuperSkeleton(xPos, yPos) {
+    return new SuperSkeleton(xPos, yPos);
+  }
+
   static createObject(xPos, yPos) {
     return new Object(xPos, yPos);
   }

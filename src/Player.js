@@ -21,7 +21,6 @@ export default class Player extends Sprite {
     this.maxMana = mana;
 
     this.imageSet = new ImageSet(39, 0, 48, 64, 0, 0);
-    this.combatImageSet = new ImageSet(16, 0, 160, 160, 0, 30);
     this.frames = new Frames(3, 8);
     this.physics = new Physics(0, 0, 100);
     this.hitBox = new HitBox(32, 32, 7.5, 29);
@@ -33,7 +32,6 @@ export default class Player extends Sprite {
   update() {
     this.readKeyboardAndAssignState();
 
-    //Apply speed for each state
     switch (this.state) {
       case State.UP:
         this.physics.vx = 0;
@@ -56,18 +54,14 @@ export default class Player extends Sprite {
         this.physics.vy = 0;
     }
 
-    // Mover temporalmente en X
     this.xPos += this.physics.vx * globals.deltaTime;
 
-    // Verificar y resolver colisiones en X
     if (CollisionManager.detectCollisionWithMap(this)) {
       CollisionManager.resolveMapCollision(this);
     }
 
-    // Mover temporalmente en Y
     this.yPos += this.physics.vy * globals.deltaTime;
 
-    // Verificar y resolver colisiones en Y
     if (CollisionManager.detectCollisionWithMap(this)) {
       CollisionManager.resolveMapCollision(this);
     }
@@ -96,7 +90,6 @@ export default class Player extends Sprite {
     } else if (globals.action.moveDown) {
       this.state = State.DOWN;
     } else {
-      // Set idle states based on last movement
       if (this.state === State.LEFT) this.state = State.STILL_LEFT;
       else if (this.state === State.RIGHT) this.state = State.STILL_RIGHT;
       else if (this.state === State.UP) this.state = State.STILL_UP;

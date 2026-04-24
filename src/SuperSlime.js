@@ -6,24 +6,25 @@ import Physics from "./Physics.js";
 import HitBox from "./HitBox.js";
 import globals from "./globals.js";
 
-export default class Slime extends Enemy {
+export default class SuperSlime extends Enemy {
   constructor(xPos, yPos) {
-    const imageSet = new ImageSet(142, 0, 64, 48, 0, 0);
-    const frames = new Frames(4, 20);
+    const imageSet = new ImageSet(38, 0, 288, 160, 0, 0);
+    const frames = new Frames(12, 5); 
     const physics = new Physics(20, 0, 20);
     const hitBox = new HitBox(25, 25, 20, 20);
 
-    super(SpriteID.SLIME, State.SLIME_STILL, xPos, yPos, imageSet, frames, physics, hitBox, 50);
+    super(SpriteID.SUPER_SLIME, State.SUPER_SLIME_STILL, xPos, yPos, imageSet, frames, physics, hitBox, 50);
 
     this.baseX = xPos;
     this.range = 60;
   }
+  
   update() {
-    this.setSlimePosition();
+    this.setSuperSlimePosition();
     this.updateAnimationFrame();
   }
 
-  setSlimePosition() {
+  setSuperSlimePosition() {
     const dt = globals.deltaTime || 1 / 60;
     this.xPos += this.physics.vx * dt;
 

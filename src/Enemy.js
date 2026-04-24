@@ -7,14 +7,13 @@ import HitBox from "./HitBox.js";
 import globals from "./globals.js";
 
 export default class Enemy extends Sprite {
-  constructor(id, state, xPos, yPos, imageSet, frames, physics, hitBox, hp, combatImageSet) {
+  constructor(id, state, xPos, yPos, imageSet, frames, physics, hitBox, hp) {
     super();
     this.id = id;
     this.state = state;
     this.xPos = xPos;
     this.yPos = yPos;
     this.imageSet = imageSet;
-    this.combatImageSet = combatImageSet;
     this.frames = frames;
     this.physics = physics;
     this.hitBox = hitBox;
