@@ -6,31 +6,29 @@ import globals from "./globals.js";
 export default class LevelFactory {
   constructor() {
     this.levels = [];
+    this.enemyData = [];
     this.currentLevelIndex = 0;
   }
 
-  loadLevels(mapDataPath) {
-    let request = new XMLHttpRequest();
-    request.open("GET", mapDataPath, false);
-    request.send(null);
+async loadLevels(mapDataPath) {
+    await this.loadEnemies();
 
-    if (request.status === 200) {
-      let data = JSON.parse(request.responseText);
-      let maps = data.maps;
-
-      for (let i = 0; i < maps.length; i++) {
-        let mapConfig = maps[i];
-        let level = this.createLevel(mapConfig);
+    const response = await fetch("./src/mapData.json");
+    const data = await response.json();
+    
+    for (let i = 0; i < data.maps.length; i++) {
+        let level = this.createLevel(data.maps[i]);
         this.levels.push(level);
-      }
-
-      console.log(`Cargados niveles`);
-      return this.levels;
-    } else {
-      console.error("Error cargando niveles");
-      return [];
     }
-  }
+    console.log("loading levels...", this.levels.length);
+}
+
+async loadEnemies() {
+    const response = await fetch("./src/enemyData.json");
+    const data = await response.json();
+    this.enemyData = data;
+    console.log("Enemies loaded:", this.enemyData);
+}
 
   getLevelById(levelId) {
     let foundLevel = null;
@@ -50,7 +48,9 @@ export default class LevelFactory {
 
     let mapData = this.getMapDataForLevel(mapConfig.id);
 
-    let enemies = this.createEnemiesFromConfig(mapConfig.enemies ? mapConfig.enemies : []);
+    let enemiesData = mapConfig.enemies ? mapConfig.enemies : this.enemyData;
+
+    let enemies = this.createEnemiesFromConfig(enemiesData);
 
     let objects = this.createObjectsFromConfig(mapConfig.objects ? mapConfig.objects : []);
 
@@ -76,30 +76,37 @@ export default class LevelFactory {
     let enemies = [];
 
     for (let i = 0; i < enemiesConfig.length; i++) {
-      let enemyConfig = enemiesConfig[i];
+      let enemyId = enemiesConfig[i];
+      let enemyData = null;
+
+      for (let j = 0; j < this.enemyData.enemies.length; j++) {
+        if (this.enemyData.enemies[j].id === enemyId) {
+          enemyData = this.enemyData.enemies[j];
+          break;
+        }
+      }
+
       let enemy = null;
 
-      let enemyType = enemyConfig.type.toLowerCase();
-
-      if (enemyType === "slime") {
-        enemy = SpriteFactory.createSlime(enemyConfig.xPos, enemyConfig.yPos);
-      } else if (enemyType === "skeleton") {
-        enemy = SpriteFactory.createSkeleton(enemyConfig.xPos, enemyConfig.yPos);
-      } else if (enemyType === "mage") {
-        enemy = SpriteFactory.createMage(enemyConfig.xPos, enemyConfig.yPos);
-      } else {
-        console.warn(`Tipo enemigo desconocido: ${enemyConfig.type}`);
-        continue;
+      if (enemyData.type === "slime") {
+        enemy = SpriteFactory.createSlime(enemyData.xPos, enemyData.yPos);
+      } else if (enemyData.type === "skeleton") {
+        enemy = SpriteFactory.createSkeleton(enemyData.xPos, enemyData.yPos);
+      } else if (enemyData.type === "mage") {
+        enemy = SpriteFactory.createMage(enemyData.xPos, enemyData.yPos);
       }
 
-      if (enemyConfig.hp && enemy) {
-        enemy.hp = enemyConfig.hp;
-        enemy.maxHp = enemyConfig.hp;
+      if (enemy && enemyData.hp) {
+        enemy.hp = enemyData.hp;
+        enemy.maxHp = enemyData.hp;
       }
 
-      enemies.push(enemy);
+      if (enemy) {
+        enemies.push(enemy);
+      }
     }
 
+    console.log("Created", enemies.length, "enemies");
     return enemies;
   }
 

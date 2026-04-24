@@ -1,22 +1,9 @@
 {
   "maps": [
     {
-      "id": 0,
-      "name": "Starteer village",
-      "enemies": [
-        {
-          "type": "slime",
-          "xPos": 270,
-          "yPos": 550,
-          "hp": 50
-        },
-        {
-          "type": "mage",
-          "xPos": 300,
-          "yPos": 400,
-          "hp": 50
-        }
-      ],
+      "id": 1,
+      "name": "Starter village",
+      "enemies": [1,2],
        "objects": [
         {
           "type": "potion",
@@ -26,22 +13,9 @@
       ]
     },
     {
-      "id": 1,
+      "id": 2,
       "name": "First challenge",
-      "enemies": [
-        {
-          "type": "mage",
-          "xPos": 570,
-          "yPos": 610,
-          "hp": 50
-        },
-        {
-          "type": "skeleton",
-          "xPos": 160,
-          "yPos": 300,
-          "hp": 50
-        }
-      ],
+      "enemies": [3,4],
       "objects": [
         {
           "type": "potion",
@@ -49,25 +23,6 @@
           "yPos": 610
         }
       ]
-    },
-        {
-      "id": 2,
-      "name": "Village",
-      "enemies": [
-        { 
-          "type": "mage", 
-          "xPos": 570, 
-          "yPos": 610, 
-          "hp": 50 
-        },
-        { 
-          "type": "skeleton", 
-          "xPos": 160, 
-          "yPos": 300, 
-          "hp": 50 
-        }
-      ],
-      "objects": []
     },
     {
       "id": 3,

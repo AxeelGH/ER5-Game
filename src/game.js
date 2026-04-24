@@ -13,7 +13,7 @@ import CombatTurn from "./CombatTurn.js";
 import Inventory from "./Inventory.js";
 import { Sound } from "./constants.js";
 import GameFactory from "./GameFactory.js";
-import LevelFactory from "./levelFactory.js";
+import LevelFactory  from "./levelFactory.js";
 
 class Game {
   constructor(canvas, gameData) {
@@ -25,10 +25,21 @@ class Game {
     globals.gameState = GameState.MENU;
     console.log("Game State: LOADING");
 
-    this.score = gameData.game.score;
+    this.score = 0;
     this.timer = gameData.game.time;
     this.highScore = this.score;
     this.masterVolume = gameData.audio.masterVolume;
+    this.difficulty = "Hard";
+
+    if (this.difficulty === "Easy") {
+      this.enemyHPMultiplier = gameData.difficulty.easy.enemyHPMultiplier;
+      this.enemyAttackMultiplier = gameData.difficulty.easy.enemyAttackMultiplier;
+      this.playerHPMultiplier = gameData.difficulty.easy.playerHPMultiplier;
+    } else if (this.difficulty === "Hard") {
+      this.enemyHPMultiplier = gameData.difficulty.hard.enemyHPMultiplier;
+      this.enemyAttackMultiplier = gameData.difficulty.hard.enemyAttackMultiplier;
+      this.playerHPMultiplier = gameData.difficulty.hard.playerHPMultiplier;
+    }
 
     this.levelFactory = new LevelFactory();
 
@@ -63,7 +74,7 @@ class Game {
     this.loadScreenFrames = 0;
   }
 
-  static create(canvas, gameData) {
+  static async create(canvas, gameData) {
     console.log("Initializing...");
     const game = new Game(canvas, gameData);
 
@@ -78,13 +89,12 @@ class Game {
 
     game.assets = new Asset();
     game.assets.loadAssets();
-
     game.player = SpriteFactory.createPlayer(100, 220, 120, 70);
     globals.player = game.player;
     globals.sprites.push(globals.player);
+    console.log(globals.sprites[0]);
 
-    game.initializeLevels();
-
+    await game.initializeLevels();
 
     canvas.style.width = screen.width + "px";
     canvas.style.height = screen.height + "px";
@@ -133,6 +143,9 @@ class Game {
           console.log("Game State: INTRO");
           console.log(this.canvas.width);
           console.log(this.canvas.height);
+
+          console.log("Current difficulty setting: " + this.difficulty);
+
         }
         break;
 
@@ -200,6 +213,13 @@ class Game {
               globals.gameState = GameState.PLAYING;
               //this.timer = 400;
               console.log("Game State: PLAYING");
+              for (let i = 0; i < globals.enemies.length; i++) {
+                globals.enemies[i].hp *= this.enemyHPMultiplier;
+                globals.enemies[i].maxHp = globals.enemies[i].hp;  
+                console.log("Enemy " + 1 + ": " + globals.enemies[i].hp);
+              }
+              this.player.hp *= this.playerHPMultiplier;
+              this.player.maxHp = this.player.hp;
               break;
 
             case 1:
@@ -284,6 +304,10 @@ class Game {
 
         let allEnemiesDead = true;
 
+        if(globals.enemies.length === 0) {
+          allEnemiesDead = false;
+        }
+
         for (let i = 0; i < globals.enemies.length; i++) {
           if (globals.enemies[i].isAlive === true) {
             allEnemiesDead = false;
@@ -353,14 +377,12 @@ class Game {
     }
   }
 
-  initializeLevels() {
-    let levels = this.levelFactory.loadLevels("./src/mapData.json");
-    if (levels.length > 0) {
-      globals.map = levels[0];
-      globals.enemies = levels[0].enemies;
-      globals.objects = levels[0].objects;
-      globals.currentScreen = levels[0].id;
-      console.log("currentScreen: " + globals.currentScreen);
+  async initializeLevels() {
+    await this.levelFactory.loadLevels("./src/mapData.json");
+    if (this.levelFactory.levels.length > 0) {
+        globals.map = this.levelFactory.levels[0];
+        globals.enemies = this.levelFactory.levels[0].enemies;
+        globals.objects = this.levelFactory.levels[0].objects ? this.levelFactory.levels[0].objects : [];
     }
   }
 
@@ -420,6 +442,7 @@ class Game {
         globals.menuIndex = 0;
         globals.action.confirm = false;
       })
+
       .catch(error => {
         alert("Error: Invalid username or password.");
         console.error(error);
@@ -435,10 +458,10 @@ class Game {
 export function initGame(canvas) {
   fetch("./src/gameData.json")
     .then(response => response.json())
-    .then(data => {
+    .then( async data => {
       console.log("JSON:", data);
       const factory = new GameFactory(data);
-      const game = factory.create(canvas);
+      const game = await factory.create(canvas);
       if (game) game.execute();
     })
     .catch(error => console.error("Failed to fetch data:", error));
