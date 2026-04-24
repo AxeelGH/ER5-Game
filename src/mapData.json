@@ -1,37 +1,37 @@
 {
   "maps": [
     {
-      "id": 1,
+      "id": 0,
       "name": "Starter village",
       "enemies": [1,2],
        "objects": [1]
     },
     {
-      "id": 2,
+      "id": 1,
       "name": "First challenge",
       "enemies": [3,4],
       "objects": [2]
     },
     {
-      "id": 3,
+      "id": 2,
       "name": "Castle",
       "enemies": [5],
       "objects": []
     },
     {
-      "id": 4,
+      "id": 3,
       "name": "Ride",
       "enemies": [6],
       "objects": [3]
     },
     {
-      "id": 5,
+      "id": 4,
       "name": "Cemetery",
       "enemies": [7,8],
       "objects": []
     },
     {
-      "id": 6,
+      "id": 5,
       "name": "Beach",
       "enemies": [9],
       "objects": [4,5]

@@ -71,7 +71,7 @@ export default class Player extends Sprite {
       CollisionManager.resolveMapCollision(this);
     }
 
-    //this.detectBorderCollision();
+    this.detectBorderCollision();
 
     this.updateAnimationFrame();
   }
@@ -113,36 +113,13 @@ export default class Player extends Sprite {
     }
   }
 
-  checkLevelTransition() {
-    const canvasWidth = 1024;
-    const canvasHeight = 768;
-    const exitZone = 730;
-    const safeZone = 20;
-
-    if (this.yPos + this.hitBox.ySize >= exitZone) {
-      console.log("next level");
-
-      if (globals.gameInstance) {
-        const success = globals.gameInstance.changeLevel(1);
-        if (success) {
-          this.yPos = 30;
-          this.xPos = 500;
-          this.levelTransitionCooldown = 1.0;
-          console.log("next level");
-        }
-      }
-    } else if (this.yPos <= 5) {
-      console.log("level back");
-
-      if (globals.gameInstance) {
-        const success = globals.gameInstance.changeLevel(-1);
-        if (success) {
-          this.yPos = canvasHeight - 150;
-          this.xPos = 500;
-          this.levelTransitionCooldown = 1.0;
-          console.log("level 1");
-        }
-      }
-    }
+  detectBorderCollision() {
+    const canvas = globals.canvas;
+    const threshold = 10;
+    
+    this.isCollidingWithRightBorder = (this.xPos + this.hitBox.xOffset + this.hitBox.xSize >= canvas.width - threshold);
+    this.isCollidingWithLeftBorder = (this.xPos + this.hitBox.xOffset <= threshold);
+    this.isCollidingWithTopBorder = (this.yPos + this.hitBox.yOffset <= threshold + 20);
+    this.isCollidingWithBottomBorder = (this.yPos + this.hitBox.yOffset + this.hitBox.ySize >= canvas.height - threshold);
   }
 }

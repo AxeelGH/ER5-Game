@@ -383,6 +383,8 @@ class Game {
         globals.map = this.levelFactory.levels[0];
         globals.enemies = this.levelFactory.levels[0].enemies;
         globals.objects = this.levelFactory.levels[0].objects ? this.levelFactory.levels[0].objects : [];
+        globals.currentScreen = this.levelFactory.levels[0].id;
+      console.log("currentScreen: " + globals.currentScreen);
     }
   }
 
