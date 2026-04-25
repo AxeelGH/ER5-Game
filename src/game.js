@@ -21,8 +21,8 @@ class Game {
     this.ctx = canvas.getContext("2d");
     globals.ctx = this.ctx;
 
-    this.gameState = GameState.MENU;
-    globals.gameState = GameState.MENU;
+    this.gameState = GameState.LOADING;
+    globals.gameState = GameState.LOADING;
     console.log("Game State: LOADING");
 
     this.score = 0;
@@ -138,8 +138,8 @@ class Game {
     switch (this.gameState) {
       case GameState.LOADING:
         if (globals.assetsLoaded >= globals.assetsToLoad.length && globals.assetsToLoad.length > 0) {
-          this.gameState = GameState.MENU;
-          globals.gameState = GameState.MENU;
+          this.gameState = GameState.INTRO;
+          globals.gameState = GameState.INTRO;
           console.log("Game State: INTRO");
           console.log(this.canvas.width);
           console.log(this.canvas.height);
@@ -151,15 +151,26 @@ class Game {
 
       case GameState.INTRO:
         if (globals.action.confirm) {
-          console.log("CONFIRM detected, changing to MENU...");
-          this.gameState = GameState.LOGIN;
-          globals.gameState = GameState.LOGIN;
+          
+          const savedSession = localStorage.getItem('userSession');
+          if (savedSession) {
+            
+            const profile = JSON.parse(savedSession);
+            console.log("logged:", profile);
+
+            this.gameState = GameState.MENU;
+            globals.gameState = GameState.MENU;
+
+          } else {
+            
+            this.gameState = GameState.LOGIN;
+            globals.gameState = GameState.LOGIN;
+          }
+          
           globals.menuIndex = 0;
           globals.action.confirm = false;
-
-          globals.sounds[Sound.START_MUSIC].play();
-          globals.sounds[Sound.START_MUSIC].volume = this.masterVolume;
         }
+
         break;
 
       case GameState.LOGIN:
@@ -439,12 +450,13 @@ class Game {
       })
       .then(json => {
         console.log("Login OK", json);
+        localStorage.setItem('userSession', JSON.stringify(json));
+        
         this.gameState = GameState.MENU;
         globals.gameState = GameState.MENU;
         globals.menuIndex = 0;
         globals.action.confirm = false;
       })
-
       .catch(error => {
         alert("Error: Invalid username or password.");
         console.error(error);
