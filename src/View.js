@@ -125,14 +125,27 @@ export class View {
   renderMenu() {
     this.ctx.drawImage(this.mainBackgroundImg, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
+    if (globals.userName) {
+      this.ctx.save();
+      this.ctx.fillStyle = "#ffffff70";
+      this.ctx.fillRect(this.ctx.canvas.width / 2 * 0.6, this.ctx.canvas.height / 2 * 0.67, 400, 60);
+
+      this.ctx.fillStyle = "#000000";
+      this.ctx.font = "4vw alkhemikal";
+      this.ctx.textAlign = "center";
+      this.ctx.fillText("Welcome " + globals.userName + "!!!", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 * 0.8);
+      
+      this.ctx.restore();
+    }
+
     this.ctx.fillStyle = "white";
     this.ctx.font = "5vw alkhemikal";
     this.ctx.textAlign = "center";
     this.ctx.fillText("THE STORM OF ", this.ctx.canvas.width / 2, this.ctx.canvas.height * 0.1);
     this.ctx.fillText("THE ANCIENT WARRIORS", this.ctx.canvas.width / 2, this.ctx.canvas.height * 0.2);
 
-    const menuItems = ["Play", "Story", "Controls", "High Score"];
-    const startY = 550;
+    const menuItems = ["Play", "Story", "Controls", "High Score", "Logout"];
+    const startY = 500;
     const itemHeight = 50;
     const selectedIndex = globals.menuIndex !== undefined ? globals.menuIndex : 0;
 
@@ -536,8 +549,19 @@ export class View {
   }
 
   renderLogin() {
+
     const canvas = this.ctx.canvas;
     this.ctx.drawImage(this.loginBackgroundImg, 0, 0, canvas.width, canvas.height);
+
+    if (this.game.loginMessage) {
+      
+      this.ctx.fillStyle = "#ffffff";
+      this.ctx.font = "32px alkhemikal";
+      this.ctx.textAlign = "center";
+      
+      const messageY = canvas.height / 2 + 250; 
+      this.ctx.fillText(this.game.loginMessage, canvas.width / 2, messageY);
+    }
   }
 
   renderLoginLoading() {
