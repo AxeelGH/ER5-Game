@@ -271,27 +271,28 @@ class Game {
           
           if (level) {
             globals.map = level;
-            globals.enemies = level.enemies;
-            globals.objects = level.objects;
+            globals.enemies = [...level.enemies];
+            globals.objects = [...level.objects];
             
-            console.log("loadScreen: " + level.name);
-            console.log("Enemies: " + globals.enemies.length);
-            
-            this.pendingScreen = null;
-            this.loadScreenFrames = 0;
-            
-            this.gameState = GameState.PLAYING;
-            globals.gameState = GameState.PLAYING;
-            console.log("Game State: PLAYING");
+            globals.sprites = [];
+            globals.sprites.push(globals.player);
+            for(let i = 0; i < globals.enemies.length; i++){
+              globals.sprites.push(globals.enemies[i]);
+            }
+            for(let i = 0; i< globals.objects.length;i ++ ){
+              globals.sprites.push(globals.objects[i]);
+            }
 
-          } else {
-
-            console.error("Error loading screen: " + this.pendingScreen);
-            this.pendingScreen = null;
-            this.loadScreenFrames = 0;
-            this.gameState = GameState.PLAYING;
-            globals.gameState = GameState.PLAYING;
+            console.log("Level loaded: " + level.name);
+           
           }
+            this.pendingScreen = null;
+            this.loadScreenFrames = 0;
+            this.gameState = GameState.PLAYING;
+            globals.gameState = GameState.PLAYING;
+
+
+      
         }
         break;
 
@@ -398,16 +399,28 @@ class Game {
     }
   }
 
-  async initializeLevels() {
+async initializeLevels() {
     await this.levelFactory.loadLevels("./src/mapData.json");
     if (this.levelFactory.levels.length > 0) {
-        globals.map = this.levelFactory.levels[0];
-        globals.enemies = this.levelFactory.levels[0].enemies;
-        globals.objects = this.levelFactory.levels[0].objects ? this.levelFactory.levels[0].objects : [];
-        globals.currentScreen = this.levelFactory.levels[0].id;
-      console.log("currentScreen: " + globals.currentScreen);
+        const firstLevel = this.levelFactory.levels[0];
+        globals.map = firstLevel;
+        globals.enemies = [...firstLevel.enemies];
+        globals.objects = firstLevel.objects ? [...firstLevel.objects] : [];
+        globals.currentScreen = firstLevel.id;
+
+        globals.sprites = [];
+        globals.sprites.push(globals.player);
+        for (let i = 0; i < globals.enemies.length; i++) {
+            globals.sprites.push(globals.enemies[i]);
+        }
+        for (let i = 0; i < globals.objects.length; i++) {
+            globals.sprites.push(globals.objects[i]);
+        }
+
+        console.log("Initial level loaded:", firstLevel.name);
+        console.log("Sprites:", globals.sprites.length);
     }
-  }
+}
 
     loadScreen(newScreen) {
       console.log("loading Screen: " + newScreen);

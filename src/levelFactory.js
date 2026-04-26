@@ -91,9 +91,10 @@ async loadObjects() {
 
       objects.push(object);
       console.log("Created ", objects.length, " items");
-      return objects;
+
 
     }
+          return objects;
   }
 
   createEnemiesFromConfig(enemiesConfig) {
