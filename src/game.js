@@ -72,6 +72,7 @@ class Game {
     this.loginLoadingFrames = 0;
     this.pendingScreen = null;      
     this.loadScreenFrames = 0;
+    this.loginMessage = "";
   }
 
   static async create(canvas, gameData) {
@@ -158,6 +159,9 @@ class Game {
             const profile = JSON.parse(savedSession);
             console.log("logged:", profile);
 
+            globals.userName = profile.email;
+            console.log("profile session:", globals.userName);
+
             this.gameState = GameState.MENU;
             globals.gameState = GameState.MENU;
 
@@ -183,11 +187,14 @@ class Game {
         if (globals.buttonStart && globals.buttonStart.clicked) {
           globals.buttonStart.clicked = false;
 
-          const email = document.getElementById("email").value;
-          const password = document.getElementById("password").value;
+          const emailInput = document.getElementById("email");
+          const passwordInput = document.getElementById("password");
+
+          const email = emailInput.value;
+          const password = passwordInput.value;
 
           if (!email || !password) {
-            alert("Please enter both email and password.");
+            this.loginMessage = "Please enter both email and password.";
           } else {
             this.login(email, password);
           }
@@ -207,12 +214,12 @@ class Game {
       case GameState.MENU:
         if (globals.action.moveUp) {
           globals.action.moveUp = false;
-          globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 3;
+          globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 4;
         }
 
         if (globals.action.moveDown) {
           globals.action.moveDown = false;
-          globals.menuIndex = globals.menuIndex < 3 ? globals.menuIndex + 1 : 0;
+          globals.menuIndex = globals.menuIndex < 4 ? globals.menuIndex + 1 : 0;
         }
 
         if (globals.action.confirm) {
@@ -246,6 +253,9 @@ class Game {
             case 3:
               this.gameState = GameState.HIGHSCORE;
               globals.gameState = GameState.HIGHSCORE;
+              break;
+            case 4:
+              this.logout();
               break;
           }
         }
@@ -451,6 +461,7 @@ class Game {
       .then(json => {
         console.log("Login OK", json);
         localStorage.setItem('userSession', JSON.stringify(json));
+        globals.userName = json.email;
         
         this.gameState = GameState.MENU;
         globals.gameState = GameState.MENU;
@@ -458,13 +469,37 @@ class Game {
         globals.action.confirm = false;
       })
       .catch(error => {
-        alert("Error: Invalid username or password.");
+        this.loginMessage = "Error: Invalid username or password.";
         console.error(error);
+
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        if (emailInput) emailInput.value = "";
+        if (passwordInput) passwordInput.value = "";
 
         this.gameState = GameState.LOGIN;
         globals.gameState = GameState.LOGIN;
         document.getElementById("formLogin").style.display = "block";
       });
+  }
+
+  logout() {
+    
+    localStorage.removeItem('userSession'); 
+    globals.userName = "";
+    console.log("User logged out successfully.");
+
+    this.gameState = GameState.LOGIN;
+    globals.gameState = GameState.LOGIN;
+    globals.menuIndex = 0;
+
+    const form = document.getElementById("formLogin");
+    if (form) form.style.display = "block";
+
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    if (emailInput) emailInput.value = "";
+    if (passwordInput) passwordInput.value = "";
   }
 
 }

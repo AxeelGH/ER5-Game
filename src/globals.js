@@ -45,4 +45,5 @@ export default {
   buttonStartClicked: false,
 
   currentScreen: null,
+  userName: "",
 };
