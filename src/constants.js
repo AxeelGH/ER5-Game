@@ -97,6 +97,10 @@ export const State = {
 
   //OBJECT
   OBJECT_STILL: 0,
+
+  COMBAT_MOVE_1: 5,
+  COMBAT_MOVE_2: 6,
+  COMBAT_MOVE_3: 7,
 };
 
 export const Key = {

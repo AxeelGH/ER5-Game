@@ -4,6 +4,7 @@ import AbilityPhase from "./AbilityPhase.js";
 import AttackPhase from "./AttackPhase.js";
 import InventoryPhase from "./InventoryPhase.js";
 import FleePhase from "./FleePhase.js";
+import MovePhase from "./MovePhase.js";
 import { GameState } from "./constants.js";
 import SpriteFactory from "./SpriteFactory.js";
 
@@ -20,9 +21,8 @@ export default class CombatTurn {
     globals.triedToFlee = false;
     this.waitingForPlayer = false;
 
-    //Combat index
     this.phaseIndex = 0;
-    this.phases = ["Attack", "Ability", "Inventory", "Flee"];
+    this.phases = ["Attack", "Ability", "Inventory", "Move", "Flee"];
 
     this.initPhases();
     this.startCombat();
@@ -33,6 +33,7 @@ export default class CombatTurn {
       Attack: new AttackPhase(this.player, this.enemy, this.input, this.dice),
       Ability: new AbilityPhase(this.player, this.enemy, this.input, this.dice),
       Inventory: new InventoryPhase(this.player, this.enemy, this.input, this.dice),
+      Move: new MovePhase(this.player, this.enemy, this.input, this.dice),
       Flee: new FleePhase(this.player, this.enemy, this.input, this.dice),
     };
   }
@@ -42,9 +43,50 @@ export default class CombatTurn {
       return;
     }
 
-    if (this.currentTurn === 1 && !this.combatStarted) {
-      this.startCombat();
+    let currentPhaseObj = null;
+    
+    switch(this.phases[this.phaseIndex]) {
+      case "Attack":
+        currentPhaseObj = this.combatPhases.Attack;
+        break;
+      case "Ability":
+        currentPhaseObj = this.combatPhases.Ability;
+        break;
+      case "Inventory":
+        currentPhaseObj = this.combatPhases.Inventory;
+        break;
+      case "Move":
+        currentPhaseObj = this.combatPhases.Move;
+        break;
+      case "Flee":
+        currentPhaseObj = this.combatPhases.Flee;
+        break;
+      default:
+        currentPhaseObj = null;
+        break;
     }
+    
+    if (currentPhaseObj && currentPhaseObj.moving) {
+      if (globals.action.moveLeft) {
+        globals.action.moveLeft = false;
+        currentPhaseObj.moveIndex = currentPhaseObj.moveIndex > 0 ? 
+          currentPhaseObj.moveIndex - 1 : currentPhaseObj.movePositions.length - 1;
+      }
+      if (globals.action.moveRight) {
+        globals.action.moveRight = false;
+        currentPhaseObj.moveIndex = currentPhaseObj.moveIndex < currentPhaseObj.movePositions.length - 1 ? 
+          currentPhaseObj.moveIndex + 1 : 0;
+      }
+      
+      if (globals.action.confirm) {
+        globals.action.confirm = false;
+        currentPhaseObj.executeMove(currentPhaseObj.moveIndex);
+        this.waitingForPlayer = true;
+        this.currentPhase = null;
+      }
+      return;
+    }
+
     if (globals.action.moveUp) {
       globals.action.moveUp = false;
       this.phaseIndex = this.phaseIndex > 0 ? this.phaseIndex - 1 : this.phases.length - 1;
@@ -59,6 +101,13 @@ export default class CombatTurn {
 
       const selectedPhase = this.phases[this.phaseIndex];
       console.log("Selected phase: " + selectedPhase);
+
+      if (selectedPhase === "Move") {
+        this.currentPhase = this.combatPhases[selectedPhase];
+        this.currentPhase.moving = true;
+        this.currentPhase.cancelled = true;
+        return;
+      }
 
       this.currentPhase = this.combatPhases[selectedPhase];
       console.log("Turn: " + this.currentTurn);
@@ -107,7 +156,6 @@ export default class CombatTurn {
 
       if (randomValue < dropChance && globals.inventory) {
         this.createPotionDrop();
-        //globals.inventory.addPotion();
         console.log("dropped a potion");
       } else {
         console.log("No item dropped");
