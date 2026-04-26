@@ -57,7 +57,6 @@ export class View {
 
       case GameState.COMBAT:
         this.renderCombat();
-        this.renderCombatMenu();
         break;
 
       case GameState.GAME_OVER:
@@ -207,7 +206,6 @@ export class View {
     }
 
     if (globals.object) {
-      //this.objectView.drawHitBox();
       this.objectView.render();
     }
   }
@@ -276,20 +274,6 @@ export class View {
 
     this.combatView.render();
 
-    // if (globals.player) {
-    //     const scale = 3;
-    //     this.ctx.save();
-    //     this.ctx.translate(100 + 48 * scale, 30);
-    //     this.ctx.scale(-scale, scale);
-
-    //     this.ctx.drawImage(
-    //         globals.tileSets[0],
-    //         56, 2817, 48, 81,
-    //         0, 230 / scale, 48, 101
-    //     );
-    //     this.ctx.restore();
-    // }
-
     this.ctx.fillStyle = "#ffffff";
     this.ctx.font = "48px alkhemikal";
     this.ctx.textAlign = "center";
@@ -297,7 +281,6 @@ export class View {
     this.ctx.fillText(`Turn ${this.game.combatTurn.currentTurn}`, this.ctx.canvas.width / 2, 50);
 
     this.ctx.fillStyle = "#ff4444";
-
     this.ctx.fillText("COMBAT", 120, 50);
 
     if (globals.currentEnemy) {
@@ -333,7 +316,6 @@ export class View {
       this.ctx.fillStyle = "#330000";
       this.ctx.fillRect(barX, barY, barWidth, barHeight);
 
-      //Enemy HP bar
       const hpPercent = globals.currentEnemy.hp / globals.currentEnemy.maxHp;
       this.ctx.fillStyle = "#00ff00";
       this.ctx.fillRect(barX, barY, barWidth * hpPercent, barHeight);
@@ -358,64 +340,80 @@ export class View {
         this.ctx.fillText(`Your mana: ${Math.floor(globals.player.mana)}/${globals.player.maxMana}`, 20, 640);
       }
     }
+    
+    this.renderCombatMenu();
+    
+    if (this.game.combatTurn && this.game.combatTurn.combatPhases && this.game.combatTurn.combatPhases.Move) {
+      this.combatView.showMoveUI(this.ctx, this.game.combatTurn.combatPhases.Move);
+    }
   }
 
   renderCombatMenu() {
-    if (!this.game.combatTurn) return;
+  if (!this.game.combatTurn) return;
 
-    //Combat options box
-    this.ctx.fillStyle = "rgba(0,0,0,0.7)";
-    this.ctx.fillRect(3, 655, 354, 110);
-    this.ctx.strokeStyle = "white";
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeRect(3, 655, 354, 110);
-
-    const phaseIndex = this.game.combatTurn.phaseIndex;
-    const options = ["ATTACK", "ABILITY", "ITEM", "FLEE"];
-
-    const positions = [
-      { x: 15, y: 665 },
-      { x: 185, y: 665 },
-      { x: 15, y: 715 },
-      { x: 185, y: 715 },
-    ];
-
-    const optWidth = 160;
-    const optHeight = 40;
-
-    for (let i = 0; i < options.length; i++) {
-      const { x, y } = positions[i];
-
-      this.ctx.fillStyle = "#ffffff";
-      this.ctx.fillRect(x, y, optWidth, optHeight);
-
-      if (i === phaseIndex) {
-        this.ctx.strokeStyle = "red";
-        this.ctx.lineWidth = 4;
-      } else {
-        this.ctx.strokeStyle = "#555";
-        this.ctx.lineWidth = 1;
-      }
-      this.ctx.strokeRect(x, y, optWidth, optHeight);
-
-      this.ctx.fillStyle = "black";
-      this.ctx.font = "32px alkhemikal";
-      this.ctx.textAlign = "center";
-      this.ctx.fillText(options[i], x + 70, y + 30);
-
-      //Combat log box
-      this.ctx.fillStyle = "rgba(0,0,0,0.7)";
-      this.ctx.fillRect(360, 655, 661, 110);
-      this.ctx.strokeStyle = "white";
-      this.ctx.lineWidth = 2;
-      this.ctx.strokeRect(360, 655, 661, 110);
-
-      this.ctx.fillStyle = "white";
-      this.ctx.textAlign = "left";
-      this.ctx.font = "2opx alkhemikal";
-      this.ctx.fillText("Combat log coming soon...", 370, 680);
-    }
+  const movePhase = this.game.combatTurn.combatPhases?.Move;
+  const isMoving = movePhase && movePhase.moving;
+  
+  if (isMoving) {
+    // No dibujar el menú normal cuando estamos en modo movimiento
+    return;
   }
+
+  // Menú normal de combate - Aumentar altura para 5 botones
+  this.ctx.fillStyle = "rgba(0,0,0,0.7)";
+  this.ctx.fillRect(3, 600, 354, 160);
+  this.ctx.strokeStyle = "white";
+  this.ctx.lineWidth = 2;
+  this.ctx.strokeRect(3, 600, 354, 160);
+
+  const phaseIndex = this.game.combatTurn.phaseIndex;
+  const options = ["ATTACK", "ABILITY", "ITEM", "MOVE", "FLEE"];
+
+  // Posiciones para 5 botones (2 filas: primera 3 botones, segunda 2 botones)
+  const positions = [
+    { x: 15, y: 615 },   // ATTACK
+    { x: 185, y: 615 },  // ABILITY
+    { x: 15, y: 665 },   // ITEM
+    { x: 185, y: 665 },  // MOVE
+    { x: 100, y: 715 },  // FLEE (centrado abajo)
+  ];
+
+  const optWidth = 160;
+  const optHeight = 40;
+
+  for (let i = 0; i < options.length; i++) {
+    const { x, y } = positions[i];
+    
+    this.ctx.fillStyle = "#ffffff";
+    this.ctx.fillRect(x, y, optWidth, optHeight);
+
+    if (i === phaseIndex) {
+      this.ctx.strokeStyle = "red";
+      this.ctx.lineWidth = 4;
+    } else {
+      this.ctx.strokeStyle = "#555";
+      this.ctx.lineWidth = 1;
+    }
+    this.ctx.strokeRect(x, y, optWidth, optHeight);
+
+    this.ctx.fillStyle = "black";
+    this.ctx.font = "32px alkhemikal";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText(options[i], x + 80, y + 30);
+  }
+
+  // Combat log box (ajustar posición Y)
+  this.ctx.fillStyle = "rgba(0,0,0,0.7)";
+  this.ctx.fillRect(360, 600, 661, 160);
+  this.ctx.strokeStyle = "white";
+  this.ctx.lineWidth = 2;
+  this.ctx.strokeRect(360, 600, 661, 160);
+
+  this.ctx.fillStyle = "white";
+  this.ctx.textAlign = "left";
+  this.ctx.font = "20px alkhemikal";
+  this.ctx.fillText("Combat log coming soon...", 370, 625);
+}
 
   renderSettings() {
     this.ctx.drawImage(this.storyBackgroundImg, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -471,7 +469,7 @@ export class View {
   renderHighScore() {
     this.ctx.drawImage(this.storyBackgroundImg, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-    this.ctx.fillStyle = "##e9b200";
+    this.ctx.fillStyle = "#e9b200";
     this.ctx.font = "48px alkhemikal";
     this.ctx.textAlign = "center";
     this.ctx.fillText("HIGH SCORES", this.ctx.canvas.width / 2, 80);
@@ -602,7 +600,6 @@ export class View {
   }
 
   renderLoadScreen() {
-    
     this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     
