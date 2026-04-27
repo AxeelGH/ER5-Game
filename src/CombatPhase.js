@@ -1,39 +1,39 @@
-class CombatPhase {
-  constructor(player, enemy, input, dice) {
+import globals from "./globals.js";
+
+export default class CombatPhase {
+  constructor(player, enemy, dice, combatTurn) {
     this.player = player;
     this.enemy = enemy;
-    this.input = input;
     this.dice = dice;
-
-    this.state = "init";
-    this.finished = false;
+    this.combatTurn = combatTurn;
+    
+    this.state = 'init';
+    this.result = null;
+    this.cancelled = false;
+    this.fled = false;
   }
 
   init() {
-    this.state = "select";
+    this.state = 'waiting';
   }
 
-  handleSelection() {}
-
-  performAction() {}
-
-  resolve() {}
-
-  end() {
-    this.finished = true;
-  }
-
-  isFinished() {
-    return this.finished;
+  handleInput() {
+    if (this.state === 'waiting') {
+      this.state = 'executing';
+    }
   }
 
   execute() {
-    this.init();
-    this.handleSelection();
-    this.performAction();
-    this.resolve();
-    this.end();
+    this.state = 'completed';
+  }
+
+  onComplete() {
+  }
+
+  renderUI(ctx) {
+  }
+
+  isFinished() {
+    return this.state === 'completed' || this.state === 'cancelled';
   }
 }
-
-export default CombatPhase;

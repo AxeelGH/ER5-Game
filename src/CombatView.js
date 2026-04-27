@@ -14,42 +14,42 @@ export default class CombatView {
   }
 
   render() {
-  const enemy = globals.currentEnemy;
-  const player = globals.player;
-  
-  if (enemy) {
-    enemy.combatUpdate();
-  }
-  if (player) {
-    player.combatUpdate();
-    player.updateAnimationFrame();
-  }
+    const enemy = globals.currentEnemy;
+    const player = globals.player;
+    
+    if (enemy) {
+      enemy.combatUpdate();
+    }
+    if (player) {
+      player.combatUpdate();
+      player.updateAnimationFrame();
+    }
 
-  if (enemy) {
-    if (enemy.id === SpriteID.SLIME) {
-      this.updateSuperEnemy(this.superSlime, enemy);
-      this.drawEnemy(this.superSlime, 450, 160, 500, 500);
-    } else if (enemy.id === SpriteID.MAGE) {
-      this.updateSuperEnemy(this.superMage, enemy);
-      this.drawEnemy(this.superMage, 450, 130, 500, 500);
-    } else if (enemy.id === SpriteID.SKELETON) {
-      this.updateSuperEnemy(this.superSkeleton, enemy);
-      this.drawEnemy(this.superSkeleton, 450, 0, 600, 600);
-    } else if (enemy.id === SpriteID.SUPER_SLIME) {
-      this.drawEnemy(enemy, 450, 160, 500, 500);
-    } else if (enemy.id === SpriteID.SUPER_MAGE) {
-      this.drawEnemy(enemy, 450, 130, 500, 500);
-    } else if (enemy.id === SpriteID.SUPER_SKELETON) {
-      this.drawEnemy(enemy, 450, 100, 500, 500);
-    } else {
-      this.drawEnemy(enemy, 300, 100, 700, 700);
+    if (enemy) {
+      if (enemy.id === SpriteID.SLIME) {
+        this.updateSuperEnemy(this.superSlime, enemy);
+        this.drawEnemy(this.superSlime, 450, 160, 500, 500);
+      } else if (enemy.id === SpriteID.MAGE) {
+        this.updateSuperEnemy(this.superMage, enemy);
+        this.drawEnemy(this.superMage, 450, 130, 500, 500);
+      } else if (enemy.id === SpriteID.SKELETON) {
+        this.updateSuperEnemy(this.superSkeleton, enemy);
+        this.drawEnemy(this.superSkeleton, 450, 0, 600, 600);
+      } else if (enemy.id === SpriteID.SUPER_SLIME) {
+        this.drawEnemy(enemy, 450, 160, 500, 500);
+      } else if (enemy.id === SpriteID.SUPER_MAGE) {
+        this.drawEnemy(enemy, 450, 130, 500, 500);
+      } else if (enemy.id === SpriteID.SUPER_SKELETON) {
+        this.drawEnemy(enemy, 450, 100, 500, 500);
+      } else {
+        this.drawEnemy(enemy, 300, 100, 700, 700);
+      }
+    }
+
+    if (player) {
+      this.drawPlayer(player, player.xPos, player.yPos, 300, 300);
     }
   }
-
-  if (player) {
-    this.drawPlayer(player, player.xPos, player.yPos, 300, 300);
-  }
-}
 
   updateSuperEnemy(superEnemy, normalEnemy) {
     superEnemy.animationTimer = normalEnemy.animationTimer;
@@ -98,7 +98,7 @@ export default class CombatView {
     const originalHeight = enemy.imageSet.ySize;
 
     const col = enemy.imageSet.initCol + frameIndex;
-    const row = enemy.imageSet.initFil + enemy.state;
+    const row = enemy.imageSet.initFil + (enemy.state !== undefined ? enemy.state : 0);
 
     const xTile = col * originalWidth + enemy.imageSet.xOffset;
     const yTile = row * originalHeight + enemy.imageSet.yOffset;
@@ -107,62 +107,24 @@ export default class CombatView {
   }
 
   drawPlayer(player, x, y, width, height) {
-  const frameIndex = player.frames.frameCounter;
-  const img = globals.tileSets[0];
+    const frameIndex = player.frames.frameCounter;
+    const img = globals.tileSets[0];
 
-  const originalWidth = player.imageSet.xSize;
-  const originalHeight = player.imageSet.ySize;
+    const originalWidth = player.imageSet.xSize;
+    const originalHeight = player.imageSet.ySize;
 
-  const col = player.imageSet.initCol + frameIndex;
-  const row = player.imageSet.initFil + player.state;
+    const col = player.imageSet.initCol + frameIndex;
+    const row = player.imageSet.initFil + player.state;
 
-  const xTile = col * originalWidth + player.imageSet.xOffset;
-  const yTile = row * originalHeight + player.imageSet.yOffset;
+    const xTile = col * originalWidth + player.imageSet.xOffset;
+    const yTile = row * originalHeight + player.imageSet.yOffset;
 
-  const drawX = player.xPos;
-  const drawY = player.yPos;
+    this.ctx.drawImage(img, xTile, yTile, originalWidth, originalHeight, x, y, width, height);
+  }
 
-  this.ctx.drawImage(img, xTile, yTile, originalWidth, originalHeight, drawX, drawY, width, height);
-}
-
-  showMoveUI(ctx, movePhase) {
-    if (!movePhase || !movePhase.moving) return;
-    
-    const positions = movePhase.getMovePositions();
-    const currentIndex = movePhase.getMoveIndex();
-    
-    ctx.fillStyle = "rgba(0,0,0,0.8)";
-    ctx.fillRect(150, 400, 500, 150);
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(150, 400, 500, 150);
-    
-    ctx.fillStyle = "white";
-    ctx.font = "24px alkhemikal";
-    ctx.textAlign = "center";
-    ctx.fillText("CHOOSE POSITION TO MOVE:", 400, 440);
-    
-    const positionsText = ["LEFT", "CENTER", "RIGHT"];
-    const positionsX = [250, 400, 550];
-    
-    for (let i = 0; i < positionsText.length; i++) {
-      if (i === currentIndex) {
-        ctx.fillStyle = "yellow";
-        ctx.font = "bold 20px alkhemikal";
-        ctx.fillText("> " + positionsText[i] + " <", positionsX[i], 490);
-      } else {
-        ctx.fillStyle = "white";
-        ctx.font = "20px alkhemikal";
-        ctx.fillText(positionsText[i], positionsX[i], 490);
-      }
-      
-      ctx.fillStyle = "#aaaaaa";
-      ctx.font = "14px alkhemikal";
-      ctx.fillText("(x=" + positions[i] + ")", positionsX[i], 520);
+  renderPhaseUI(ctx, combatTurn) {    
+    if (combatTurn.selectedPhase.renderUI) {
+      combatTurn.selectedPhase.renderUI(ctx);
     }
-    
-    ctx.fillStyle = "#88ff88";
-    ctx.font = "16px alkhemikal";
-    ctx.fillText("Use ← → to select, SPACE to move", 400, 540);
   }
 }

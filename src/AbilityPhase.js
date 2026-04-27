@@ -2,25 +2,27 @@ import globals from "./globals.js";
 import CombatPhase from "./CombatPhase.js";
 
 export default class AbilityPhase extends CombatPhase {
-  handleSelection() {}
+  constructor(player, enemy, dice, combatTurn) {
+    super(player, enemy, dice, combatTurn);
+    this.damage = 0;
+  }
 
-  performAction() {
+  execute() {
     console.log("Executing ability");
 
     this.player.state = 4;
     this.player.animationTimer = 30;
 
     if (this.player.mana >= 20) {
-      const damage = 20 + this.dice.rollDice(6) + this.dice.rollDice(6);
-      this.enemy.hp -= damage;
+      this.damage = 20 + this.dice.rollDice(6) + this.dice.rollDice(6);
+      this.enemy.hp -= this.damage;
       this.player.mana -= 20;
 
-      console.log("Damage: " + damage);
+      console.log("Damage: " + this.damage);
 
       if (globals.ParticleSystem) {
         const explosionX = 580;
         const explosionY = 340;
-        const intensity = Math.min(1.5, damage / 30);
         globals.ParticleSystem.createExplosion(explosionX, explosionY, 1.5);
       }
     } else {
@@ -28,17 +30,11 @@ export default class AbilityPhase extends CombatPhase {
       this.cancelled = true;
     }
 
-    this.state = "resolve";
-  }
-
-  resolve() {
-    console.log("Resolving ability");
-
     if (this.enemy.hp <= 0) {
       this.enemy.isAlive = false;
       console.log("Enemy defeated");
     }
 
-    this.state = "end";
+    this.state = 'completed';
   }
 }

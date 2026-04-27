@@ -1,19 +1,20 @@
 import globals from "./globals.js";
 import CombatPhase from "./CombatPhase.js";
-import Inventory from "./Inventory.js";
-import CombatTurn from "./CombatTurn.js";
 
 export default class FleePhase extends CombatPhase {
-  handleSelection() {}
+  constructor(player, enemy, dice, combatTurn) {
+    super(player, enemy, dice, combatTurn);
+    this.fled = false;
+  }
 
-  performAction() {
+  execute() {
     if (!globals.triedToFlee) {
-      const fleeResult = this.dice.evaluateFlee(globals.gameInstance.combatTurn.currentTurn);
+      const fleeResult = this.dice.evaluateFlee(this.combatTurn.currentTurn);
       globals.triedToFlee = true;
       console.log("Flee result: " + fleeResult);
-      console.log("Tried to flee: " + globals.triedToFlee);
+      
       if (fleeResult === 1) {
-        console.log("You fled succesfully");
+        console.log("You fled successfully");
         this.fled = true;
       } else if (fleeResult === 2) {
         console.log("You fled but received damage");
@@ -29,15 +30,11 @@ export default class FleePhase extends CombatPhase {
         this.echoesOfTheCoward();
       }
     } else {
-      console.log("You already tried to flee and the enemy has traped you, you can't flee!!");
+      console.log("You already tried to flee and the enemy has trapped you, you can't flee!!");
       this.cancelled = true;
     }
 
-    this.state = "resolve";
-  }
-
-  resolve() {
-    this.state = "end";
+    this.state = 'completed';
   }
 
   echoesOfTheCoward() {
@@ -48,20 +45,18 @@ export default class FleePhase extends CombatPhase {
       result = Math.floor(Math.random() * 2) + 1;
     }
 
-    console.log(globals.inventory.potions);
+    console.log("Potions: " + globals.inventory.potions);
 
     if (result === 1) {
       this.enemy.maxHp += 20;
       this.enemy.hp += 20;
-      console.log("The enemy has seen you flee and has become more confident and arrogant; its maximum health has increased!");
+      console.log("The enemy has seen you flee and has become more confident; its maximum health has increased!");
     } else if (result === 2) {
       globals.player.maxHp -= 10;
-
       if (this.player.hp > this.player.maxHp) {
         this.player.hp = this.player.maxHp;
       }
-
-      console.log("Your cowardice has made you lose confidence in yourself, and you've lost 10 points of maximum health by fleeing from battle!");
+      console.log("Your cowardice has made you lose 10 points of maximum health!");
     } else {
       globals.inventory.removePotion();
       console.log("You stumbled while trying to flee and lost a potion!");
