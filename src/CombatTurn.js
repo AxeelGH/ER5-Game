@@ -122,7 +122,7 @@ export default class CombatTurn {
     const dropX = this.enemy.xPos + 20;
     const dropY = this.enemy.yPos + 20;
 
-    const potion = SpriteFactory.createObject(dropX, dropY);
+    const potion = SpriteFactory.createItem(dropX, dropY);
 
     if (!globals.potionDrops) {
       globals.potionDrops = [];

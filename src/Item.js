@@ -5,7 +5,7 @@ import HitBox from "./HitBox.js";
 import Sprite from "./Sprite.js";
 import { SpriteID, State } from "./constants.js";
 
-export default class Object extends Sprite {
+export default class Item extends Sprite {
   constructor(xPos, yPos) {
     super();
     this.spriteID = SpriteID.OBJECT;
@@ -22,5 +22,9 @@ export default class Object extends Sprite {
 
   update() {
     this.updateAnimationFrame();
+  }
+
+  static clone (item){
+    
   }
 }

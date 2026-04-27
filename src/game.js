@@ -271,16 +271,15 @@ class Game {
           
           if (level) {
             globals.map = level;
-            globals.enemies = [...level.enemies];
-            globals.objects = [...level.objects];
-            
+            globals.enemies = structuredClone(level.enemies);
+            globals.items = structuredClone(level.items);
             globals.sprites = [];
             globals.sprites.push(globals.player);
             for(let i = 0; i < globals.enemies.length; i++){
               globals.sprites.push(globals.enemies[i]);
             }
-            for(let i = 0; i< globals.objects.length;i ++ ){
-              globals.sprites.push(globals.objects[i]);
+            for(let i = 0; i< globals.items.length;i ++ ){
+              globals.sprites.push(globals.items[i]);
             }
 
             console.log("Level loaded: " + level.name);
@@ -313,8 +312,8 @@ class Game {
           }
         }
 
-        if (globals.object) {
-          globals.object.update();
+        if (globals.item) {
+          globals.item.update();
         }
 
         if (globals.player) {
@@ -385,6 +384,7 @@ class Game {
           globals.gameState = GameState.MENU;
           globals.action.confirm = false;
         }
+        break;
 
       case GameState.GAME_OVER:
         if (globals.action.confirm) {
@@ -402,22 +402,26 @@ class Game {
 async initializeLevels() {
     await this.levelFactory.loadLevels("./src/mapData.json");
     if (this.levelFactory.levels.length > 0) {
-        const firstLevel = this.levelFactory.levels[0];
-        globals.map = firstLevel;
-        globals.enemies = [...firstLevel.enemies];
-        globals.objects = firstLevel.objects ? [...firstLevel.objects] : [];
-        globals.currentScreen = firstLevel.id;
+        const currentLevel = this.levelFactory.levels[0];
+        globals.map = currentLevel;
+         globals.enemies = [...currentLevel.enemies];
+        //globals.enemies = currentLevel.enemies ? structuredClone(currentLevel.enemies): [];
+
+        globals.items = currentLevel.items ? JSON.parse(JSON.stringify(currentLevel.items)): [];
+        globals.currentScreen = currentLevel.id;
 
         globals.sprites = [];
         globals.sprites.push(globals.player);
         for (let i = 0; i < globals.enemies.length; i++) {
             globals.sprites.push(globals.enemies[i]);
         }
-        for (let i = 0; i < globals.objects.length; i++) {
-            globals.sprites.push(globals.objects[i]);
+        for (let i = 0; i < globals.items.length; i++) {
+            globals.sprites.push(globals.items[i]);
         }
-
-        console.log("Initial level loaded:", firstLevel.name);
+        for(let i = 0;i < globals.enemies.length;i++){
+          console.log("Enemies: " + globals.enemies[i]);
+        }
+        console.log("Initial level loaded:", currentLevel.name);
         console.log("Sprites:", globals.sprites.length);
     }
 }
@@ -430,7 +434,7 @@ async initializeLevels() {
       if (level) {
         globals.map = level;
         globals.enemies = level.enemies;
-        globals.objects = level.objects;
+        globals.items = level.items;
         
         console.log("Screen: " + level.name);
         console.log("Enemies: " + globals.enemies.length);

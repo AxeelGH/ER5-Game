@@ -319,36 +319,36 @@ export default class CollisionManager {
         }
     }
 
-    if (globals.objects && globals.objects.length > 0) {
-        for (let i = 0; i < globals.objects.length; i++) {
-            const obj = globals.objects[i];
+    if (globals.items && globals.items.length > 0) {
+        for (let i = 0; i < globals.items.length; i++) {
+            const obj = globals.items[i];
             if (!obj || obj.isCollected) continue;
             
-            const objectHitBox = {
+            const itemHitBox = {
                 x: obj.xPos + obj.hitBox.xOffset,
                 y: obj.yPos + obj.hitBox.yOffset,
                 w: obj.hitBox.xSize,
                 h: obj.hitBox.ySize
             };
             
-            if (this.rectIntersect(playerHitBox, objectHitBox)) {
+            if (this.rectIntersect(playerHitBox, itemHitBox)) {
                 console.log("Potion collected from level");
                 if (globals.inventory) {
                     globals.inventory.addPotion();
                 }
-                globals.objects.splice(i, 1);
+                globals.items.splice(i, 1);
                 i--; 
             }
         }
     }
 
     
-    if (globals.object) {
+    if (globals.item) {
         const potionHitBox = {
-            x: globals.object.xPos + globals.object.hitBox.xOffset,
-            y: globals.object.yPos + globals.object.hitBox.yOffset,
-            w: globals.object.hitBox.xSize,
-            h: globals.object.hitBox.ySize
+            x: globals.item.xPos + globals.item.hitBox.xOffset,
+            y: globals.item.yPos + globals.item.hitBox.yOffset,
+            w: globals.item.hitBox.xSize,
+            h: globals.item.hitBox.ySize
         };
     
         if (this.rectIntersect(playerHitBox, potionHitBox)) {
@@ -381,7 +381,7 @@ export default class CollisionManager {
     if (globals.inventory) {
       globals.inventory.addPotion();
     }
-    globals.object = null;
+    globals.item = null;
   }
 
   static collisionDropPotion() {

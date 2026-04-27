@@ -13,7 +13,7 @@ export default class LevelFactory {
 
 async loadLevels(mapDataPath) {
     await this.loadEnemies();
-    await this.loadObjects();
+    await this.loadItems();
 
     const response = await fetch("./src/mapData.json");
     const data = await response.json();
@@ -32,11 +32,11 @@ async loadEnemies() {
     console.log("Enemies loaded:", this.enemyData);
 }
 
-async loadObjects() { 
-    const response = await fetch("./src/objectData.json");
+async loadItems() { 
+    const response = await fetch("./src/itemData.json");
     const data = await response.json();
-    this.objectData = data;
-    console.log("Items loaded:", this.objectData);
+    this.itemData = data;
+    console.log("Items loaded:", this.itemData);
 }
 
   getLevelById(levelId) {
@@ -59,42 +59,42 @@ async loadObjects() {
 
     let enemiesData = mapConfig.enemies ? mapConfig.enemies : this.enemyData;
 
-    let objectsData = mapConfig.objects ? mapConfig.objects : this.objectData;
+    let itemsData = mapConfig.items ? mapConfig.items : this.itemData;
 
     let enemies = this.createEnemiesFromConfig(enemiesData);
 
-    let objects = this.createObjectsFromConfig(objectsData);
+    let items = this.createItemsFromConfig(itemsData);
 
-    let level = new Map(mapConfig.id, mapConfig.name, mapData, mapImageSet, enemies, objects);
+    let level = new Map(mapConfig.id, mapConfig.name, mapData, mapImageSet, enemies, items);
 
     return level;
   }
 
-  createObjectsFromConfig(objectsConfig) {
+  createItemsFromConfig(itemsConfig) {
 
-    let objects = [];
+    let items = [];
 
-    for (let i = 0; i < objectsConfig.length; i++) {
-      let objectId = objectsConfig[i];
-      let objectData = null;
+    for (let i = 0; i < itemsConfig.length; i++) {
+      let itemId = itemsConfig[i];
+      let itemData = null;
 
-      for(let j = 0; j < this.objectData.objects.length; j++){
-        if(this.objectData.objects[j].id === objectId){
-        objectData = this.objectData.objects[j];
+      for(let j = 0; j < this.itemData.items.length; j++){
+        if(this.itemData.items[j].id === itemId){
+        itemData = this.itemData.items[j];
         break;
         }
       }
 
-      let object = null;
+      let item = null;
 
-      object = SpriteFactory.createObject(objectData.xPos, objectData.yPos);
+      item = SpriteFactory.createItem(itemData.xPos, itemData.yPos);
 
-      objects.push(object);
-      console.log("Created ", objects.length, " items");
+      items.push(item);
+      console.log("Created ", items.length, " items");
 
 
     }
-          return objects;
+          return items;
   }
 
   createEnemiesFromConfig(enemiesConfig) {

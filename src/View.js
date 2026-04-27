@@ -2,7 +2,7 @@ import globals from "./globals.js";
 import { GameState, SpriteID } from "./constants.js";
 import playerView from "./PlayerView.js";
 import MapView from "./MapView.js";
-import ObjectView from "./ObjectView.js";
+import ItemView from "./ItemView.js";
 
 import CombatView from "./CombatView.js";
 import CombatTurn from "./CombatTurn.js";
@@ -12,7 +12,7 @@ export class View {
     this.ctx = ctx;
     this.playerView = new playerView(ctx);
     this.mapView = new MapView(ctx);
-    this.objectView = new ObjectView(ctx);
+    this.itemView = new ItemView(ctx);
     this.combatView = new CombatView(ctx);
     this.game = game;
 
@@ -175,9 +175,9 @@ export class View {
         }
       }
     }
-    if (globals.objects) {
-      for (let i = 0; i < globals.objects.length; i++) {
-        const obj = globals.objects[i];
+    if (globals.items) {
+      for (let i = 0; i < globals.items.length; i++) {
+        const obj = globals.items[i];
         if (obj && obj.imageSet) {
           const img = globals.tileSets[2];
           if (img && img.complete) {
@@ -206,9 +206,9 @@ export class View {
       this.playerView.render();
     }
 
-    if (globals.object) {
-      //this.objectView.drawHitBox();
-      this.objectView.render();
+    if (globals.item) {
+      //this.itemView.drawHitBox();
+      this.itemView.render();
     }
   }
 
