@@ -277,7 +277,7 @@ export class View {
     this.ctx.fillStyle = "#ffffff";
     this.ctx.font = "48px alkhemikal";
     this.ctx.textAlign = "center";
-    this.ctx.fillText("Turn" + this.game.combatTurn.currentTurn, this.ctx.canvas.width / 2, 50);
+    this.ctx.fillText("Turn " + this.game.combatTurn.currentTurn, this.ctx.canvas.width / 2, 50);
 
     this.ctx.fillStyle = "#ff4444";
     this.ctx.fillText("COMBAT", 120, 50);
@@ -324,23 +324,23 @@ export class View {
       this.ctx.strokeRect(barX, barY, barWidth, barHeight);
 
       this.ctx.fillStyle = "#ffffff";
-      this.ctx.font = "20px alkhemikal";
-      this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, 745, barY + 15);
+      this.ctx.font = "28px alkhemikal";
+      this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, barX + barWidth/2, barY + 45);
     }
 
     if (globals.player) {
       this.ctx.fillStyle = "rgba(0,0,0,0.85)";
-      this.ctx.fillRect(0, 70, 250, 80);
+      this.ctx.fillRect(3, 70, 250, 80);
       this.ctx.strokeStyle = "#ffffff";
       this.ctx.lineWidth = 3;
-      this.ctx.strokeRect(0, 70, 250, 80);
+      this.ctx.strokeRect(3, 70, 250, 80);
       this.ctx.fillStyle = "#ff0000";
       this.ctx.font = "28px alkhemikal";
       this.ctx.textAlign = "left";
-      this.ctx.fillText(`HP: ${Math.floor(globals.player.hp)}/${globals.player.maxHp}`, 20, 100);
+      this.ctx.fillText(`Your HP: ${Math.floor(globals.player.hp)}/${globals.player.maxHp}`, 8, 95);
 
       this.ctx.fillStyle = "#41ddf8";
-      this.ctx.fillText(`Your mana: ${Math.floor(globals.player.mana)}/${globals.player.maxMana}`, 20, 130);
+      this.ctx.fillText(`Your MP: ${Math.floor(globals.player.mana)}/${globals.player.maxMana}`, 8, 140);
     }
 
     const combatTurn = this.game.combatTurn;
