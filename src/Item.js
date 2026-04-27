@@ -25,6 +25,22 @@ export default class Item extends Sprite {
   }
 
   static clone (item){
+
+    const cloneItem = new Item(item.xPos,item.yPos)
+
+    cloneItem.spriteID = item.spriteID;
+    cloneItem.state = item.state;
+
+    cloneItem.imageSet = item.imageSet;
+    cloneItem.frames = item.frames;
+    cloneItem.physics = item.physics;
+    cloneItem.hitBox = item.hitBox;
     
+    cloneItem.isCollected = item.isCollected;
+    cloneItem.isCollidingWithPlayer = item.isCollidingWithPlayer;
+
+
+
+    return cloneItem;
   }
 }

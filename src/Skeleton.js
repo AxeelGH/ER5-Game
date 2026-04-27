@@ -37,4 +37,23 @@ export default class Skeleton extends Enemy {
       this.physics.vy *= -1;
     }
   }
+
+    static clone(skeleton) {
+    const cloneSkeleton = new Skeleton(skeleton.xPos, skeleton.yPos);
+
+    cloneSkeleton.spriteID = skeleton.spriteID;
+    cloneSkeleton.state = skeleton.state;
+    cloneSkeleton.life = skeleton.life;
+
+    cloneSkeleton.imageSet = skeleton.imageSet;
+    cloneSkeleton.frames = skeleton.frames;
+    cloneSkeleton.physics = skeleton.physics;
+    cloneSkeleton.hitBox = skeleton.hitBox;
+
+    cloneSkeleton.baseX = skeleton.baseX;
+    cloneSkeleton.range = skeleton.range;
+
+    return cloneSkeleton;
+  }
 }
+

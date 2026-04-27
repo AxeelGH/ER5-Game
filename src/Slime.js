@@ -37,4 +37,22 @@ export default class Slime extends Enemy {
       this.physics.vx *= -1;
     }
   }
+
+  static clone(slime) {
+    const cloneSlime = new Slime(slime.xPos, slime.yPos);
+
+    cloneSlime.spriteID = slime.spriteID;
+    cloneSlime.state = slime.state;
+    cloneSlime.life = slime.life;
+
+    cloneSlime.imageSet = slime.imageSet;
+    cloneSlime.frames = slime.frames;
+    cloneSlime.physics = slime.physics;
+    cloneSlime.hitBox = slime.hitBox;
+
+    cloneSlime.baseX = slime.baseX;
+    cloneSlime.range = slime.range;
+
+    return cloneSlime;
+  }
 }

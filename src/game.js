@@ -13,7 +13,11 @@ import CombatTurn from "./CombatTurn.js";
 import Inventory from "./Inventory.js";
 import { Sound } from "./constants.js";
 import GameFactory from "./GameFactory.js";
-import LevelFactory  from "./levelFactory.js";
+import LevelFactory from "./levelFactory.js";
+import Item from "./Item.js";
+import Slime from "./Slime.js";
+import Mage from "./Mage.js";
+import Skeleton from "./Skeleton.js";
 
 class Game {
   constructor(canvas, gameData) {
@@ -70,7 +74,7 @@ class Game {
     globals.currentSound = Sound.NO_SOUND;
 
     this.loginLoadingFrames = 0;
-    this.pendingScreen = null;      
+    this.pendingScreen = null;
     this.loadScreenFrames = 0;
     this.loginMessage = "";
   }
@@ -146,16 +150,13 @@ class Game {
           console.log(this.canvas.height);
 
           console.log("Current difficulty setting: " + this.difficulty);
-
         }
         break;
 
       case GameState.INTRO:
         if (globals.action.confirm) {
-          
-          const savedSession = localStorage.getItem('userSession');
+          const savedSession = localStorage.getItem("userSession");
           if (savedSession) {
-            
             const profile = JSON.parse(savedSession);
             console.log("logged:", profile);
 
@@ -164,13 +165,11 @@ class Game {
 
             this.gameState = GameState.MENU;
             globals.gameState = GameState.MENU;
-
           } else {
-            
             this.gameState = GameState.LOGIN;
             globals.gameState = GameState.LOGIN;
           }
-          
+
           globals.menuIndex = 0;
           globals.action.confirm = false;
         }
@@ -233,7 +232,7 @@ class Game {
               console.log("Game State: PLAYING");
               for (let i = 0; i < globals.enemies.length; i++) {
                 globals.enemies[i].hp *= this.enemyHPMultiplier;
-                globals.enemies[i].maxHp = globals.enemies[i].hp;  
+                globals.enemies[i].maxHp = globals.enemies[i].hp;
                 console.log("Enemy " + 1 + ": " + globals.enemies[i].hp);
               }
               this.player.hp *= this.playerHPMultiplier;
@@ -262,36 +261,50 @@ class Game {
         break;
 
       case GameState.LOAD_SCREEN:
-
         this.loadScreenFrames++;
-        
+
         if (this.pendingScreen !== null && this.loadScreenFrames >= 30) {
-          
           let level = this.levelFactory.getLevelById(this.pendingScreen);
-          
+
           if (level) {
             globals.map = level;
-            globals.enemies = structuredClone(level.enemies);
-            globals.items = structuredClone(level.items);
+
+            let cloneEnemies = [];
+            for (let i = 0; i < level.enemies.length; i++) {
+              if (level.enemies[i].type === "slime") {
+                cloneEnemies[i] = Slime.clone(level.enemies[i]);
+              } else if (level.enemies[i].type === "mage") {
+                cloneEnemies[i] = Mage.clone(level.enemies[i]);
+              } else {
+                cloneEnemies[i] = Skeleton.clone(level.enemies[i]);
+              }
+            }
+
+            globals.enemies = cloneEnemies;
+
+            let cloneItems = [];
+            for (let i = 0; i < level.items.length; i++) {
+                cloneItems[i] = Item.clone(level.items[i]);
+            }
+            globals.items = cloneItems;
+
             globals.sprites = [];
             globals.sprites.push(globals.player);
-            for(let i = 0; i < globals.enemies.length; i++){
+            for (let i = 0; i < globals.enemies.length; i++) {
               globals.sprites.push(globals.enemies[i]);
             }
-            for(let i = 0; i< globals.items.length;i ++ ){
+            for (let i = 0; i < globals.items.length; i++) {
               globals.sprites.push(globals.items[i]);
             }
 
             console.log("Level loaded: " + level.name);
-           
           }
-            this.pendingScreen = null;
-            this.loadScreenFrames = 0;
-            this.gameState = GameState.PLAYING;
-            globals.gameState = GameState.PLAYING;
 
-
-      
+          this.pendingScreen = null;
+          this.loadScreenFrames = 0;
+          this.gameState = GameState.PLAYING;
+          globals.gameState = GameState.PLAYING;
+          
         }
         break;
 
@@ -325,7 +338,7 @@ class Game {
 
         let allEnemiesDead = true;
 
-        if(globals.enemies.length === 0) {
+        if (globals.enemies.length === 0) {
           allEnemiesDead = false;
         }
 
@@ -399,51 +412,66 @@ class Game {
     }
   }
 
-async initializeLevels() {
+  async initializeLevels() {
     await this.levelFactory.loadLevels("./src/mapData.json");
     if (this.levelFactory.levels.length > 0) {
-        const currentLevel = this.levelFactory.levels[0];
-        globals.map = currentLevel;
-         globals.enemies = [...currentLevel.enemies];
-        //globals.enemies = currentLevel.enemies ? structuredClone(currentLevel.enemies): [];
+      const currentLevel = this.levelFactory.levels[0];
+      globals.map = currentLevel;
 
-        globals.items = currentLevel.items ? JSON.parse(JSON.stringify(currentLevel.items)): [];
-        globals.currentScreen = currentLevel.id;
-
-        globals.sprites = [];
-        globals.sprites.push(globals.player);
-        for (let i = 0; i < globals.enemies.length; i++) {
-            globals.sprites.push(globals.enemies[i]);
+      let cloneEnemies = [];
+      for (let i = 0; i < currentLevel.enemies.length; i++) {
+        if (currentLevel.enemies[i].type === "slime") {
+          cloneEnemies[i] = Slime.clone(currentLevel.enemies[i]);
+        } else if (currentLevel.enemies[i].type === "mage") {
+          cloneEnemies[i] = Mage.clone(currentLevel.enemies[i]);
+        } else {
+          cloneEnemies[i] = Skeleton.clone(currentLevel.enemies[i]);
         }
-        for (let i = 0; i < globals.items.length; i++) {
-            globals.sprites.push(globals.items[i]);
-        }
-        for(let i = 0;i < globals.enemies.length;i++){
-          console.log("Enemies: " + globals.enemies[i]);
-        }
-        console.log("Initial level loaded:", currentLevel.name);
-        console.log("Sprites:", globals.sprites.length);
-    }
-}
-
-    loadScreen(newScreen) {
-      console.log("loading Screen: " + newScreen);
-      
-      let level = this.levelFactory.getLevelById(newScreen);
-      
-      if (level) {
-        globals.map = level;
-        globals.enemies = level.enemies;
-        globals.items = level.items;
-        
-        console.log("Screen: " + level.name);
-        console.log("Enemies: " + globals.enemies.length);
-        
-        this.gameState = GameState.PLAYING;
-        globals.gameState = GameState.PLAYING;
-      } else {
-        console.log("error: " + newScreen);
       }
+      globals.enemies = cloneEnemies;
+
+      let cloneItems = [];
+      for (let i = 0; i < currentLevel.items.length; i++) {
+        cloneItems[i] = Item.clone(currentLevel.items[i]);
+        console.log("Cloned potion: ", cloneItems[i]);
+      }
+      globals.items = cloneItems;
+      globals.currentScreen = currentLevel.id;
+
+      globals.sprites = [];
+      globals.sprites.push(globals.player);
+      for (let i = 0; i < globals.enemies.length; i++) {
+        globals.sprites.push(globals.enemies[i]);
+      }
+      for (let i = 0; i < globals.items.length; i++) {
+        globals.sprites.push(globals.items[i]);
+      }
+      for (let i = 0; i < globals.enemies.length; i++) {
+        console.log("Enemies: ", globals.enemies[i]);
+      }
+      console.log("Initial level loaded:", currentLevel.name);
+      console.log("Sprites:", globals.sprites.length);
+    }
+  }
+
+  loadScreen(newScreen) {
+    console.log("loading Screen: " + newScreen);
+
+    let level = this.levelFactory.getLevelById(newScreen);
+
+    if (level) {
+      globals.map = level;
+      globals.enemies = level.enemies;
+      globals.items = level.items;
+
+      console.log("Screen: " + level.name);
+      console.log("Enemies: " + globals.enemies.length);
+
+      this.gameState = GameState.PLAYING;
+      globals.gameState = GameState.PLAYING;
+    } else {
+      console.log("error: " + newScreen);
+    }
   }
 
   render() {
@@ -477,9 +505,9 @@ async initializeLevels() {
       })
       .then(json => {
         console.log("Login OK", json);
-        localStorage.setItem('userSession', JSON.stringify(json));
+        localStorage.setItem("userSession", JSON.stringify(json));
         globals.userName = json.email;
-        
+
         this.gameState = GameState.MENU;
         globals.gameState = GameState.MENU;
         globals.menuIndex = 0;
@@ -501,8 +529,7 @@ async initializeLevels() {
   }
 
   logout() {
-    
-    localStorage.removeItem('userSession'); 
+    localStorage.removeItem("userSession");
     globals.userName = "";
     console.log("User logged out successfully.");
 
@@ -518,13 +545,12 @@ async initializeLevels() {
     if (emailInput) emailInput.value = "";
     if (passwordInput) passwordInput.value = "";
   }
-
 }
 
 export function initGame(canvas) {
   fetch("./src/gameData.json")
     .then(response => response.json())
-    .then( async data => {
+    .then(async data => {
       console.log("JSON:", data);
       const factory = new GameFactory(data);
       const game = await factory.create(canvas);
