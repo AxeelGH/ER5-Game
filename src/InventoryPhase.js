@@ -2,9 +2,9 @@ import globals from "./globals.js";
 import CombatPhase from "./CombatPhase.js";
 
 export default class InventoryPhase extends CombatPhase {
-  constructor(player, enemy, dice, combatTurn) {
-    super(player, enemy, dice, combatTurn);
-  }
+  constructor(player, enemies, dice, combatTurn) {
+    super(player, enemies, dice, combatTurn);
+}
 
   execute() {
     console.log("use item");

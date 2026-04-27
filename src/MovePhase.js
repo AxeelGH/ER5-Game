@@ -2,12 +2,12 @@ import globals from "./globals.js";
 import CombatPhase from "./CombatPhase.js";
 
 export default class MovePhase extends CombatPhase {
-  constructor(player, enemy, dice, combatTurn) {
-    super(player, enemy, dice, combatTurn);
+  constructor(player, enemies, dice, combatTurn) {
+    super(player, enemies, dice, combatTurn);
     this.movePositions = [100, 250, 450];
     this.selectedIndex = 1;
     this.targetX = null;
-  }
+}
 
   init() {
     this.state = "waiting";
@@ -64,7 +64,6 @@ export default class MovePhase extends CombatPhase {
   }
 
   renderUI(ctx) {
-    if (this.state !== "waiting") return;
 
     ctx.fillStyle = "rgba(0,0,0,0.8)";
     ctx.fillRect(150, 400, 500, 150);

@@ -1,6 +1,7 @@
 import globals from "./globals.js";
 import { GameState, SpriteID, mapID, Border } from "./constants.js";
 import CombatTurn from "./CombatTurn.js";
+import SpriteFactory from "./SpriteFactory.js";
 
 export default class CollisionManager {
   static getSolidTileIds() {
@@ -365,15 +366,38 @@ export default class CollisionManager {
 
   static onCollisionWithEnemy(enemy) {
     console.log("Collision with enemy:", enemy.id);
-
-    globals.currentEnemy = enemy;
-    globals.gameState = GameState.COMBAT;
-
-    if (globals.gameInstance) {
-      globals.gameInstance.gameState = GameState.COMBAT;
-      globals.gameInstance.combatTurn = new CombatTurn(globals.player, enemy, globals.gameInstance.inputManager);
+    
+    if (enemy.id === SpriteID.SLIME) {
+        console.log("Slime detected! Creating two SuperSlimes for combat!");
+        
+        const superSlime1 = SpriteFactory.createSuperSlime(500, 200);
+        superSlime1.hp = 80;
+        superSlime1.maxHp = 80;
+        
+        const superSlime2 = SpriteFactory.createSuperSlime(750, 200);
+        superSlime2.hp = 80;
+        superSlime2.maxHp = 80;
+        
+        // Siempre pasar un array
+        globals.currentEnemies = [superSlime1, superSlime2];
+        globals.currentEnemy = superSlime1;
+    } else {
+        // Siempre pasar un array aunque sea un solo enemigo
+        globals.currentEnemies = [enemy];
+        globals.currentEnemy = enemy;
     }
-  }
+    
+    globals.gameState = GameState.COMBAT;
+    
+    if (globals.gameInstance) {
+        globals.gameInstance.gameState = GameState.COMBAT;
+        globals.gameInstance.combatTurn = new CombatTurn(
+            globals.player, 
+            globals.currentEnemies,
+            globals.gameInstance.inputManager
+        );
+    }
+}
 
   static onCollisionWithPotion() {
     console.log("Collision with potion");

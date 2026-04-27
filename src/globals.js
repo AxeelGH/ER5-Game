@@ -46,6 +46,7 @@ export default {
   buttonStartClicked: false,
 
   currentScreen: null,
+  currentEnemies: null,
   userName: "",
 
   damageNumbers : new DamageNumbers()

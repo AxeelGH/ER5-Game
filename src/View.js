@@ -306,26 +306,6 @@ export class View {
       this.ctx.fillStyle = enemyColor;
       this.ctx.font = "48px alkhemikal";
       this.ctx.fillText(enemyName, 800, 50);
-
-      const barWidth = 200;
-      const barHeight = 20;
-      const barX = 700;
-      const barY = 100;
-
-      this.ctx.fillStyle = "#330000";
-      this.ctx.fillRect(barX, barY, barWidth, barHeight);
-
-      const hpPercent = globals.currentEnemy.hp / globals.currentEnemy.maxHp;
-      this.ctx.fillStyle = "#00ff00";
-      this.ctx.fillRect(barX, barY, barWidth * hpPercent, barHeight);
-
-      this.ctx.strokeStyle = "#ffffff";
-      this.ctx.lineWidth = 1;
-      this.ctx.strokeRect(barX, barY, barWidth, barHeight);
-
-      this.ctx.fillStyle = "#ffffff";
-      this.ctx.font = "28px alkhemikal";
-      this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, barX + barWidth/2, barY + 45);
     }
 
     if (globals.player) {

@@ -1,9 +1,11 @@
-// SpriteFactory.js
 import Player from "./Player.js";
 import Slime from "./Slime.js";
 import Skeleton from "./Skeleton.js";
 import Mage from "./Mage.js";
 import Item from "./Item.js";
+import SuperSlime from "./SuperSlime.js";
+import SuperMage from "./SuperMage.js";
+import SuperSkeleton from "./SuperSkeleton.js";
 
 export default class SpriteFactory {
   static createPlayer(xPos, yPos, hp, mana) {

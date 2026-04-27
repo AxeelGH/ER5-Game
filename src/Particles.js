@@ -81,10 +81,10 @@ export class ParticleSystem {
   }
 
   draw(ctx) {
-    for (const particle of this.particles) {
-      particle.draw(ctx);
+    for (let i = 0; i < this.particles.length; i++) {
+        this.particles[i].draw(ctx);
     }
-  }
+}
 
   clear() {
     this.particles = [];

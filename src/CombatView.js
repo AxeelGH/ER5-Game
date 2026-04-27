@@ -14,42 +14,74 @@ export default class CombatView {
   }
 
   render() {
-    const enemy = globals.currentEnemy;
+
+    let enemies = globals.currentEnemies || (globals.currentEnemy ? [globals.currentEnemy] : []);
     const player = globals.player;
-
-    if (enemy) {
+    
+    const enemyPositions = [
+      { x: 450, y: 160, w: 500, h: 500 },   // Left
+      { x: 700, y: 160, w: 500, h: 500 },   // Right
+      { x: 575, y: 100, w: 500, h: 500 }    // Center
+    ];
+    
+    for (let i = 0; i < enemies.length; i++) {
+      const enemy = enemies[i];
+      if (!enemy.isAlive) continue;
+      
       enemy.combatUpdate();
-    }
-    if (player) {
-      player.combatUpdate();
-      player.updateAnimationFrame();
-    }
-
-    if (enemy) {
+      
+      const posIndex = Math.min(i, enemyPositions.length - 1);
+      const pos = enemyPositions[posIndex];
+      
       if (enemy.id === SpriteID.SLIME) {
         this.updateSuperEnemy(this.superSlime, enemy);
-        this.drawEnemy(this.superSlime, 450, 160, 500, 500);
+        this.drawEnemy(this.superSlime, pos.x, pos.y, pos.w, pos.h);
+      } else if (enemy.id === SpriteID.SUPER_SLIME) {
+        this.drawEnemy(enemy, pos.x, pos.y, pos.w, pos.h);
       } else if (enemy.id === SpriteID.MAGE) {
         this.updateSuperEnemy(this.superMage, enemy);
-        this.drawEnemy(this.superMage, 450, 130, 500, 500);
+        this.drawEnemy(this.superMage, pos.x, pos.y, pos.w, pos.h);
+      } else if (enemy.id === SpriteID.SUPER_MAGE) {
+        this.drawEnemy(enemy, pos.x, pos.y, pos.w, pos.h);
       } else if (enemy.id === SpriteID.SKELETON) {
         this.updateSuperEnemy(this.superSkeleton, enemy);
-        this.drawEnemy(this.superSkeleton, 450, 0, 600, 600);
-      } else if (enemy.id === SpriteID.SUPER_SLIME) {
-        this.drawEnemy(enemy, 450, 160, 500, 500);
-      } else if (enemy.id === SpriteID.SUPER_MAGE) {
-        this.drawEnemy(enemy, 450, 130, 500, 500);
+        this.drawEnemy(this.superSkeleton, pos.x, pos.y - 60, pos.w, pos.h);
       } else if (enemy.id === SpriteID.SUPER_SKELETON) {
-        this.drawEnemy(enemy, 450, 100, 500, 500);
+        this.drawEnemy(enemy, pos.x, pos.y, pos.w, pos.h);
       } else {
-        this.drawEnemy(enemy, 300, 100, 700, 700);
+        this.drawEnemy(enemy, pos.x, pos.y, pos.w, pos.h);
       }
+      
+      this.drawEnemyHealthBar(enemy, pos.x, pos.y - 30, pos.w);
     }
 
     if (player) {
       this.drawPlayer(player, player.xPos, player.yPos, 300, 300);
     }
-  }
+}
+
+drawEnemyHealthBar(enemy, x, y, width) {
+    const barWidth = 180;
+    const barHeight = 15;
+    const barX = x + (width / 2) - (barWidth / 2);
+    const barY = y;
+    
+    this.ctx.fillStyle = "#330000";
+    this.ctx.fillRect(barX, barY, barWidth, barHeight);
+    
+    const hpPercent = Math.max(0, enemy.hp / enemy.maxHp);
+    this.ctx.fillStyle = "#60ff44";
+    this.ctx.fillRect(barX, barY, barWidth * hpPercent, barHeight);
+    
+    this.ctx.strokeStyle = "#ffffff";
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeRect(barX, barY, barWidth, barHeight);
+    
+    this.ctx.fillStyle = "#ffffff";
+    this.ctx.font = "14px alkhemikal";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText(`${Math.floor(enemy.hp)}/${enemy.maxHp}`, barX + barWidth / 2, barY + 12);
+}
 
   updateSuperEnemy(superEnemy, normalEnemy) {
     superEnemy.animationTimer = normalEnemy.animationTimer;

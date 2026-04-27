@@ -1,9 +1,9 @@
 import globals from "./globals.js";
 
 export default class CombatPhase {
-  constructor(player, enemy, dice, combatTurn) {
+  constructor(player, enemies, dice, combatTurn) {
     this.player = player;
-    this.enemy = enemy;
+    this.enemies = enemies; 
     this.dice = dice;
     this.combatTurn = combatTurn;
 

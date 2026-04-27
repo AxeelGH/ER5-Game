@@ -2,8 +2,8 @@ import globals from "./globals.js";
 import CombatPhase from "./CombatPhase.js";
 
 export default class AbilityPhase extends CombatPhase {
-  constructor(player, enemy, dice, combatTurn) {
-    super(player, enemy, dice, combatTurn);
+  constructor(player, enemies, dice, combatTurn) {
+    super(player, enemies, dice, combatTurn);
     this.damage = 0;
   }
 
@@ -15,11 +15,27 @@ export default class AbilityPhase extends CombatPhase {
 
     if (this.player.mana >= 20) {
       this.damage = 20 + this.dice.rollDice(6) + this.dice.rollDice(6);
-      this.enemy.hp -= this.damage;
-      globals.damageNumbers.addDamageNumber(this.damage,700,250, false);
+      
+      // Damage to all enemies
+      for (let i = 0; i < this.enemies.length; i++) {
+        const enemy = this.enemies[i];
+        if (enemy.isAlive) {
+          enemy.hp -= this.damage;
+          
+          if (globals.damageNumbers) {
+            globals.damageNumbers.addDamageNumber(this.damage, 700, 250, false);
+          }
+          
+          console.log(`Damage to enemy: ${this.damage}`);
+          
+          if (enemy.hp <= 0) {
+            enemy.isAlive = false;
+            console.log("Enemy defeated");
+          }
+        }
+      }
+      
       this.player.mana -= 20;
-
-      console.log("Damage: " + this.damage);
 
       if (globals.ParticleSystem) {
         const explosionX = 580;
@@ -31,11 +47,6 @@ export default class AbilityPhase extends CombatPhase {
       this.cancelled = true;
     }
 
-    if (this.enemy.hp <= 0) {
-      this.enemy.isAlive = false;
-      console.log("Enemy defeated");
-    }
-
     this.state = "completed";
-  }
+}
 }

@@ -37,29 +37,34 @@ export default class FleePhase extends CombatPhase {
     this.state = "completed";
   }
 
-  echoesOfTheCoward() {
+echoesOfTheCoward() {
     let result;
     if (globals.inventory.potions >= 1) {
-      result = Math.floor(Math.random() * 3) + 1;
+        result = Math.floor(Math.random() * 3) + 1;
     } else {
-      result = Math.floor(Math.random() * 2) + 1;
+        result = Math.floor(Math.random() * 2) + 1;
     }
 
     console.log("Potions: " + globals.inventory.potions);
 
     if (result === 1) {
-      this.enemy.maxHp += 20;
-      this.enemy.hp += 20;
-      console.log("The enemy has seen you flee and has become more confident; its maximum health has increased!");
+        for (let i = 0; i < this.enemies.length; i++) {
+            const enemy = this.enemies[i];
+            if (enemy.isAlive) {
+                enemy.maxHp += 20;
+                enemy.hp += 20;
+            }
+        }
+        console.log("The enemies have seen you flee and have become more confident; their maximum health has increased!");
     } else if (result === 2) {
-      globals.player.maxHp -= 10;
-      if (this.player.hp > this.player.maxHp) {
-        this.player.hp = this.player.maxHp;
-      }
-      console.log("Your cowardice has made you lose 10 points of maximum health!");
+        globals.player.maxHp -= 10;
+        if (this.player.hp > this.player.maxHp) {
+            this.player.hp = this.player.maxHp;
+        }
+        console.log("Your cowardice has made you lose 10 points of maximum health!");
     } else {
-      globals.inventory.removePotion();
-      console.log("You stumbled while trying to flee and lost a potion!");
+        globals.inventory.removePotion();
+        console.log("You stumbled while trying to flee and lost a potion!");
     }
-  }
+}
 }
