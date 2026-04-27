@@ -38,4 +38,22 @@ export default class Mage extends Enemy {
     this.xPos -= this.imageSet.xSize / 2;
     this.yPos -= this.imageSet.ySize / 2;
   }
+
+  static clone(mage) {
+    const cloneMage = new Mage(mage.xPos, mage.yPos);
+
+    cloneMage.spriteID = mage.spriteID;
+    cloneMage.state = mage.state;
+    cloneMage.life = mage.life;
+
+    cloneMage.imageSet = mage.imageSet;
+    cloneMage.frames = mage.frames;
+    cloneMage.physics = mage.physics;
+    cloneMage.hitBox = mage.hitBox;
+
+    cloneMage.baseX = mage.baseX;
+    cloneMage.range = mage.range;
+
+    return cloneMage;
+  }
 }

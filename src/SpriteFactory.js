@@ -3,7 +3,7 @@ import Player from "./Player.js";
 import Slime from "./Slime.js";
 import Skeleton from "./Skeleton.js";
 import Mage from "./Mage.js";
-import Object from "./Object.js";
+import Item from "./Item.js";
 
 export default class SpriteFactory {
   static createPlayer(xPos, yPos, hp, mana) {
@@ -34,7 +34,7 @@ export default class SpriteFactory {
     return new SuperSkeleton(xPos, yPos);
   }
 
-  static createObject(xPos, yPos) {
-    return new Object(xPos, yPos);
+  static createItem(xPos, yPos) {
+    return new Item(xPos, yPos);
   }
 }

@@ -27,11 +27,11 @@ export default {
   map: null,
 
   enemies: [],
-  objects: [],
+  items: [],
   currentEnemy: null,
   triedToFlee: false,
 
-  object: null,
+  item: null,
   inventory: null,
   potionDrops: [],
 
