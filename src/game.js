@@ -271,9 +271,10 @@ class Game {
 
             let cloneEnemies = [];
             for (let i = 0; i < level.enemies.length; i++) {
-              if (level.enemies[i].type === "slime") {
+              let enemy = level.enemies[i];
+              if (enemy.id === SpriteID.SLIME) {
                 cloneEnemies[i] = Slime.clone(level.enemies[i]);
-              } else if (level.enemies[i].type === "mage") {
+              } else if (enemy.id === SpriteID.MAGE) {
                 cloneEnemies[i] = Mage.clone(level.enemies[i]);
               } else {
                 cloneEnemies[i] = Skeleton.clone(level.enemies[i]);
@@ -284,7 +285,7 @@ class Game {
 
             let cloneItems = [];
             for (let i = 0; i < level.items.length; i++) {
-                cloneItems[i] = Item.clone(level.items[i]);
+              cloneItems[i] = Item.clone(level.items[i]);
             }
             globals.items = cloneItems;
 
@@ -304,7 +305,6 @@ class Game {
           this.loadScreenFrames = 0;
           this.gameState = GameState.PLAYING;
           globals.gameState = GameState.PLAYING;
-          
         }
         break;
 
@@ -419,10 +419,12 @@ class Game {
       globals.map = currentLevel;
 
       let cloneEnemies = [];
+
       for (let i = 0; i < currentLevel.enemies.length; i++) {
-        if (currentLevel.enemies[i].type === "slime") {
+        let enemy = currentLevel.enemies[i];
+        if (enemy.id === SpriteID.SLIME) {
           cloneEnemies[i] = Slime.clone(currentLevel.enemies[i]);
-        } else if (currentLevel.enemies[i].type === "mage") {
+        } else if (enemy.id === SpriteID.MAGE) {
           cloneEnemies[i] = Mage.clone(currentLevel.enemies[i]);
         } else {
           cloneEnemies[i] = Skeleton.clone(currentLevel.enemies[i]);
@@ -447,7 +449,7 @@ class Game {
         globals.sprites.push(globals.items[i]);
       }
       for (let i = 0; i < globals.enemies.length; i++) {
-        console.log("Enemies: ", globals.enemies[i]);
+        console.log("Cloned enemies: ", globals.enemies[i]);
       }
       console.log("Initial level loaded:", currentLevel.name);
       console.log("Sprites:", globals.sprites.length);
@@ -461,8 +463,26 @@ class Game {
 
     if (level) {
       globals.map = level;
-      globals.enemies = level.enemies;
-      globals.items = level.items;
+      let cloneEnemies = [];
+      for (let i = 0; i < level.enemies.length; i++) {
+        let enemy = level.enemies[i];
+        if (enemy.id === SpriteID.SLIME) {
+          cloneEnemies[i] = Slime.clone(level.enemies[i]);
+        } else if (enemy.id === SpriteID.MAGE) {
+          cloneEnemies[i] = Mage.clone(level.enemies[i]);
+        } else {
+          cloneEnemies[i] = Skeleton.clone(level.enemies[i]);
+        }
+        console.log("Cloned enemy: ", cloneEnemies[i]);
+      }
+      globals.enemies = cloneEnemies;
+
+      let cloneItems = [];
+      for (let i = 0; i < level.items.length; i++) {
+        cloneItems[i] = Item.clone(level.items[i]);
+        console.log("Cloned potion: ", cloneItems[i]);
+      }
+      globals.items = cloneItems;
 
       console.log("Screen: " + level.name);
       console.log("Enemies: " + globals.enemies.length);
