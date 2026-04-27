@@ -93,7 +93,7 @@ export class View {
 
       case GameState.LOAD_SCREEN:
         this.renderLoadScreen();
-        break;       
+        break;
     }
   }
 
@@ -128,13 +128,13 @@ export class View {
     if (globals.userName) {
       this.ctx.save();
       this.ctx.fillStyle = "#ffffff70";
-      this.ctx.fillRect(this.ctx.canvas.width / 2 * 0.6, this.ctx.canvas.height / 2 * 0.67, 400, 60);
+      this.ctx.fillRect((this.ctx.canvas.width / 2) * 0.6, (this.ctx.canvas.height / 2) * 0.67, 400, 60);
 
       this.ctx.fillStyle = "#000000";
       this.ctx.font = "4vw alkhemikal";
       this.ctx.textAlign = "center";
-      this.ctx.fillText("Welcome " + globals.userName + "!!!", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 * 0.8);
-      
+      this.ctx.fillText("Welcome " + globals.userName + "!!!", this.ctx.canvas.width / 2, (this.ctx.canvas.height / 2) * 0.8);
+
       this.ctx.restore();
     }
 
@@ -264,161 +264,161 @@ export class View {
     this.ctx.fillText("Press SPACE to go back to main menu", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 340);
   }
 
+  renderCombat() {
+    this.ctx.drawImage(this.battlegroundImg, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-renderCombat() {
-  this.ctx.drawImage(this.battlegroundImg, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-
-  if (globals.ParticleSystem) {
-    globals.ParticleSystem.update();
-    globals.ParticleSystem.draw(this.ctx);
-  }
-
-  this.combatView.render();
-
-  this.ctx.fillStyle = "#ffffff";
-  this.ctx.font = "48px alkhemikal";
-  this.ctx.textAlign = "center";
-  this.ctx.fillText('Turn' + this.game.combatTurn.currentTurn, this.ctx.canvas.width / 2, 50);
-
-  this.ctx.fillStyle = "#ff4444";
-  this.ctx.fillText("COMBAT", 120, 50);
-
-  if (globals.currentEnemy) {
-    let enemyName = "";
-    let enemyColor = "";
-    switch (globals.currentEnemy.id) {
-      case SpriteID.SLIME:
-        enemyName = "SLIME";
-        enemyColor = "#88ff88";
-        break;
-      case SpriteID.SKELETON:
-        enemyName = "SKELETON";
-        enemyColor = "#cccccc";
-        break;
-      case SpriteID.MAGE:
-        enemyName = "MAGE";
-        enemyColor = "#cc88ff";
-        break;
-      default:
-        enemyName = "ENEMY";
-        enemyColor = "#ffffff";
+    if (globals.ParticleSystem) {
+      globals.ParticleSystem.update();
+      globals.ParticleSystem.draw(this.ctx);
     }
 
-    this.ctx.fillStyle = enemyColor;
-    this.ctx.font = "48px alkhemikal";
-    this.ctx.fillText(enemyName, 800, 50);
-
-    const barWidth = 200;
-    const barHeight = 20;
-    const barX = 700;
-    const barY = 100;
-
-    this.ctx.fillStyle = "#330000";
-    this.ctx.fillRect(barX, barY, barWidth, barHeight);
-
-    const hpPercent = globals.currentEnemy.hp / globals.currentEnemy.maxHp;
-    this.ctx.fillStyle = "#00ff00";
-    this.ctx.fillRect(barX, barY, barWidth * hpPercent, barHeight);
-
-    this.ctx.strokeStyle = "#ffffff";
-    this.ctx.lineWidth = 1;
-    this.ctx.strokeRect(barX, barY, barWidth, barHeight);
+    this.combatView.render();
 
     this.ctx.fillStyle = "#ffffff";
-    this.ctx.font = "20px alkhemikal";
-    this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, 745, barY + 15);
-  }
+    this.ctx.font = "48px alkhemikal";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText("Turn" + this.game.combatTurn.currentTurn, this.ctx.canvas.width / 2, 50);
 
-  if (globals.player) {
-    this.ctx.fillStyle = "rgba(0,0,0,0.85)";
-    this.ctx.fillRect(0, 70, 250, 80);
-    this.ctx.strokeStyle = "#ffffff";
-    this.ctx.lineWidth = 3;
-    this.ctx.strokeRect(0, 70, 250, 80);
-    this.ctx.fillStyle = "#ff0000";
-    this.ctx.font = "28px alkhemikal";
-    this.ctx.textAlign = "left";
-    this.ctx.fillText(`HP: ${Math.floor(globals.player.hp)}/${globals.player.maxHp}`, 20, 100);
-    
-    this.ctx.fillStyle = "#41ddf8";
-    this.ctx.fillText(`Your mana: ${Math.floor(globals.player.mana)}/${globals.player.maxMana}`, 20, 130);
+    this.ctx.fillStyle = "#ff4444";
+    this.ctx.fillText("COMBAT", 120, 50);
+
+    if (globals.currentEnemy) {
+      let enemyName = "";
+      let enemyColor = "";
+      switch (globals.currentEnemy.id) {
+        case SpriteID.SLIME:
+          enemyName = "SLIME";
+          enemyColor = "#88ff88";
+          break;
+        case SpriteID.SKELETON:
+          enemyName = "SKELETON";
+          enemyColor = "#cccccc";
+          break;
+        case SpriteID.MAGE:
+          enemyName = "MAGE";
+          enemyColor = "#cc88ff";
+          break;
+        default:
+          enemyName = "ENEMY";
+          enemyColor = "#ffffff";
+      }
+
+      this.ctx.fillStyle = enemyColor;
+      this.ctx.font = "48px alkhemikal";
+      this.ctx.fillText(enemyName, 800, 50);
+
+      const barWidth = 200;
+      const barHeight = 20;
+      const barX = 700;
+      const barY = 100;
+
+      this.ctx.fillStyle = "#330000";
+      this.ctx.fillRect(barX, barY, barWidth, barHeight);
+
+      const hpPercent = globals.currentEnemy.hp / globals.currentEnemy.maxHp;
+      this.ctx.fillStyle = "#00ff00";
+      this.ctx.fillRect(barX, barY, barWidth * hpPercent, barHeight);
+
+      this.ctx.strokeStyle = "#ffffff";
+      this.ctx.lineWidth = 1;
+      this.ctx.strokeRect(barX, barY, barWidth, barHeight);
+
+      this.ctx.fillStyle = "#ffffff";
+      this.ctx.font = "20px alkhemikal";
+      this.ctx.fillText(`HP: ${Math.floor(globals.currentEnemy.hp)}/${globals.currentEnemy.maxHp}`, 745, barY + 15);
+    }
+
+    if (globals.player) {
+      this.ctx.fillStyle = "rgba(0,0,0,0.85)";
+      this.ctx.fillRect(0, 70, 250, 80);
+      this.ctx.strokeStyle = "#ffffff";
+      this.ctx.lineWidth = 3;
+      this.ctx.strokeRect(0, 70, 250, 80);
+      this.ctx.fillStyle = "#ff0000";
+      this.ctx.font = "28px alkhemikal";
+      this.ctx.textAlign = "left";
+      this.ctx.fillText(`HP: ${Math.floor(globals.player.hp)}/${globals.player.maxHp}`, 20, 100);
+
+      this.ctx.fillStyle = "#41ddf8";
+      this.ctx.fillText(`Your mana: ${Math.floor(globals.player.mana)}/${globals.player.maxMana}`, 20, 130);
+    }
+
+    const combatTurn = this.game.combatTurn;
+    const isMovePhase =
+      combatTurn &&
+      combatTurn.selectedPhase &&
+      combatTurn.selectedPhase.constructor.name === "MovePhase" &&
+      combatTurn.selectedPhase.state === "waiting";
+
+    if (isMovePhase) {
+      combatTurn.selectedPhase.renderUI(this.ctx);
+    } else if (combatTurn && combatTurn.state === "selecting") {
+      this.renderCombatMenu();
+    }
   }
-  
-  const combatTurn = this.game.combatTurn;
-  const isMovePhase = combatTurn && combatTurn.selectedPhase && 
-                      combatTurn.selectedPhase.constructor.name === 'MovePhase' && 
-                      combatTurn.selectedPhase.state === 'waiting';
-  
-  if (isMovePhase) {
-    combatTurn.selectedPhase.renderUI(this.ctx);
-  } else if (combatTurn && combatTurn.state === 'selecting') {
-    this.renderCombatMenu();
-  }
-}
 
   renderCombatMenu() {
-  if (!this.game.combatTurn) return;
+    if (!this.game.combatTurn) return;
 
-  this.ctx.fillStyle = "rgba(0,0,0,0.85)";
-  this.ctx.fillRect(3, 600, 354, 200);
-  this.ctx.strokeStyle = "#ffffff";
-  this.ctx.lineWidth = 3;
-  this.ctx.strokeRect(3, 600, 354, 200);
+    this.ctx.fillStyle = "rgba(0,0,0,0.85)";
+    this.ctx.fillRect(3, 600, 354, 200);
+    this.ctx.strokeStyle = "#ffffff";
+    this.ctx.lineWidth = 3;
+    this.ctx.strokeRect(3, 600, 354, 200);
 
-  const phaseIndex = this.game.combatTurn.getPhaseIndex();
-  const options = ["ATTACK", "ABILITY", "ITEM", "MOVE", "FLEE"];
+    const phaseIndex = this.game.combatTurn.getPhaseIndex();
+    const options = ["ATTACK", "ABILITY", "ITEM", "MOVE", "FLEE"];
 
-  const positions = [
-    { x: 15, y: 615 },   // ATTACK
-    { x: 185, y: 615 },  // ABILITY
-    { x: 15, y: 665 },   // ITEM
-    { x: 185, y: 665 },  // MOVE
-    { x: 100, y: 720 },  // FLEE
-  ];
+    const positions = [
+      { x: 15, y: 615 }, // ATTACK
+      { x: 185, y: 615 }, // ABILITY
+      { x: 15, y: 665 }, // ITEM
+      { x: 185, y: 665 }, // MOVE
+      { x: 100, y: 720 }, // FLEE
+    ];
 
-  for (let i = 0; i < options.length; i++) {
-    const { x, y } = positions[i];
-    
-    if (i === phaseIndex) {
-      const gradient = this.ctx.createLinearGradient(x, y, x + 160, y + 40);
-     
-      this.ctx.fillStyle = gradient;
-      this.ctx.fillRect(x, y, 160, 40);
-      
-      this.ctx.strokeStyle = "#fd0000fc";
-      this.ctx.lineWidth = 3;
-      this.ctx.strokeRect(x, y, 160, 40);
-      
-      this.ctx.fillStyle = "#ffffff";
-      this.ctx.font = "bold 32px alkhemikal";
-      
-    } else {
-      this.ctx.fillStyle = "#1a1a2e";
-      this.ctx.fillRect(x, y, 160, 40);
-      this.ctx.strokeStyle = "#666666";
-      this.ctx.lineWidth = 1;
-      this.ctx.strokeRect(x, y, 160, 40);
-      this.ctx.fillStyle = "#cccccc";
-      this.ctx.font = "28px alkhemikal";
+    for (let i = 0; i < options.length; i++) {
+      const { x, y } = positions[i];
+
+      if (i === phaseIndex) {
+        const gradient = this.ctx.createLinearGradient(x, y, x + 160, y + 40);
+
+        this.ctx.fillStyle = gradient;
+        this.ctx.fillRect(x, y, 160, 40);
+
+        this.ctx.strokeStyle = "#fd0000fc";
+        this.ctx.lineWidth = 3;
+        this.ctx.strokeRect(x, y, 160, 40);
+
+        this.ctx.fillStyle = "#ffffff";
+        this.ctx.font = "bold 32px alkhemikal";
+      } else {
+        this.ctx.fillStyle = "#1a1a2e";
+        this.ctx.fillRect(x, y, 160, 40);
+        this.ctx.strokeStyle = "#666666";
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(x, y, 160, 40);
+        this.ctx.fillStyle = "#cccccc";
+        this.ctx.font = "28px alkhemikal";
+      }
+
+      this.ctx.textAlign = "center";
+      this.ctx.fillText(options[i], x + 80, y + 30);
+      this.ctx.shadowColor = "transparent";
+      this.ctx.shadowBlur = 0;
     }
-    
+
+    this.ctx.fillStyle = "rgba(0,0,0,0.85)";
+    this.ctx.fillRect(360, 600, 661, 200);
+    this.ctx.strokeStyle = "#ffffff";
+    this.ctx.lineWidth = 3;
+    this.ctx.strokeRect(360, 600, 661, 200);
+
+    this.ctx.fillStyle = "#ffffff";
+    this.ctx.font = "32px alkhemikal";
     this.ctx.textAlign = "center";
-    this.ctx.fillText(options[i], x + 80, y + 30);
-    this.ctx.shadowColor = "transparent";
-    this.ctx.shadowBlur = 0;
+    this.ctx.fillText("Console log coming soon...", 520, 630);
   }
-
-  this.ctx.fillStyle = "rgba(0,0,0,0.85)";
-  this.ctx.fillRect(360, 600, 661, 200);
-  this.ctx.strokeStyle = "#ffffff";
-  this.ctx.lineWidth = 3;
-  this.ctx.strokeRect(360, 600, 661, 200);
-
-  this.ctx.fillStyle = "#ffffff";
-  this.ctx.font = "32px alkhemikal";
-  this.ctx.textAlign = "center";
-  this.ctx.fillText("Console log coming soon...", 520, 630);
-}
 
   renderSettings() {
     this.ctx.drawImage(this.storyBackgroundImg, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -554,17 +554,15 @@ renderCombat() {
   }
 
   renderLogin() {
-
     const canvas = this.ctx.canvas;
     this.ctx.drawImage(this.loginBackgroundImg, 0, 0, canvas.width, canvas.height);
 
     if (this.game.loginMessage) {
-      
       this.ctx.fillStyle = "#ffffff";
       this.ctx.font = "32px alkhemikal";
       this.ctx.textAlign = "center";
-      
-      const messageY = canvas.height / 2 + 250; 
+
+      const messageY = canvas.height / 2 + 250;
       this.ctx.fillText(this.game.loginMessage, canvas.width / 2, messageY);
     }
   }
@@ -607,7 +605,7 @@ renderCombat() {
   renderLoadScreen() {
     this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    
+
     this.ctx.fillStyle = "white";
     this.ctx.font = "32px alkhemikal";
     this.ctx.textAlign = "center";

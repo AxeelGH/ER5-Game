@@ -7,7 +7,7 @@ import SuperSkeleton from "./SuperSkeleton.js";
 export default class CombatView {
   constructor(ctx) {
     this.ctx = ctx;
-    
+
     this.superSlime = new SuperSlime(0, 0);
     this.superMage = new SuperMage(0, 0);
     this.superSkeleton = new SuperSkeleton(0, 0);
@@ -16,7 +16,7 @@ export default class CombatView {
   render() {
     const enemy = globals.currentEnemy;
     const player = globals.player;
-    
+
     if (enemy) {
       enemy.combatUpdate();
     }
@@ -53,10 +53,10 @@ export default class CombatView {
 
   updateSuperEnemy(superEnemy, normalEnemy) {
     superEnemy.animationTimer = normalEnemy.animationTimer;
-    
+
     if (normalEnemy.id === SpriteID.SLIME) {
       if (normalEnemy.state === 0) {
-        superEnemy.state = State.SUPER_SLIME_STILL; 
+        superEnemy.state = State.SUPER_SLIME_STILL;
       } else if (normalEnemy.state === 1) {
         superEnemy.state = State.SUPER_SLIME_MOVE;
       } else if (normalEnemy.state === 2) {
@@ -64,22 +64,22 @@ export default class CombatView {
       }
     } else if (normalEnemy.id === SpriteID.MAGE) {
       if (normalEnemy.state === 0) {
-        superEnemy.state = State.SUPER_MAGE_STILL; 
+        superEnemy.state = State.SUPER_MAGE_STILL;
       } else if (normalEnemy.state === 1) {
         superEnemy.state = State.SUPER_MAGE_ATTACK;
       } else if (normalEnemy.state === 2) {
-        superEnemy.state = State.SUPER_MAGE_HIT; 
+        superEnemy.state = State.SUPER_MAGE_HIT;
       }
     } else if (normalEnemy.id === SpriteID.SKELETON) {
       if (normalEnemy.state === 0) {
-        superEnemy.state = State.SUPER_SKELETON_STILL; 
+        superEnemy.state = State.SUPER_SKELETON_STILL;
       } else if (normalEnemy.state === 1) {
         superEnemy.state = State.SUPER_SKELETON_ATTACK;
       } else if (normalEnemy.state === 2) {
-        superEnemy.state = State.SUPER_SKELETON_HIT; 
+        superEnemy.state = State.SUPER_SKELETON_HIT;
       }
     }
-    
+
     superEnemy.frames.frameChangeCounter++;
     if (superEnemy.frames.frameChangeCounter >= superEnemy.frames.speed) {
       superEnemy.frames.frameCounter++;
@@ -122,7 +122,7 @@ export default class CombatView {
     this.ctx.drawImage(img, xTile, yTile, originalWidth, originalHeight, x, y, width, height);
   }
 
-  renderPhaseUI(ctx, combatTurn) {    
+  renderPhaseUI(ctx, combatTurn) {
     if (combatTurn.selectedPhase.renderUI) {
       combatTurn.selectedPhase.renderUI(ctx);
     }

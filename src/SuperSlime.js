@@ -9,7 +9,7 @@ import globals from "./globals.js";
 export default class SuperSlime extends Enemy {
   constructor(xPos, yPos) {
     const imageSet = new ImageSet(38, 0, 288, 160, 0, 0);
-    const frames = new Frames(12, 5); 
+    const frames = new Frames(12, 5);
     const physics = new Physics(20, 0, 20);
     const hitBox = new HitBox(25, 25, 20, 20);
 
@@ -18,7 +18,7 @@ export default class SuperSlime extends Enemy {
     this.baseX = xPos;
     this.range = 60;
   }
-  
+
   update() {
     this.setSuperSlimePosition();
     this.updateAnimationFrame();

@@ -12,7 +12,7 @@ export default class FleePhase extends CombatPhase {
       const fleeResult = this.dice.evaluateFlee(this.combatTurn.currentTurn);
       globals.triedToFlee = true;
       console.log("Flee result: " + fleeResult);
-      
+
       if (fleeResult === 1) {
         console.log("You fled successfully");
         this.fled = true;
@@ -34,7 +34,7 @@ export default class FleePhase extends CombatPhase {
       this.cancelled = true;
     }
 
-    this.state = 'completed';
+    this.state = "completed";
   }
 
   echoesOfTheCoward() {

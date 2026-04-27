@@ -116,10 +116,10 @@ export default class Player extends Sprite {
   detectBorderCollision() {
     const canvas = globals.canvas;
     const threshold = 10;
-    
-    this.isCollidingWithRightBorder = (this.xPos + this.hitBox.xOffset + this.hitBox.xSize >= canvas.width - threshold);
-    this.isCollidingWithLeftBorder = (this.xPos + this.hitBox.xOffset <= threshold);
-    this.isCollidingWithTopBorder = (this.yPos + this.hitBox.yOffset <= threshold + 20);
-    this.isCollidingWithBottomBorder = (this.yPos + this.hitBox.yOffset + this.hitBox.ySize >= canvas.height - threshold);
+
+    this.isCollidingWithRightBorder = this.xPos + this.hitBox.xOffset + this.hitBox.xSize >= canvas.width - threshold;
+    this.isCollidingWithLeftBorder = this.xPos + this.hitBox.xOffset <= threshold;
+    this.isCollidingWithTopBorder = this.yPos + this.hitBox.yOffset <= threshold + 20;
+    this.isCollidingWithBottomBorder = this.yPos + this.hitBox.yOffset + this.hitBox.ySize >= canvas.height - threshold;
   }
 }

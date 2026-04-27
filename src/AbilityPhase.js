@@ -35,6 +35,6 @@ export default class AbilityPhase extends CombatPhase {
       console.log("Enemy defeated");
     }
 
-    this.state = 'completed';
+    this.state = "completed";
   }
 }

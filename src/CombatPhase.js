@@ -6,34 +6,32 @@ export default class CombatPhase {
     this.enemy = enemy;
     this.dice = dice;
     this.combatTurn = combatTurn;
-    
-    this.state = 'init';
+
+    this.state = "init";
     this.result = null;
     this.cancelled = false;
     this.fled = false;
   }
 
   init() {
-    this.state = 'waiting';
+    this.state = "waiting";
   }
 
   handleInput() {
-    if (this.state === 'waiting') {
-      this.state = 'executing';
+    if (this.state === "waiting") {
+      this.state = "executing";
     }
   }
 
   execute() {
-    this.state = 'completed';
+    this.state = "completed";
   }
 
-  onComplete() {
-  }
+  onComplete() {}
 
-  renderUI(ctx) {
-  }
+  renderUI(ctx) {}
 
   isFinished() {
-    return this.state === 'completed' || this.state === 'cancelled';
+    return this.state === "completed" || this.state === "cancelled";
   }
 }

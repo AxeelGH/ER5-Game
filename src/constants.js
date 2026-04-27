@@ -34,7 +34,7 @@ export const SpriteID = {
   OBJECT: 5,
   SUPER_SLIME: 6,
   SUPER_MAGE: 7,
-  SUPER_SKELETON: 8
+  SUPER_SKELETON: 8,
 };
 
 export const State = {
@@ -60,7 +60,7 @@ export const State = {
 
   //SLIME
   SLIME_STILL: 0,
-  SLIME_ATTACK_1:1,
+  SLIME_ATTACK_1: 1,
   SLIME_ATTACK_2: 2,
 
   //SKELETON
@@ -84,7 +84,6 @@ export const State = {
   SUPER_SKELETON_STILL: 0,
   SUPER_SKELETON_ATTACK: 1,
   SUPER_SKELETON_HIT: 2,
-
 
   //DIE
   DIE_1: 0,
@@ -128,67 +127,64 @@ export const mapID = {
   RIDE: 4,
   CEMETERY: 5,
   BEACH: 6,
-  FINAL: 7
+  FINAL: 7,
 };
 
-export const Border =[ 
+export const Border = [
   {
-  //START MAP 0
-  left: mapID.INVALID,
-  up: mapID.INVALID,
-  right: mapID.INVALID,
-  down: mapID.FOREST
-
-},
-{
-  //FOREST 1 
-  left: mapID.INVALID,
-  up: mapID.START,
-  right: mapID.VILLAGE,
-  down: mapID.INVALID,
-
-},
-{
-  //VILLAGE 2 
-  left: mapID.FOREST,
-  up: mapID.INVALID,
-  right: mapID.CASTLE,
-  down: mapID.RIDE
-
-},
-{
-  //CASTLE 3
-  left: mapID.VILLAGE,
-  up: mapID.INVALID,
-  right: mapID.INVALID,
-  down: mapID.INVALID
-},
-{
-  //RIDE 4
-  left: mapID.INVALID,
-  up: mapID.VILLAGE,
-  right: mapID.INVALID,
-  down: mapID.CEMETERY
-},
-{
-  //CEMETERY 5
-  left: mapID.INVALID,
-  up: mapID.RIDE,
-  right: mapID.INVALID,
-  down: mapID.FINAL
-},
-{
-  //Beach 6
-  left: mapID.CEMETERY,
-  up: mapID.INVALID,
-  right: mapID.INVALID,
-  down: mapID.INVALID
-},
-{
-  //Final 7
-  left: mapID.INVALID,
-  up: mapID.CEMETERY,
-  right: mapID.INVALID,
-  down: mapID.INVALID
-}
+    //START MAP 0
+    left: mapID.INVALID,
+    up: mapID.INVALID,
+    right: mapID.INVALID,
+    down: mapID.FOREST,
+  },
+  {
+    //FOREST 1
+    left: mapID.INVALID,
+    up: mapID.START,
+    right: mapID.VILLAGE,
+    down: mapID.INVALID,
+  },
+  {
+    //VILLAGE 2
+    left: mapID.FOREST,
+    up: mapID.INVALID,
+    right: mapID.CASTLE,
+    down: mapID.RIDE,
+  },
+  {
+    //CASTLE 3
+    left: mapID.VILLAGE,
+    up: mapID.INVALID,
+    right: mapID.INVALID,
+    down: mapID.INVALID,
+  },
+  {
+    //RIDE 4
+    left: mapID.INVALID,
+    up: mapID.VILLAGE,
+    right: mapID.INVALID,
+    down: mapID.CEMETERY,
+  },
+  {
+    //CEMETERY 5
+    left: mapID.INVALID,
+    up: mapID.RIDE,
+    right: mapID.INVALID,
+    down: mapID.FINAL,
+  },
+  {
+    //Beach 6
+    left: mapID.CEMETERY,
+    up: mapID.INVALID,
+    right: mapID.INVALID,
+    down: mapID.INVALID,
+  },
+  {
+    //Final 7
+    left: mapID.INVALID,
+    up: mapID.CEMETERY,
+    right: mapID.INVALID,
+    down: mapID.INVALID,
+  },
 ];

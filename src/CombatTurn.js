@@ -14,16 +14,16 @@ export default class CombatTurn {
     this.enemy = enemy;
     this.input = input;
     this.dice = new Dice();
-    
+
     // States: starting, selecting, executing, enemy_turn, finished
-    this.state = 'starting';
+    this.state = "starting";
     this.selectedPhase = null;
     this.currentTurn = 1;
     this.currentPhaseIndex = 0;
     this.phases = ["Attack", "Ability", "Inventory", "Move", "Flee"];
-    
+
     globals.triedToFlee = false;
-    
+
     this.startCombat();
   }
 
@@ -36,25 +36,25 @@ export default class CombatTurn {
 
     if (enemyNum > playerNum) {
       console.log("The enemy attacks first!");
-      this.state = 'enemy_turn';
+      this.state = "enemy_turn";
     } else {
       console.log("The player goes first!");
-      this.state = 'selecting';
+      this.state = "selecting";
     }
   }
 
   update() {
-    switch(this.state) {
-      case 'selecting':
+    switch (this.state) {
+      case "selecting":
         this.handlePhaseSelection();
         break;
-      case 'executing':
+      case "executing":
         this.updatePhaseExecution();
         break;
-      case 'enemy_turn':
+      case "enemy_turn":
         this.executeEnemyTurn();
         break;
-      case 'finished':
+      case "finished":
         break;
     }
   }
@@ -64,7 +64,7 @@ export default class CombatTurn {
       globals.action.moveUp = false;
       this.currentPhaseIndex = (this.currentPhaseIndex - 1 + this.phases.length) % this.phases.length;
     }
-    
+
     if (globals.action.moveDown) {
       globals.action.moveDown = false;
       this.currentPhaseIndex = (this.currentPhaseIndex + 1) % this.phases.length;
@@ -75,12 +75,12 @@ export default class CombatTurn {
       const phaseName = this.phases[this.currentPhaseIndex];
       this.selectedPhase = this.createPhase(phaseName);
       this.selectedPhase.init();
-      this.state = 'executing';
+      this.state = "executing";
     }
   }
 
   createPhase(phaseName) {
-    switch(phaseName) {
+    switch (phaseName) {
       case "Attack":
         return new AttackPhase(this.player, this.enemy, this.dice, this);
       case "Ability":
@@ -98,48 +98,47 @@ export default class CombatTurn {
 
   updatePhaseExecution() {
     if (!this.selectedPhase) {
-      this.state = 'selecting';
+      this.state = "selecting";
       return;
     }
-    
-    if (this.selectedPhase.state === 'waiting') {
+
+    if (this.selectedPhase.state === "waiting") {
       this.selectedPhase.handleInput();
     }
-    
-    if (this.selectedPhase.state === 'executing') {
+
+    if (this.selectedPhase.state === "executing") {
       this.selectedPhase.execute();
     }
-    
+
     if (this.selectedPhase.isFinished()) {
       this.onPhaseComplete();
     }
   }
 
   onPhaseComplete() {
-
     if (this.selectedPhase.cancelled) {
       this.selectedPhase = null;
-      this.state = 'selecting';
+      this.state = "selecting";
       return;
     }
-    
+
     if (this.selectedPhase.fled) {
       this.endCombat();
       return;
     }
-    
+
     if (this.selectedPhase.onComplete) {
       this.selectedPhase.onComplete();
     }
     this.selectedPhase = null;
-    
+
     // Verificate if enemi is alive
     if (!this.enemy.isAlive) {
       this.handleEnemyDefeated();
       return;
     }
-    
-    this.state = 'enemy_turn';
+
+    this.state = "enemy_turn";
   }
 
   handleEnemyDefeated() {
@@ -171,20 +170,20 @@ export default class CombatTurn {
 
   executeEnemyTurn() {
     console.log("Enemy turn!");
-    
+
     this.enemy.state = 1;
     this.enemy.animationTimer = 60;
-    
+
     const damage = 10 + this.dice.rollDice(6);
     this.player.hp -= damage;
     console.log("Enemy deals " + damage + " damage!");
-    
+
     if (this.player.hp <= 0) {
       this.player.hp = 0;
       this.endCombat(true);
       return;
     }
-    
+
     this.nextTurn();
   }
 
@@ -192,7 +191,7 @@ export default class CombatTurn {
     this.currentTurn++;
     this.currentPhaseIndex = 0;
     this.selectedPhase = null;
-    this.state = 'selecting';
+    this.state = "selecting";
     console.log("=== Turn " + this.currentTurn + " ===");
   }
 
@@ -207,11 +206,11 @@ export default class CombatTurn {
       globals.gameInstance.gameState = GameState.PLAYING;
       globals.gameState = GameState.PLAYING;
     }
-    this.state = 'finished';
+    this.state = "finished";
   }
 
   isFinished() {
-    return this.state === 'finished';
+    return this.state === "finished";
   }
 
   getPhaseIndex() {

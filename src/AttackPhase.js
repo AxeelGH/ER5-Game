@@ -18,7 +18,7 @@ export default class AttackPhase extends CombatPhase {
 
     this.damage = 10 + this.dice.rollDice(6) + this.dice.rollDice(6);
     this.enemy.hp -= this.damage;
-    
+
     if (this.player.mana < this.player.maxMana - 5) {
       this.player.mana += 5;
     }
@@ -36,6 +36,6 @@ export default class AttackPhase extends CombatPhase {
       console.log("Enemy defeated");
     }
 
-    this.state = 'completed';
+    this.state = "completed";
   }
 }

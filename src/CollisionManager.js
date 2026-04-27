@@ -286,79 +286,78 @@ export default class CollisionManager {
     const player = globals.player;
     if (!player) return;
     if (!globals.map || !globals.map.imageSet) return;
-    
+
     this.resolveMapCollision(player);
 
     this.checkBorderCollision(player);
-    
+
     const playerHitBox = {
-        x: player.xPos + player.hitBox.xOffset,
-        y: player.yPos + player.hitBox.yOffset,
-        w: player.hitBox.xSize,
-        h: player.hitBox.ySize
+      x: player.xPos + player.hitBox.xOffset,
+      y: player.yPos + player.hitBox.yOffset,
+      w: player.hitBox.xSize,
+      h: player.hitBox.ySize,
     };
-    
+
     for (let i = 0; i < globals.enemies.length; i++) {
-        const enemy = globals.enemies[i];
-        if (!enemy.isAlive) continue;
-        
-        const enemyHitBox = {
-            x: enemy.xPos + enemy.hitBox.xOffset,
-            y: enemy.yPos + enemy.hitBox.yOffset,
-            w: enemy.hitBox.xSize,
-            h: enemy.hitBox.ySize
-        };
-        
-        if (this.rectIntersect(playerHitBox, enemyHitBox)) {
-            if (!enemy.isCollidingWithPlayer) {
-                enemy.isCollidingWithPlayer = true;
-                this.onCollisionWithEnemy(enemy);
-            }
-        } else {
-            enemy.isCollidingWithPlayer = false;
+      const enemy = globals.enemies[i];
+      if (!enemy.isAlive) continue;
+
+      const enemyHitBox = {
+        x: enemy.xPos + enemy.hitBox.xOffset,
+        y: enemy.yPos + enemy.hitBox.yOffset,
+        w: enemy.hitBox.xSize,
+        h: enemy.hitBox.ySize,
+      };
+
+      if (this.rectIntersect(playerHitBox, enemyHitBox)) {
+        if (!enemy.isCollidingWithPlayer) {
+          enemy.isCollidingWithPlayer = true;
+          this.onCollisionWithEnemy(enemy);
         }
+      } else {
+        enemy.isCollidingWithPlayer = false;
+      }
     }
 
     if (globals.items && globals.items.length > 0) {
-        for (let i = 0; i < globals.items.length; i++) {
-            const obj = globals.items[i];
-            if (!obj || obj.isCollected) continue;
-            
-            const itemHitBox = {
-                x: obj.xPos + obj.hitBox.xOffset,
-                y: obj.yPos + obj.hitBox.yOffset,
-                w: obj.hitBox.xSize,
-                h: obj.hitBox.ySize
-            };
-            
-            if (this.rectIntersect(playerHitBox, itemHitBox)) {
-                console.log("Potion collected from level");
-                if (globals.inventory) {
-                    globals.inventory.addPotion();
-                }
-                globals.items.splice(i, 1);
-                i--; 
-            }
+      for (let i = 0; i < globals.items.length; i++) {
+        const obj = globals.items[i];
+        if (!obj || obj.isCollected) continue;
+
+        const itemHitBox = {
+          x: obj.xPos + obj.hitBox.xOffset,
+          y: obj.yPos + obj.hitBox.yOffset,
+          w: obj.hitBox.xSize,
+          h: obj.hitBox.ySize,
+        };
+
+        if (this.rectIntersect(playerHitBox, itemHitBox)) {
+          console.log("Potion collected from level");
+          if (globals.inventory) {
+            globals.inventory.addPotion();
+          }
+          globals.items.splice(i, 1);
+          i--;
         }
+      }
     }
 
-    
     if (globals.item) {
-        const potionHitBox = {
-            x: globals.item.xPos + globals.item.hitBox.xOffset,
-            y: globals.item.yPos + globals.item.hitBox.yOffset,
-            w: globals.item.hitBox.xSize,
-            h: globals.item.hitBox.ySize
-        };
-    
-        if (this.rectIntersect(playerHitBox, potionHitBox)) {
-            this.onCollisionWithPotion();
-        }
+      const potionHitBox = {
+        x: globals.item.xPos + globals.item.hitBox.xOffset,
+        y: globals.item.yPos + globals.item.hitBox.yOffset,
+        w: globals.item.hitBox.xSize,
+        h: globals.item.hitBox.ySize,
+      };
+
+      if (this.rectIntersect(playerHitBox, potionHitBox)) {
+        this.onCollisionWithPotion();
+      }
     }
 
     this.collisionDropPotion();
     this.checkBorderCollision(player);
-}
+  }
 
   static rectIntersect(rect1, rect2) {
     return !(rect2.x >= rect1.x + rect1.w || rect2.x + rect2.w <= rect1.x || rect2.y >= rect1.y + rect1.h || rect2.y + rect2.h <= rect1.y);
@@ -408,24 +407,22 @@ export default class CollisionManager {
   }
 
   static calculateNewScreen(direction) {
-
     let newScreen = mapID.INVALID;
 
-    switch(direction) {
-
-      case 'left':
+    switch (direction) {
+      case "left":
         newScreen = Border[globals.currentScreen].left;
         return newScreen;
 
-      case 'right':
+      case "right":
         newScreen = Border[globals.currentScreen].right;
         return newScreen;
 
-      case 'up':
+      case "up":
         newScreen = Border[globals.currentScreen].up;
         return newScreen;
 
-      case 'down':
+      case "down":
         newScreen = Border[globals.currentScreen].down;
         return newScreen;
 
@@ -435,78 +432,56 @@ export default class CollisionManager {
   }
 
   static checkBorderCollision(sprite) {
-  
     const canvas = globals.canvas;
     const borderSize = 5;
-    
-    
+
     if (sprite.isCollidingWithRightBorder) {
-
-      this.changeScreen(sprite, 'right');
-
+      this.changeScreen(sprite, "right");
     } else if (sprite.isCollidingWithLeftBorder) {
-
-      this.changeScreen(sprite, 'left');
-
+      this.changeScreen(sprite, "left");
     } else if (sprite.isCollidingWithTopBorder) {
-
-      this.changeScreen(sprite, 'up');
-
+      this.changeScreen(sprite, "up");
     } else if (sprite.isCollidingWithBottomBorder) {
-
-      this.changeScreen(sprite, 'down');
-
+      this.changeScreen(sprite, "down");
     }
   }
 
   static calculatePlayerNewPosition(sprite, direction, newScreen) {
-    
     const canvas = globals.canvas;
     const borderOffset = 40;
-    
-    if (direction === 'left') {
-      
+
+    if (direction === "left") {
       sprite.xPos = canvas.width - sprite.hitBox.xSize - sprite.hitBox.xOffset - borderOffset;
-
-    } else if (direction === 'right') {
-      
+    } else if (direction === "right") {
       sprite.xPos = borderOffset - sprite.hitBox.xOffset;
-
-    } else if (direction === 'up') {
-      
+    } else if (direction === "up") {
       sprite.yPos = canvas.height - sprite.hitBox.ySize - sprite.hitBox.yOffset - borderOffset;
-
-    } else if (direction === 'down') {
-      
+    } else if (direction === "down") {
       sprite.yPos = borderOffset - sprite.hitBox.yOffset;
     }
   }
 
   static changeScreen(sprite, direction) {
     console.log("direction: " + direction);
-    
+
     let newScreen = this.calculateNewScreen(direction);
     console.log("newScreen: " + direction + " : " + newScreen);
-    
+
     if (newScreen !== mapID.INVALID) {
-    
       globals.currentScreen = newScreen;
       console.log("currentScreen: " + newScreen);
-      
+
       this.calculatePlayerNewPosition(sprite, direction, newScreen);
-      
+
       if (globals.gameInstance) {
-        
         globals.gameInstance.gameState = GameState.LOAD_SCREEN;
         globals.gameState = GameState.LOAD_SCREEN;
         console.log("Loading new screen: " + newScreen);
-        
+
         globals.gameInstance.loadScreen(newScreen);
       }
     } else {
-
       console.log("no valid direction");
     }
   }
-  
 }

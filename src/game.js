@@ -355,10 +355,10 @@ class Game {
         }
         break;
 
-        case GameState.COMBAT:
+      case GameState.COMBAT:
         if (this.combatTurn) {
           this.combatTurn.update();
-          
+
           if (this.combatTurn.isFinished()) {
             this.combatTurn = null;
           }

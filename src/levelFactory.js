@@ -11,44 +11,44 @@ export default class LevelFactory {
     this.currentLevelIndex = 0;
   }
 
-async loadLevels(mapDataPath) {
+  async loadLevels(mapDataPath) {
     await this.loadEnemies();
     await this.loadItems();
 
     const response = await fetch("./src/mapData.json");
     const data = await response.json();
-    
+
     for (let i = 0; i < data.maps.length; i++) {
-        let level = this.createLevel(data.maps[i]);
-        this.levels.push(level);
+      let level = this.createLevel(data.maps[i]);
+      this.levels.push(level);
     }
     console.log("loading levels...", this.levels.length);
-}
+  }
 
-async loadEnemies() {
+  async loadEnemies() {
     const response = await fetch("./src/enemyData.json");
     const data = await response.json();
     this.enemyData = data;
     console.log("Enemies loaded:", this.enemyData);
-}
+  }
 
-async loadItems() { 
+  async loadItems() {
     const response = await fetch("./src/itemData.json");
     const data = await response.json();
     this.itemData = data;
     console.log("Items loaded:", this.itemData);
-}
+  }
 
   getLevelById(levelId) {
     let foundLevel = null;
-    
+
     for (let i = 0; i < this.levels.length; i++) {
       if (this.levels[i].id === levelId) {
         foundLevel = this.levels[i];
         break;
       }
     }
-    
+
     return foundLevel;
   }
 
@@ -71,17 +71,16 @@ async loadItems() {
   }
 
   createItemsFromConfig(itemsConfig) {
-
     let items = [];
 
     for (let i = 0; i < itemsConfig.length; i++) {
       let itemId = itemsConfig[i];
       let itemData = null;
 
-      for(let j = 0; j < this.itemData.items.length; j++){
-        if(this.itemData.items[j].id === itemId){
-        itemData = this.itemData.items[j];
-        break;
+      for (let j = 0; j < this.itemData.items.length; j++) {
+        if (this.itemData.items[j].id === itemId) {
+          itemData = this.itemData.items[j];
+          break;
         }
       }
 
@@ -91,10 +90,8 @@ async loadItems() {
 
       items.push(item);
       console.log("Created ", items.length, " items");
-
-
     }
-          return items;
+    return items;
   }
 
   createEnemiesFromConfig(enemiesConfig) {
@@ -137,7 +134,8 @@ async loadItems() {
 
   getMapDataForLevel(levelId) {
     let mapLayouts = {
-                0: [
+
+                      0: [
     [1501,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1502,1503,1504,1505,1506],
     [1601,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1606],
     [1601,2,1501,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1504,1506,2,1606],

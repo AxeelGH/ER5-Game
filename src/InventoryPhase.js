@@ -18,6 +18,6 @@ export default class InventoryPhase extends CombatPhase {
       this.cancelled = true;
     }
 
-    this.state = 'completed';
+    this.state = "completed";
   }
 }

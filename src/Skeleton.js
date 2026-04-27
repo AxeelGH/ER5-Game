@@ -38,7 +38,7 @@ export default class Skeleton extends Enemy {
     }
   }
 
-    static clone(skeleton) {
+  static clone(skeleton) {
     const cloneSkeleton = new Skeleton(skeleton.xPos, skeleton.yPos);
 
     cloneSkeleton.spriteID = skeleton.spriteID;
@@ -56,4 +56,3 @@ export default class Skeleton extends Enemy {
     return cloneSkeleton;
   }
 }
-

@@ -24,9 +24,8 @@ export default class Item extends Sprite {
     this.updateAnimationFrame();
   }
 
-  static clone (item){
-
-    const cloneItem = new Item(item.xPos,item.yPos)
+  static clone(item) {
+    const cloneItem = new Item(item.xPos, item.yPos);
 
     cloneItem.spriteID = item.spriteID;
     cloneItem.state = item.state;
@@ -35,11 +34,9 @@ export default class Item extends Sprite {
     cloneItem.frames = item.frames;
     cloneItem.physics = item.physics;
     cloneItem.hitBox = item.hitBox;
-    
+
     cloneItem.isCollected = item.isCollected;
     cloneItem.isCollidingWithPlayer = item.isCollidingWithPlayer;
-
-
 
     return cloneItem;
   }
