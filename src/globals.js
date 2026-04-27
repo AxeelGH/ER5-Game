@@ -1,5 +1,6 @@
 import { FPS, GameState } from "./constants.js";
 import { ParticleSystem } from "./Particles.js";
+import DamageNumbers from "./DamageNumbers.js";
 
 export default {
   canvas: {},
@@ -46,4 +47,6 @@ export default {
 
   currentScreen: null,
   userName: "",
+
+  damageNumbers : new DamageNumbers()
 };

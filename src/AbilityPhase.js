@@ -16,6 +16,7 @@ export default class AbilityPhase extends CombatPhase {
     if (this.player.mana >= 20) {
       this.damage = 20 + this.dice.rollDice(6) + this.dice.rollDice(6);
       this.enemy.hp -= this.damage;
+      globals.damageNumbers.addDamageNumber(this.damage,700,250, false);
       this.player.mana -= 20;
 
       console.log("Damage: " + this.damage);

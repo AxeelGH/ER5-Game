@@ -18,6 +18,7 @@ export default class AttackPhase extends CombatPhase {
 
     this.damage = 10 + this.dice.rollDice(6) + this.dice.rollDice(6);
     this.enemy.hp -= this.damage;
+    globals.damageNumbers.addDamageNumber(this.damage, 700, 250, false);
 
     if (this.player.mana < this.player.maxMana - 5) {
       this.player.mana += 5;

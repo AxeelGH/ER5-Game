@@ -343,6 +343,9 @@ export class View {
       this.ctx.fillText(`Your MP: ${Math.floor(globals.player.mana)}/${globals.player.maxMana}`, 8, 140);
     }
 
+    globals.damageNumbers.update();
+    globals.damageNumbers.render(this.ctx);
+
     const combatTurn = this.game.combatTurn;
     const isMovePhase =
       combatTurn &&

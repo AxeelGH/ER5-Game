@@ -177,6 +177,7 @@ export default class CombatTurn {
     const damage = 10 + this.dice.rollDice(6);
     this.player.hp -= damage;
     console.log("Enemy deals " + damage + " damage!");
+    globals.damageNumbers.addDamageNumber(damage,230,350, true);
 
     if (this.player.hp <= 0) {
       this.player.hp = 0;
