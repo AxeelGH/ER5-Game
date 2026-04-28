@@ -49,5 +49,5 @@ export default {
   currentEnemies: null,
   userName: "",
 
-  damageNumbers : new DamageNumbers()
+  damageNumbers: new DamageNumbers(),
 };
