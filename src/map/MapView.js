@@ -1,4 +1,4 @@
-import globals from "./globals.js";
+import globals from "../config/globals.js";
 
 export default class MapView {
   constructor(ctx) {

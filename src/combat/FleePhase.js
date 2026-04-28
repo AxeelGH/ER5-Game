@@ -1,4 +1,4 @@
-import globals from "./globals.js";
+import globals from "../config/globals.js";
 import CombatPhase from "./CombatPhase.js";
 
 export default class FleePhase extends CombatPhase {

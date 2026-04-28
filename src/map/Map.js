@@ -1,4 +1,4 @@
-import globals from "./globals.js";
+import globals from "../config/globals.js";
 
 export default class Map {
   constructor(id, name, mapData, imageSet, enemies = [], items = []) {

@@ -1,4 +1,4 @@
-import globals from "./globals.js";
+import globals from "./config/globals.js";
 import { updateMusic } from "./Music.js";
 
 export default class Asset {
@@ -10,21 +10,21 @@ export default class Asset {
     var tileSet = new Image();
     tileSet.addEventListener("load", this.tileSetLoader.bind(this));
     tileSet.addEventListener("error", this.tileSetLoader.bind(this));
-    tileSet.src = "./images/spritesheet.png";
+    tileSet.src = "./assets/images/spritesheet.png";
     globals.tileSets[0] = tileSet;
     globals.assetsToLoad.push(tileSet);
 
     tileSet = new Image();
     tileSet.addEventListener("load", this.tileSetLoader.bind(this));
     tileSet.addEventListener("error", this.tileSetLoader.bind(this));
-    tileSet.src = "./images/TileSet.png";
+    tileSet.src = "./assets/images/TileSet.png";
     globals.tileSets[1] = tileSet;
     globals.assetsToLoad.push(tileSet);
 
     tileSet = new Image();
     tileSet.addEventListener("load", this.tileSetLoader.bind(this));
     tileSet.addEventListener("error", this.tileSetLoader.bind(this));
-    tileSet.src = "./images/potion_life.png";
+    tileSet.src = "./assets/images/potion_life.png";
     globals.tileSets[2] = tileSet;
     globals.assetsToLoad.push(tileSet);
 

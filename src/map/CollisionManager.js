@@ -1,7 +1,7 @@
-import globals from "./globals.js";
-import { GameState, SpriteID, mapID, Border } from "./constants.js";
-import CombatTurn from "./CombatTurn.js";
-import SpriteFactory from "./SpriteFactory.js";
+import globals from "../config/globals.js";
+import { GameState, SpriteID, mapID, Border } from "../config/constants.js";
+import CombatTurn from "../combat/CombatTurn.js";
+import SpriteFactory from "../sprites/SpriteFactory.js";
 
 export default class CollisionManager {
   static getSolidTileIds() {

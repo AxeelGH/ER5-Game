@@ -1,6 +1,6 @@
 import { FPS, GameState } from "./constants.js";
-import { ParticleSystem } from "./Particles.js";
-import DamageNumbers from "./DamageNumbers.js";
+import { ParticleSystem } from "../Particles.js";
+import DamageNumbers from "../combat/DamageNumbers.js";
 
 export default {
   canvas: {},

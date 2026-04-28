@@ -20,10 +20,10 @@ body {
 
 @font-face {
   font-family: emulogic;
-  src: url(../fonts/emulogic.ttf);
+  src: url(../assets/fonts/emulogic.ttf);
 
   font-family: alkhemikal;
-  src: url(../fonts/Alkhemikal.ttf);
+  src: url(../assets/fonts/Alkhemikal.ttf);
 }
 
 #formLogin {

@@ -1,8 +1,8 @@
-import globals from "./globals.js";
-import { SpriteID, State } from "./constants.js";
-import SuperSlime from "./SuperSlime.js";
-import SuperMage from "./SuperMage.js";
-import SuperSkeleton from "./SuperSkeleton.js";
+import globals from "../config/globals.js";
+import { SpriteID, State } from "../config/constants.js";
+import SuperSlime from "../sprites/SuperSlime.js";
+import SuperMage from "../sprites/SuperMage.js";
+import SuperSkeleton from "../sprites/SuperSkeleton.js";
 
 export default class CombatView {
   constructor(ctx) {

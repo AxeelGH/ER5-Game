@@ -1,12 +1,12 @@
-import Dice from "./Dice.js";
-import globals from "./globals.js";
+import Dice from "../Dice.js";
+import globals from "../config/globals.js";
 import AttackPhase from "./AttackPhase.js";
 import AbilityPhase from "./AbilityPhase.js";
 import InventoryPhase from "./InventoryPhase.js";
 import FleePhase from "./FleePhase.js";
 import MovePhase from "./MovePhase.js";
-import { GameState } from "./constants.js";
-import SpriteFactory from "./SpriteFactory.js";
+import { GameState } from "../config/constants.js";
+import SpriteFactory from "../sprites/SpriteFactory.js";
 
 export default class CombatTurn {
     constructor(player, enemies, input) {
