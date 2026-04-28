@@ -41,6 +41,7 @@ export default {
   sounds: [],
 
   currentSound: -1,
+  menuIndex: 0,
 
   buttonStart: {},
   buttonStartClicked: false,

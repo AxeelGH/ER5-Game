@@ -147,7 +147,7 @@ export class View {
     const menuItems = ["Play", "Story", "Controls", "High Score", "Logout"];
     const startY = 500;
     const itemHeight = 50;
-    const selectedIndex = globals.menuIndex !== undefined ? globals.menuIndex : 0;
+    const selectedIndex = globals.menuIndex;
 
     for (let index = 0; index < menuItems.length; index++) {
       const text = menuItems[index];
