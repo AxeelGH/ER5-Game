@@ -22,7 +22,7 @@ export default class Player extends Sprite {
 
     this.imageSet = new ImageSet(39, 0, 48, 64, 0, 0);
     this.frames = new Frames(3, 8);
-    this.physics = new Physics(0, 0, 100);
+    this.physics = new Physics(0, 0, 200);
     this.hitBox = new HitBox(32, 32, 7.5, 29);
     this.animationTimer = 0;
 

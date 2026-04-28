@@ -35,6 +35,18 @@
       "name": "Beach",
       "enemies": [9],
       "items": [4, 5]
+    },
+    {
+      "id": 6,
+      "name": "Beach",
+      "enemies": [],
+      "items": [4, 5]
+    },
+    {
+      "id": 7,
+      "name": "Beach",
+      "enemies": [],
+      "items": [5]
     }
   ]
 }

@@ -213,12 +213,12 @@ class Game {
       case GameState.MENU:
         if (globals.action.moveUp) {
           globals.action.moveUp = false;
-          globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 4;
+          globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 5;
         }
 
         if (globals.action.moveDown) {
           globals.action.moveDown = false;
-          globals.menuIndex = globals.menuIndex < 4 ? globals.menuIndex + 1 : 0;
+          globals.menuIndex = globals.menuIndex < 5 ? globals.menuIndex + 1 : 0;
         }
 
         if (globals.action.confirm) {
