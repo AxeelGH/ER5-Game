@@ -1,4 +1,4 @@
-import globals from "./globals.js";
+import globals from "../config/globals.js";
 import CombatPhase from "./CombatPhase.js";
 
 export default class MovePhase extends CombatPhase {
@@ -7,7 +7,7 @@ export default class MovePhase extends CombatPhase {
     this.movePositions = [100, 250, 450];
     this.selectedIndex = 1;
     this.targetX = null;
-}
+  }
 
   init() {
     this.state = "waiting";
@@ -64,7 +64,6 @@ export default class MovePhase extends CombatPhase {
   }
 
   renderUI(ctx) {
-
     ctx.fillStyle = "rgba(0,0,0,0.8)";
     ctx.fillRect(150, 400, 500, 150);
     ctx.strokeStyle = "white";
@@ -89,7 +88,6 @@ export default class MovePhase extends CombatPhase {
         ctx.font = "20px alkhemikal";
         ctx.fillText(positionsText[i], positionsX[i], 490);
       }
-
     }
 
     ctx.fillStyle = "#88ff88";

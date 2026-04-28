@@ -1,5 +1,5 @@
-import globals from "./globals.js";
-import { Key } from "./constants.js";
+import globals from "../config/globals.js";
+import { Key } from "../config/constants.js";
 
 export class Events {
   constructor() {

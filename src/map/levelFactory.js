@@ -1,8 +1,8 @@
 import Map from "./Map.js";
-import ImageSet from "./ImageSet.js";
-import SpriteFactory from "./SpriteFactory.js";
-import globals from "./globals.js";
-import { mapLayouts } from "./levels.js"
+import ImageSet from "../ImageSet.js";
+import SpriteFactory from "../sprites/SpriteFactory.js";
+import globals from "../config/globals.js";
+import { mapLayouts } from "./levels.js";
 
 export default class LevelFactory {
   constructor() {
@@ -16,7 +16,7 @@ export default class LevelFactory {
     await this.loadEnemies();
     await this.loadItems();
 
-    const response = await fetch("./src/mapData.json");
+    const response = await fetch("./src/config/mapData.json");
     const data = await response.json();
 
     for (let i = 0; i < data.maps.length; i++) {
@@ -27,14 +27,14 @@ export default class LevelFactory {
   }
 
   async loadEnemies() {
-    const response = await fetch("./src/enemyData.json");
+    const response = await fetch("./src/config/enemyData.json");
     const data = await response.json();
     this.enemyData = data;
     console.log("Enemies loaded:", this.enemyData);
   }
 
   async loadItems() {
-    const response = await fetch("./src/itemData.json");
+    const response = await fetch("./src/config/itemData.json");
     const data = await response.json();
     this.itemData = data;
     console.log("Items loaded:", this.itemData);

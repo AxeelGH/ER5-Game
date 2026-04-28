@@ -1,5 +1,5 @@
-import { Sound } from "./constants.js";
-import globals from "./globals.js";
+import { Sound } from "./config/constants.js";
+import globals from "./config/globals.js";
 
 export function updateMusic() {
   const buffer = 0.28;

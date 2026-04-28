@@ -1,4 +1,4 @@
-import globals from "./globals.js";
+import globals from "./config/globals.js";
 
 class Particle {
   constructor(id, xPos, yPos, radius, alpha, vx, vy) {

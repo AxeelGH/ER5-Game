@@ -1,54 +1,54 @@
 import Dice from "./Dice.js";
-import globals from "./globals.js";
+import globals from "../config/globals.js";
 import AttackPhase from "./AttackPhase.js";
 import AbilityPhase from "./AbilityPhase.js";
 import InventoryPhase from "./InventoryPhase.js";
 import FleePhase from "./FleePhase.js";
 import MovePhase from "./MovePhase.js";
-import { GameState } from "./constants.js";
-import SpriteFactory from "./SpriteFactory.js";
+import { GameState } from "../config/constants.js";
+import SpriteFactory from "../sprites/SpriteFactory.js";
 
 export default class CombatTurn {
-    constructor(player, enemies, input) {
-        this.player = player;
-        this.enemies = enemies;
-        this.input = input;
-        this.dice = new Dice();
+  constructor(player, enemies, input) {
+    this.player = player;
+    this.enemies = enemies;
+    this.input = input;
+    this.dice = new Dice();
 
-        this.state = "starting";
-        this.selectedPhase = null;
-        this.currentTurn = 1;
-        this.currentPhaseIndex = 0;
-        this.phases = ["Attack", "Ability", "Inventory", "Move", "Flee"];
+    this.state = "starting";
+    this.selectedPhase = null;
+    this.currentTurn = 1;
+    this.currentPhaseIndex = 0;
+    this.phases = ["Attack", "Ability", "Inventory", "Move", "Flee"];
 
-        globals.triedToFlee = false;
+    globals.triedToFlee = false;
 
-        this.startCombat();
-    }
+    this.startCombat();
+  }
 
   startCombat() {
     const playerNum = this.dice.rollDice(6);
     let highestEnemyRoll = 0;
-    
+
     for (let i = 0; i < this.enemies.length; i++) {
-        const enemy = this.enemies[i];
-        const enemyNum = this.dice.rollDice(6);
-        enemy.lastRoll = enemyNum;
-        if (enemyNum > highestEnemyRoll) highestEnemyRoll = enemyNum;
-        console.log(`Enemy ${enemy.id} roll: ${enemyNum}`);
+      const enemy = this.enemies[i];
+      const enemyNum = this.dice.rollDice(6);
+      enemy.lastRoll = enemyNum;
+      if (enemyNum > highestEnemyRoll) highestEnemyRoll = enemyNum;
+      console.log(`Enemy ${enemy.id} roll: ${enemyNum}`);
     }
 
     console.log("Player roll: " + playerNum);
     console.log("Highest enemy roll: " + highestEnemyRoll);
 
     if (highestEnemyRoll > playerNum) {
-        console.log("The enemy attacks first!");
-        this.state = "enemy_turn";
+      console.log("The enemy attacks first!");
+      this.state = "enemy_turn";
     } else {
-        console.log("The player goes first!");
-        this.state = "selecting";
+      console.log("The player goes first!");
+      this.state = "selecting";
     }
-}
+  }
 
   update() {
     switch (this.state) {
@@ -140,10 +140,8 @@ export default class CombatTurn {
     this.selectedPhase = null;
 
     let allEnemiesDead = true;
-    for (let i = 0; i < this.enemies.length; i++) 
-    {
-      if (this.enemies[i].isAlive) 
-      {
+    for (let i = 0; i < this.enemies.length; i++) {
+      if (this.enemies[i].isAlive) {
         allEnemiesDead = false;
         break;
       }
@@ -163,16 +161,16 @@ export default class CombatTurn {
     globals.gameInstance.score += 100 * this.enemies.length;
 
     for (let i = 0; i < this.enemies.length; i++) {
-        const enemy = this.enemies[i];
-        const dropChance = 0.3;
-        if (Math.random() < dropChance && globals.inventory) {
-            this.createPotionDrop(enemy);
-            console.log("A potion dropped!");
-        }
+      const enemy = this.enemies[i];
+      const dropChance = 0.3;
+      if (Math.random() < dropChance && globals.inventory) {
+        this.createPotionDrop(enemy);
+        console.log("A potion dropped!");
+      }
     }
 
     this.endCombat();
-}
+  }
 
   createPotionDrop(enemy) {
     const dropX = enemy.xPos + 20;
@@ -189,33 +187,33 @@ export default class CombatTurn {
 
   executeEnemyTurn() {
     console.log("Enemy turn!");
-    
+
     for (let i = 0; i < this.enemies.length; i++) {
-        const enemy = this.enemies[i];
-        if (!enemy.isAlive) continue;
-        
-        console.log(`Enemy ${i + 1} attacks!`);
-        
-        enemy.state = 1;
-        enemy.animationTimer = 60;
-        
-        const damage = 10 + this.dice.rollDice(6);
-        this.player.hp -= damage;
-        console.log(`Enemy ${i + 1} deals ${damage} damage!`);
-        
-        if (globals.damageNumbers) {
-            globals.damageNumbers.addDamageNumber(damage, 230, 350, true);
-        }
-        
-        if (this.player.hp <= 0) {
-            this.player.hp = 0;
-            this.endCombat(true);
-            return;
-        }
+      const enemy = this.enemies[i];
+      if (!enemy.isAlive) continue;
+
+      console.log(`Enemy ${i + 1} attacks!`);
+
+      enemy.state = 1;
+      enemy.animationTimer = 60;
+
+      const damage = 10 + this.dice.rollDice(6);
+      this.player.hp -= damage;
+      console.log(`Enemy ${i + 1} deals ${damage} damage!`);
+
+      if (globals.damageNumbers) {
+        globals.damageNumbers.addDamageNumber(damage, 230, 350, true);
+      }
+
+      if (this.player.hp <= 0) {
+        this.player.hp = 0;
+        this.endCombat(true);
+        return;
+      }
     }
-    
+
     this.nextTurn();
-}
+  }
 
   nextTurn() {
     this.currentTurn++;
@@ -251,13 +249,13 @@ export default class CombatTurn {
   getPhaseName() {
     return this.phases[this.currentPhaseIndex];
   }
-  
+
   getAliveEnemies() {
     let aliveEnemies = [];
     for (let i = 0; i < this.enemies.length; i++) {
-        if (this.enemies[i].isAlive) {
-            aliveEnemies.push(this.enemies[i]);
-        }
+      if (this.enemies[i].isAlive) {
+        aliveEnemies.push(this.enemies[i]);
+      }
     }
     return aliveEnemies;
   }

@@ -1,11 +1,11 @@
-import globals from "./globals.js";
-import { GameState, SpriteID } from "./constants.js";
-import playerView from "./PlayerView.js";
-import MapView from "./MapView.js";
-import ItemView from "./ItemView.js";
+import globals from "./config/globals.js";
+import { GameState, SpriteID } from "./config/constants.js";
+import playerView from "./sprites/PlayerView.js";
+import MapView from "./map/MapView.js";
+import ItemView from "./sprites/ItemView.js";
 
-import CombatView from "./CombatView.js";
-import CombatTurn from "./CombatTurn.js";
+import CombatView from "./combat/CombatView.js";
+import CombatTurn from "./combat/CombatTurn.js";
 
 export class View {
   constructor(ctx, game) {
@@ -17,23 +17,23 @@ export class View {
     this.game = game;
 
     this.introBackgroundImg = new Image();
-    this.introBackgroundImg.src = "./images/IntroBackground.png";
+    this.introBackgroundImg.src = "./assets/images/IntroBackground.png";
     this.mainBackgroundImg = new Image();
-    this.mainBackgroundImg.src = "./images/MainBackground.png";
+    this.mainBackgroundImg.src = "./assets/images/MainBackground.png";
     this.battlegroundImg = new Image();
-    this.battlegroundImg.src = "./images/Battleground.png";
+    this.battlegroundImg.src = "./assets/images/Battleground.png";
     this.storyBackgroundImg = new Image();
-    this.storyBackgroundImg.src = "./images/StoryBackground.png";
+    this.storyBackgroundImg.src = "./assets/images/StoryBackground.png";
     this.highScoreBackgroundImg = new Image();
-    this.highScoreBackgroundImg.src = "./images/HighScoreBackground.jpg";
+    this.highScoreBackgroundImg.src = "./assets/images/HighScoreBackground.jpg";
     this.loginBackgroundImg = new Image();
-    this.loginBackgroundImg.src = "./images/LoginBackground.png";
+    this.loginBackgroundImg.src = "./assets/images/LoginBackground.png";
 
-    this.highScoreBackgroundImg.src = "./images/HighScoreBackground.jpg";
+    this.highScoreBackgroundImg.src = "./assets/images/HighScoreBackground.jpg";
     this.victoryBackgroundImg = new Image();
-    this.victoryBackgroundImg.src = "./images/VictoryBackground.png";
+    this.victoryBackgroundImg.src = "./assets/images/VictoryBackground.png";
     this.gameOverBackgroundImg = new Image();
-    this.gameOverBackgroundImg.src = "./images/GameOverBackground.png";
+    this.gameOverBackgroundImg.src = "./assets/images/GameOverBackground.png";
   }
 
   render() {

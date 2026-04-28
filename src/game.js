@@ -1,23 +1,23 @@
-import globals from "./globals.js";
-import { GameState, Key, LoginData, SpriteID } from "./constants.js";
-import { Events } from "./Events.js";
+import globals from "./config/globals.js";
+import { GameState, Key, LoginData, SpriteID } from "./config/constants.js";
+import { Events } from "./events/Events.js";
 import { View } from "./View.js";
 import Asset from "./assets.js";
-import SpriteFactory from "./SpriteFactory.js";
-import playerView from "./PlayerView.js";
-import Map from "./Map.js";
-import MapView from "./MapView.js";
+import SpriteFactory from "./sprites/SpriteFactory.js";
+import playerView from "./sprites/PlayerView.js";
+import Map from "./map/Map.js";
+import MapView from "./map/MapView.js";
 import ImageSet from "./ImageSet.js";
-import CollisionManager from "./CollisionManager.js";
-import CombatTurn from "./CombatTurn.js";
-import Inventory from "./Inventory.js";
-import { Sound } from "./constants.js";
+import CollisionManager from "./map/CollisionManager.js";
+import CombatTurn from "./combat/CombatTurn.js";
+import Inventory from "./combat/Inventory.js";
+import { Sound } from "./config/constants.js";
 import GameFactory from "./GameFactory.js";
-import LevelFactory from "./levelFactory.js";
-import Item from "./Item.js";
-import Slime from "./Slime.js";
-import Mage from "./Mage.js";
-import Skeleton from "./Skeleton.js";
+import LevelFactory from "./map/levelFactory.js";
+import Item from "./sprites/Item.js";
+import Slime from "./sprites/Slime.js";
+import Mage from "./sprites/Mage.js";
+import Skeleton from "./sprites/Skeleton.js";
 
 class Game {
   constructor(canvas, gameData) {
@@ -572,7 +572,7 @@ class Game {
 }
 
 export function initGame(canvas) {
-  fetch("./src/gameData.json")
+  fetch("./src/config/gameData.json")
     .then(response => response.json())
     .then(async data => {
       console.log("JSON:", data);

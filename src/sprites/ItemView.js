@@ -1,5 +1,5 @@
-import globals from "./globals.js";
-import { Tile } from "./constants.js";
+import globals from "../config/globals.js";
+import { Tile } from "../config/constants.js";
 
 export default class ItemView {
   constructor(ctx) {

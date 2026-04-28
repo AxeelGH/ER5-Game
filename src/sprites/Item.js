@@ -1,9 +1,9 @@
-import ImageSet from "./ImageSet.js";
-import Frames from "./Frames.js";
-import Physics from "./Physics.js";
-import HitBox from "./HitBox.js";
+import ImageSet from "../ImageSet.js";
+import Frames from "../Frames.js";
+import Physics from "../Physics.js";
+import HitBox from "../HitBox.js";
 import Sprite from "./Sprite.js";
-import { SpriteID, State } from "./constants.js";
+import { SpriteID, State } from "../config/constants.js";
 
 export default class Item extends Sprite {
   constructor(xPos, yPos) {

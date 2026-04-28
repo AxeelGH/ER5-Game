@@ -1,4 +1,4 @@
-import globals from "./globals.js";
+import globals from "./config/globals.js";
 import { initGame } from "./game.js";
 
 globals.canvas = document.getElementById("gameScreen");

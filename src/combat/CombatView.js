@@ -1,8 +1,8 @@
-import globals from "./globals.js";
-import { SpriteID, State } from "./constants.js";
-import SuperSlime from "./SuperSlime.js";
-import SuperMage from "./SuperMage.js";
-import SuperSkeleton from "./SuperSkeleton.js";
+import globals from "../config/globals.js";
+import { SpriteID, State } from "../config/constants.js";
+import SuperSlime from "../sprites/SuperSlime.js";
+import SuperMage from "../sprites/SuperMage.js";
+import SuperSkeleton from "../sprites/SuperSkeleton.js";
 
 export default class CombatView {
   constructor(ctx) {
@@ -14,25 +14,24 @@ export default class CombatView {
   }
 
   render() {
-
     let enemies = globals.currentEnemies || (globals.currentEnemy ? [globals.currentEnemy] : []);
     const player = globals.player;
-    
+
     const enemyPositions = [
-      { x: 450, y: 160, w: 500, h: 500 },   // Left
-      { x: 700, y: 160, w: 500, h: 500 },   // Right
-      { x: 575, y: 100, w: 500, h: 500 }    // Center
+      { x: 450, y: 160, w: 500, h: 500 }, // Left
+      { x: 700, y: 160, w: 500, h: 500 }, // Right
+      { x: 575, y: 100, w: 500, h: 500 }, // Center
     ];
-    
+
     for (let i = 0; i < enemies.length; i++) {
       const enemy = enemies[i];
       if (!enemy.isAlive) continue;
-      
+
       enemy.combatUpdate();
-      
+
       const posIndex = Math.min(i, enemyPositions.length - 1);
       const pos = enemyPositions[posIndex];
-      
+
       if (enemy.id === SpriteID.SLIME) {
         this.updateSuperEnemy(this.superSlime, enemy);
         this.drawEnemy(this.superSlime, pos.x, pos.y, pos.w, pos.h);
@@ -51,37 +50,37 @@ export default class CombatView {
       } else {
         this.drawEnemy(enemy, pos.x, pos.y, pos.w, pos.h);
       }
-      
+
       this.drawEnemyHealthBar(enemy, pos.x, pos.y - 30, pos.w);
     }
 
     if (player) {
       this.drawPlayer(player, player.xPos, player.yPos, 300, 300);
     }
-}
+  }
 
-drawEnemyHealthBar(enemy, x, y, width) {
+  drawEnemyHealthBar(enemy, x, y, width) {
     const barWidth = 180;
     const barHeight = 15;
-    const barX = x + (width / 2) - (barWidth / 2);
+    const barX = x + width / 2 - barWidth / 2;
     const barY = y;
-    
+
     this.ctx.fillStyle = "#330000";
     this.ctx.fillRect(barX, barY, barWidth, barHeight);
-    
+
     const hpPercent = Math.max(0, enemy.hp / enemy.maxHp);
     this.ctx.fillStyle = "#60ff44";
     this.ctx.fillRect(barX, barY, barWidth * hpPercent, barHeight);
-    
+
     this.ctx.strokeStyle = "#ffffff";
     this.ctx.lineWidth = 1;
     this.ctx.strokeRect(barX, barY, barWidth, barHeight);
-    
+
     this.ctx.fillStyle = "#ffffff";
     this.ctx.font = "14px alkhemikal";
     this.ctx.textAlign = "center";
     this.ctx.fillText(`${Math.floor(enemy.hp)}/${enemy.maxHp}`, barX + barWidth / 2, barY + 12);
-}
+  }
 
   updateSuperEnemy(superEnemy, normalEnemy) {
     superEnemy.animationTimer = normalEnemy.animationTimer;
