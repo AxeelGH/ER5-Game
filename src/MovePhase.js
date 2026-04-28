@@ -90,9 +90,6 @@ export default class MovePhase extends CombatPhase {
         ctx.fillText(positionsText[i], positionsX[i], 490);
       }
 
-      ctx.fillStyle = "#aaaaaa";
-      ctx.font = "14px alkhemikal";
-      ctx.fillText("(x=" + this.movePositions[i] + ")", positionsX[i], 520);
     }
 
     ctx.fillStyle = "#88ff88";
