@@ -357,7 +357,7 @@ export default class CollisionManager {
     }
 
     this.collisionDropPotion();
-    this.checkBorderCollision(player);
+    //this.checkBorderCollision(player);
   }
 
   static rectIntersect(rect1, rect2) {

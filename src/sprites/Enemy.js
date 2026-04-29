@@ -1,9 +1,9 @@
 import Sprite from "./Sprite.js";
 import { SpriteID } from "../config/constants.js";
-import ImageSet from "../ImageSet.js";
-import Frames from "../Frames.js";
-import Physics from "../Physics.js";
-import HitBox from "../HitBox.js";
+import ImageSet from "./ImageSet.js";
+import Frames from "./Frames.js";
+import Physics from "./Physics.js";
+import HitBox from "./HitBox.js";
 import globals from "../config/globals.js";
 
 export default class Enemy extends Sprite {
