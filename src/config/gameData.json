@@ -13,7 +13,7 @@
     },
     "hard": {
       "enemyHPMultiplier": 1.2,
-      "enemyAttackMultiplier": 1.1,
+      "enemyAttackMultiplier": 1.2,
       "playerHPMultiplier": 0.95
     }
   }

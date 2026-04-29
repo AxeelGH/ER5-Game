@@ -201,7 +201,6 @@ class Game {
         break;
 
       case GameState.MENU:
-        console.log(globals.difficulty);
         if (globals.action.moveUp) {
           globals.action.moveUp = false;
           globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 6;
@@ -220,11 +219,9 @@ class Game {
               if (globals.difficulty === "easy") {
                 this.enemyHPMultiplier = this.gameData.difficulty.easy.enemyHPMultiplier;
                 this.enemyAttackMultiplier = this.gameData.difficulty.easy.enemyAttackMultiplier;
-                this.playerHPMultiplier = this.gameData.difficulty.easy.playerHPMultiplier;
               } else if (globals.difficulty === "hard") {
                 this.enemyHPMultiplier = this.gameData.difficulty.hard.enemyHPMultiplier;
                 this.enemyAttackMultiplier = this.gameData.difficulty.hard.enemyAttackMultiplier;
-                this.playerHPMultiplier = this.gameData.difficulty.hard.playerHPMultiplier;
               }
               this.gameState = GameState.PLAYING;
               globals.gameState = GameState.PLAYING;
@@ -235,7 +232,7 @@ class Game {
                 globals.enemies[i].maxHp = globals.enemies[i].hp;
                 console.log("Enemy " + 1 + ": " + globals.enemies[i].hp);
               }
-              this.player.hp *= this.playerHPMultiplier;
+              this.player.hp;
               this.player.maxHp = this.player.hp;
               break;
 
