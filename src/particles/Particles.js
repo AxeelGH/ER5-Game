@@ -1,4 +1,4 @@
-import globals from "./config/globals.js";
+import globals from "../config/globals.js";
 
 class Particle {
   constructor(id, xPos, yPos, radius, alpha, vx, vy) {
@@ -82,9 +82,9 @@ export class ParticleSystem {
 
   draw(ctx) {
     for (let i = 0; i < this.particles.length; i++) {
-        this.particles[i].draw(ctx);
+      this.particles[i].draw(ctx);
     }
-}
+  }
 
   clear() {
     this.particles = [];

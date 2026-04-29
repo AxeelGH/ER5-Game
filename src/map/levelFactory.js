@@ -1,5 +1,5 @@
 import Map from "./Map.js";
-import ImageSet from "../ImageSet.js";
+import ImageSet from "../sprites/ImageSet.js";
 import SpriteFactory from "../sprites/SpriteFactory.js";
 import globals from "../config/globals.js";
 import { mapLayouts } from "./levels.js";

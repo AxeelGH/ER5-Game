@@ -1,5 +1,5 @@
 import { FPS, GameState } from "./constants.js";
-import { ParticleSystem } from "../Particles.js";
+import { ParticleSystem } from "../particles/Particles.js";
 import DamageNumbers from "../combat/DamageNumbers.js";
 
 export default {
