@@ -16,6 +16,7 @@ export default {
 
   menuIndex: 0,
   subMenuIndex: 0,
+  difficulty: "easy",
 
   tileSet: {},
   tileSets: [],
