@@ -75,6 +75,10 @@ export class View {
         this.renderHistory();
         break;
 
+      case GameState.DIFFICULTY:
+        this.renderDifficulty();
+        break;
+
       case GameState.HIGHSCORE:
         this.renderHighScore();
         break;
@@ -144,8 +148,8 @@ export class View {
     this.ctx.fillText("THE STORM OF ", this.ctx.canvas.width / 2, this.ctx.canvas.height * 0.1);
     this.ctx.fillText("THE ANCIENT WARRIORS", this.ctx.canvas.width / 2, this.ctx.canvas.height * 0.2);
 
-    const menuItems = ["Play", "Story", "Controls", "High Score", "Logout", "Stats"];
-    const startY = 500;
+    const menuItems = ["Play", "Story", "Controls", "High Score", "Difficulty", "Stats", "Logout"];
+    const startY = 400;
     const itemHeight = 50;
     const selectedIndex = globals.menuIndex;
 
@@ -452,6 +456,33 @@ export class View {
     this.ctx.font = "32px alkhemikal";
     this.ctx.fillStyle = "yellow";
     this.ctx.fillText("Press SPACE to go back", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 340);
+  }
+
+  renderDifficulty() {
+    this.ctx.drawImage(this.storyBackgroundImg, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+
+    this.ctx.fillStyle = "#e9b200";
+    this.ctx.font = "48px alkhemikal";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText("DIFFICULTY", this.ctx.canvas.width / 2, 80);
+
+    this.ctx.fillStyle = "yellow";
+    this.ctx.fillText("Press SPACE to go back", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 340);
+
+    const menuItems = ["Easy", "Hard"];
+    const startY = 300;
+    const itemHeight = 50;
+    const selectedIndex = globals.subMenuIndex !== undefined ? globals.subMenuIndex : 0;
+
+    for (let index = 0; index < menuItems.length; index++) {
+      const text = menuItems[index];
+      const y = startY + index * itemHeight;
+      const isSelected = index === selectedIndex;
+
+      this.ctx.fillStyle = isSelected ? "yellow" : "white";
+      this.ctx.font = isSelected ? "bold 52px alkhemikal" : "36px alkhemikal";
+      this.ctx.fillText(isSelected ? "> " + text + " <" : text, this.ctx.canvas.width / 2, y);
+    }
   }
 
   renderHighScore() {

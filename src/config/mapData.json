@@ -3,50 +3,65 @@
     {
       "id": 0,
       "name": "Starter village",
-      "enemies": [1, 2],
-      "items": [1]
+      "enemies": [
+        { "id": 1, "xPos": 270, "yPos": 550 },
+        { "id": 2, "xPos": 300, "yPos": 400 }
+      ],
+      "items": [{ "id": 1, "xPos": 500, "yPos": 610 }]
     },
     {
       "id": 1,
       "name": "First challenge",
-      "enemies": [3, 4],
-      "items": [2]
+      "enemies": [
+        { "id": 3, "xPos": 570, "yPos": 610 },
+        { "id": 4, "xPos": 160, "yPos": 300 }
+      ],
+      "items": [{ "id": 2, "xPos": 570, "yPos": 610 }]
     },
     {
       "id": 2,
       "name": "Castle",
-      "enemies": [5],
+      "enemies": [{ "id": 5, "xPos": 400, "yPos": 300 }],
       "items": []
     },
     {
       "id": 3,
       "name": "Ride",
-      "enemies": [6],
-      "items": [3]
+      "enemies": [{ "id": 6, "xPos": 400, "yPos": 340 }],
+      "items": [{ "id": 3, "xPos": 420, "yPos": 310 }]
     },
     {
       "id": 4,
       "name": "Cemetery",
-      "enemies": [7, 8],
+      "enemies": [
+        { "id": 7, "xPos": 300, "yPos": 450 },
+        { "id": 8, "xPos": 480, "yPos": 420 }
+      ],
       "items": []
     },
     {
       "id": 5,
       "name": "Beach",
-      "enemies": [9],
-      "items": [4, 5]
+      "enemies": [{ "id": 9, "xPos": 400, "yPos": 610 }],
+      "items": [
+        { "id": 4, "xPos": 430, "yPos": 400 },
+        { "id": 5, "xPos": 500, "yPos": 610 }
+      ]
     },
     {
       "id": 6,
       "name": "Beach",
       "enemies": [],
-      "items": [4, 5]
+      "items": [
+        { "id": 4, "xPos": 430, "yPos": 400 },
+        { "id": 5, "xPos": 500, "yPos": 610 }
+      ]
     },
     {
       "id": 7,
       "name": "Beach",
       "enemies": [],
-      "items": [5]
+      "items": [{ "id": 5, "xPos": 500, "yPos": 610 }]
     }
   ]
 }
