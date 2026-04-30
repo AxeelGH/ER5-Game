@@ -62,9 +62,9 @@ export default class LevelFactory {
 
     let itemsData = mapConfig.items ? mapConfig.items : this.itemData;
 
-    let enemies = this.createEnemiesFromConfig(enemiesData);
+    let enemies = this.createEnemiesFromConfig(mapConfig.enemies);
 
-    let items = this.createItemsFromConfig(itemsData);
+    let items = this.createItemsFromConfig(mapConfig.items);
 
     let level = new Map(mapConfig.id, mapConfig.name, mapData, mapImageSet, enemies, items);
 
@@ -75,22 +75,22 @@ export default class LevelFactory {
     let items = [];
 
     for (let i = 0; i < itemsConfig.length; i++) {
-      let itemId = itemsConfig[i];
-      let itemData = null;
+      let config = itemsConfig[i];
+      let itemId = config.id;
+      let itemBaseData = null;
 
       for (let j = 0; j < this.itemData.items.length; j++) {
         if (this.itemData.items[j].id === itemId) {
-          itemData = this.itemData.items[j];
+          itemBaseData = this.itemData.items[j];
           break;
         }
       }
 
-      let item = null;
+      let item = SpriteFactory.createItem(config.xPos, config.yPos);
 
-      item = SpriteFactory.createItem(itemData.xPos, itemData.yPos);
-
-      items.push(item);
-      console.log("Created ", items.length, " items");
+      if (item) {
+        items.push(item);
+      }
     }
     return items;
   }
@@ -99,29 +99,32 @@ export default class LevelFactory {
     let enemies = [];
 
     for (let i = 0; i < enemiesConfig.length; i++) {
-      let enemyId = enemiesConfig[i];
-      let enemyData = null;
+      let config = enemiesConfig[i];
+      let enemyId = config.id;
+      let enemyStats = null;
 
       for (let j = 0; j < this.enemyData.enemies.length; j++) {
         if (this.enemyData.enemies[j].id === enemyId) {
-          enemyData = this.enemyData.enemies[j];
+          enemyStats = this.enemyData.enemies[j];
           break;
         }
       }
 
       let enemy = null;
+      const x = config.xPos;
+      const y = config.yPos;
 
-      if (enemyData.type === "slime") {
-        enemy = SpriteFactory.createSlime(enemyData.xPos, enemyData.yPos);
-      } else if (enemyData.type === "skeleton") {
-        enemy = SpriteFactory.createSkeleton(enemyData.xPos, enemyData.yPos);
-      } else if (enemyData.type === "mage") {
-        enemy = SpriteFactory.createMage(enemyData.xPos, enemyData.yPos);
+      if (enemyStats.type === "slime") {
+        enemy = SpriteFactory.createSlime(x, y);
+      } else if (enemyStats.type === "skeleton") {
+        enemy = SpriteFactory.createSkeleton(x, y);
+      } else if (enemyStats.type === "mage") {
+        enemy = SpriteFactory.createMage(x, y);
       }
 
-      if (enemy && enemyData.hp) {
-        enemy.hp = enemyData.hp;
-        enemy.maxHp = enemyData.hp;
+      if (enemy && enemyStats.hp) {
+        enemy.hp = enemyStats.hp;
+        enemy.maxHp = enemyStats.hp;
       }
 
       if (enemy) {
