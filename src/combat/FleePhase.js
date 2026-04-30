@@ -16,14 +16,17 @@ export default class FleePhase extends CombatPhase {
       if (fleeResult === 1) {
         console.log("You fled successfully");
         this.fled = true;
+        globals.gameStats.registerFlee();
       } else if (fleeResult === 2) {
         console.log("You fled but received damage");
         this.player.hp -= 5 + this.dice.rollDice(6);
         this.fled = true;
+        globals.gameStats.registerFlee();
       } else {
         console.log("You failed to flee and received damage");
         this.player.hp -= 10 + this.dice.rollDice(6);
         this.fled = false;
+        globals.gameStats.registerFailedFlee();
       }
 
       if (this.fled === true) {
@@ -33,7 +36,8 @@ export default class FleePhase extends CombatPhase {
       console.log("You already tried to flee and the enemy has trapped you, you can't flee!!");
       this.cancelled = true;
     }
-
+    console.log("Successful flees: ", globals.gameStats.successfulFlees);
+    console.log("Failed flees: ", globals.gameStats.failedFlees);
     this.state = "completed";
   }
 

@@ -18,6 +18,7 @@ import Item from "./sprites/Item.js";
 import Slime from "./sprites/Slime.js";
 import Mage from "./sprites/Mage.js";
 import Skeleton from "./sprites/Skeleton.js";
+import GameStatistics from "./GameStatistics.js";
 
 class Game {
   constructor(canvas, gameData) {
@@ -84,8 +85,10 @@ class Game {
 
     game.assets = new Asset();
     game.assets.loadAssets();
-    game.player = SpriteFactory.createPlayer(100, 220, 120, 70);
+    game.player = SpriteFactory.createPlayer(100, 220, 120, 70, Math.floor(Math.random() * 100) + 1);
     globals.player = game.player;
+    this.gameStats = new GameStatistics(game.player.playerId);
+    globals.gameStats = this.gameStats;
     globals.sprites.push(globals.player);
     console.log(globals.sprites[0]);
 
@@ -355,6 +358,8 @@ class Game {
         if (allEnemiesDead) {
           this.gameState = GameState.VICTORY;
           globals.gameState = GameState.VICTORY;
+          globals.gameStats.finish("Victory",globals.score);
+          
         }
         break;
 

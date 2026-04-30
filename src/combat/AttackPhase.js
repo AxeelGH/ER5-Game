@@ -91,7 +91,8 @@ export default class AttackPhase extends CombatPhase {
 
     this.damage = 10 + this.dice.rollDice(6) + this.dice.rollDice(6);
     targetEnemy.hp -= this.damage;
-
+    globals.gameStats.addStatDamage(this.damage);
+    console.log("Damage done: ", globals.gameStats.damageDone);
     if (globals.damageNumbers) {
       globals.damageNumbers.addDamageNumber(this.damage, 700, 250, false);
     }

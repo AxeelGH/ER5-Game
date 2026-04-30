@@ -160,6 +160,10 @@ export default class CombatTurn {
     console.log("All enemies defeated!");
     this.player.mana += 10 * this.enemies.length;
     globals.gameInstance.score += 100 * this.enemies.length;
+    for (let i = 0; i < this.enemies.length; i++) {
+      globals.gameStats.registerKill();
+      console.log("Enemies killed: ", globals.gameStats.enemiesKilled);
+    }
 
     for (let i = 0; i < this.enemies.length; i++) {
       const enemy = this.enemies[i];
@@ -200,6 +204,8 @@ export default class CombatTurn {
 
       const damage = 10 + this.dice.rollDice(6);
       this.player.hp -= damage;
+      globals.gameStats.takenStatDamage(damage);
+      console.log("Damage taken: ", globals.gameStats.damageTaken);
       console.log(`Enemy ${i + 1} deals ${damage} damage!`);
 
       if (globals.damageNumbers) {

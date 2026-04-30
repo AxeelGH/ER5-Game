@@ -51,4 +51,5 @@ export default {
   userName: "",
 
   damageNumbers: new DamageNumbers(),
+  gameStats : null,
 };
