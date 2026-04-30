@@ -1,5 +1,5 @@
 import globals from "./config/globals.js";
-import { GameState, Key, LoginData, SpriteID } from "./config/constants.js";
+import { BASE_URL, GameState, Key, SpriteID } from "./config/constants.js";
 import { Events } from "./events/Events.js";
 import { View } from "./View.js";
 import Asset from "./assets/assets.js";
@@ -87,8 +87,8 @@ class Game {
     game.assets.loadAssets();
     game.player = SpriteFactory.createPlayer(100, 220, 120, 70, Math.floor(Math.random() * 100) + 1);
     globals.player = game.player;
-    this.gameStats = new GameStatistics(game.player.playerId);
-    globals.gameStats = this.gameStats;
+    game.gameStats = new GameStatistics(game.player.playerId);
+    globals.gameStats = game.gameStats;
     globals.sprites.push(globals.player);
     console.log(globals.sprites[0]);
 
@@ -358,8 +358,8 @@ class Game {
         if (allEnemiesDead) {
           this.gameState = GameState.VICTORY;
           globals.gameState = GameState.VICTORY;
-          globals.gameStats.finish("Victory",globals.score);
-          
+          globals.gameStats.finish("Victory", globals.score);
+          this.postStats();
         }
         break;
 
@@ -548,7 +548,7 @@ class Game {
       password: password,
     };
 
-    fetch(LoginData, {
+    fetch(BASE_URL+"login", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -601,6 +601,16 @@ class Game {
     const passwordInput = document.getElementById("password");
     if (emailInput) emailInput.value = "";
     if (passwordInput) passwordInput.value = "";
+  }
+
+  postStats() {
+    fetch(BASE_URL + "stats", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(globals.gameStats.toPayload()),
+    });
   }
 }
 
