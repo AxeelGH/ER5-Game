@@ -109,6 +109,10 @@ export default class CombatTurn {
       return;
     }
 
+    if (this.selectedPhase.update) {
+    this.selectedPhase.update();
+    }
+
     if (this.selectedPhase.state === "waiting") {
       this.selectedPhase.handleInput();
     }
