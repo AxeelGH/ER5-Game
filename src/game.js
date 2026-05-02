@@ -18,6 +18,7 @@ import Item from "./sprites/Item.js";
 import Slime from "./sprites/Slime.js";
 import Mage from "./sprites/Mage.js";
 import Skeleton from "./sprites/Skeleton.js";
+import Combat from "./combat/Combat.js";
 
 class Game {
   constructor(canvas, gameData) {
@@ -253,7 +254,11 @@ class Game {
               this.gameState = GameState.HIGHSCORE;
               globals.gameState = GameState.HIGHSCORE;
               break;
+
             case 4:
+              break;
+
+            case 5:
               this.logout();
               break;
           }
@@ -355,14 +360,17 @@ class Game {
         }
         break;
 
-      case GameState.COMBAT:
-        if (this.combatTurn) {
-          this.combatTurn.update();
+      case GameState.INIT_COMBAT:
 
-          if (this.combatTurn.isFinished()) {
-            this.combatTurn = null;
-          }
-        }
+        const combat = combat.create(player, enemies);
+
+        this.gameState = GameState.COMBAT
+        globals.gameState = GameState.COMBAT;
+
+        break;
+
+      case GameState.COMBAT:
+        this.combat.update(globals.combatState);
         break;
 
       case GameState.HISTORY:

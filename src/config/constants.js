@@ -15,6 +15,7 @@ export const GameState = {
   LOGIN: 12,
   LOGIN_LOADING: 13,
   LOAD_SCREEN: 14,
+  INIT_COMBAT: 15
 };
 
 export const FPS = 60;
@@ -170,7 +171,7 @@ export const Border = [
     //CEMETERY 5
     left: mapID.INVALID,
     up: mapID.RIDE,
-    right: mapID.INVALID,
+    right: mapID.BEACH,
     down: mapID.FINAL,
   },
   {
@@ -188,3 +189,10 @@ export const Border = [
     down: mapID.INVALID,
   },
 ];
+
+export const CombatState = {
+  INVALID: -1,
+  INIT_COMBAT: 0,
+  PLAY_TURN: 1,
+  END_COMBAT: 2
+}

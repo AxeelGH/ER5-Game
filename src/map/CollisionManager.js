@@ -1,7 +1,8 @@
 import globals from "../config/globals.js";
-import { GameState, SpriteID, mapID, Border } from "../config/constants.js";
+import { GameState, SpriteID, mapID, Border, CombatState } from "../config/constants.js";
 import CombatTurn from "../combat/CombatTurn.js";
 import SpriteFactory from "../sprites/SpriteFactory.js";
+import Combat from "../combat/Combat.js";
 
 export default class CollisionManager {
   static getSolidTileIds() {
@@ -387,11 +388,13 @@ export default class CollisionManager {
       globals.currentEnemy = enemy;
     }
 
+    globals.currentEnemies = [enemy];
+    globals.combatState = CombatState.INIT_COMBAT;
     globals.gameState = GameState.COMBAT;
 
     if (globals.gameInstance) {
       globals.gameInstance.gameState = GameState.COMBAT;
-      globals.gameInstance.combatTurn = new CombatTurn(globals.player, globals.currentEnemies, globals.gameInstance.inputManager);
+      globals.gameInstance.combat = new Combat(globals.player, globals.currentEnemies);
     }
   }
 

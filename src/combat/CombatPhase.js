@@ -3,10 +3,9 @@ import globals from "../config/globals.js";
 export default class CombatPhase {
   constructor(player, enemies, dice, combatTurn) {
     this.player = player;
-    this.enemies = enemies; 
+    this.enemies = enemies;
     this.dice = dice;
     this.combatTurn = combatTurn;
-
     this.state = "init";
     this.result = null;
     this.cancelled = false;
@@ -18,7 +17,8 @@ export default class CombatPhase {
   }
 
   handleInput() {
-    if (this.state === "waiting") {
+    if (this.state === "waiting" && globals.action.confirm) {
+      globals.action.confirm = false;
       this.state = "executing";
     }
   }
@@ -32,6 +32,6 @@ export default class CombatPhase {
   renderUI(ctx) {}
 
   isFinished() {
-    return this.state === "completed" || this.state === "cancelled";
+    return this.state === "completed" || this.cancelled;
   }
 }
