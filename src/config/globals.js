@@ -17,6 +17,7 @@ export default {
 
   menuIndex: 0,
   subMenuIndex: 0,
+  difficulty: "easy",
 
   tileSet: {},
   tileSets: [],
@@ -42,6 +43,7 @@ export default {
   sounds: [],
 
   currentSound: -1,
+  menuIndex: 0,
 
   buttonStart: {},
   buttonStartClicked: false,

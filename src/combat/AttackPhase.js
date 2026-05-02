@@ -57,7 +57,6 @@ export default class AttackPhase extends CombatPhase {
   execute() {
     console.log("Executing attack");
 
-    // Si el objetivo actual está muerto, buscar el primer enemigo vivo
     if (!this.enemies[this.currentEnemyIndex].isAlive) {
       let foundAlive = false;
       for (let i = 0; i < this.enemies.length; i++) {
@@ -89,35 +88,58 @@ export default class AttackPhase extends CombatPhase {
     this.player.state = 4;
     this.player.animationTimer = 30;
 
-    this.damage = 10 + this.dice.rollDice(6) + this.dice.rollDice(6);
-    targetEnemy.hp -= this.damage;
+    let damage = 0;
+  
+  if (this.player.xPos === 100) { // LEFT
+    damage = 0;
+    console.log("LEFT position: No damage!");
+  } else if (this.player.xPos === 450) { // RIGHT
+    damage = 10 + this.dice.rollDice(6) + (this.dice.rollDice(6)+4);
+    console.log("RIGHT position: Bonus damage!");
+  } else { // CENTER
+    damage = 10 + this.dice.rollDice(6);
+    console.log("CENTER position: Normal damage");
+  }
+  
+  this.damage = damage;
+  
 
+if (this.damage > 0) {
+    targetEnemy.hp -= this.damage;
+    
     if (globals.damageNumbers) {
       globals.damageNumbers.addDamageNumber(this.damage, 700, 250, false);
     }
-
-    if (this.player.mana < this.player.maxMana - 5) {
-      this.player.mana += 5;
-    }
-
+    
     console.log(`Damage to enemy ${this.currentEnemyIndex + 1}: ${this.damage}`);
-
-    if (globals.ParticleSystem) {
-      const explosionX = 800;
-      const explosionY = 340;
-      globals.ParticleSystem.createExplosion(explosionX, explosionY, 1.5);
+  } else {
+    console.log("Attack missed! No damage dealt.");
+    if (globals.damageNumbers) {
+      globals.damageNumbers.addDamageNumber(0, 700, 250, false);
     }
-
-    if (targetEnemy.hp <= 0) {
-      targetEnemy.isAlive = false;
-      console.log(`Enemy ${this.currentEnemyIndex + 1} defeated`);
-    }
-
-    this.state = "completed";
   }
 
+  if (this.player.mana < this.player.maxMana - 5) {
+    this.player.mana += 5;
+  }
+
+  console.log(`Position: ${this.player.xPos === 100 ? "LEFT" : this.player.xPos === 450 ? "RIGHT" : "CENTER"}`);
+
+  if (globals.ParticleSystem) {
+    const explosionX = 800;
+    const explosionY = 340;
+    globals.ParticleSystem.createExplosion(explosionX, explosionY, 1.5);
+  }
+
+  if (targetEnemy.hp <= 0) {
+    targetEnemy.isAlive = false;
+    console.log(`Enemy ${this.currentEnemyIndex + 1} defeated`);
+  }
+
+  this.state = "completed";
+}
+
   renderUI(ctx) {
-    // Contar enemigos vivos
     let aliveCount = 0;
     for (let i = 0; i < this.enemies.length; i++) {
       if (this.enemies[i].isAlive) aliveCount++;

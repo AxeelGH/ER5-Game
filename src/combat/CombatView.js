@@ -129,7 +129,7 @@ export default class CombatView {
     const originalHeight = enemy.imageSet.ySize;
 
     const col = enemy.imageSet.initCol + frameIndex;
-    const row = enemy.imageSet.initFil + (enemy.state !== undefined ? enemy.state : 0);
+    const row = enemy.imageSet.initFil + enemy.state;
 
     const xTile = col * originalWidth + enemy.imageSet.xOffset;
     const yTile = row * originalHeight + enemy.imageSet.yOffset;

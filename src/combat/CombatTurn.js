@@ -5,6 +5,9 @@ import InventoryPhase from "./InventoryPhase.js";
 import FleePhase from "./FleePhase.js";
 import MovePhase from "./MovePhase.js";
 
+import { GameState } from "../config/constants.js";
+import SpriteFactory from "../sprites/SpriteFactory.js";
+import { Game } from "../game.js";
 
 export default class CombatTurn {
   constructor(player, enemies, dice, combat) {

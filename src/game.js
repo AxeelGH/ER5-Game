@@ -25,6 +25,7 @@ class Game {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     globals.ctx = this.ctx;
+    this.gameData = gameData;
 
     this.gameState = GameState.LOADING;
     globals.gameState = GameState.LOADING;
@@ -34,17 +35,6 @@ class Game {
     this.timer = gameData.game.time;
     this.highScore = this.score;
     this.masterVolume = gameData.audio.masterVolume;
-    this.difficulty = "Hard";
-
-    if (this.difficulty === "Easy") {
-      this.enemyHPMultiplier = gameData.difficulty.easy.enemyHPMultiplier;
-      this.enemyAttackMultiplier = gameData.difficulty.easy.enemyAttackMultiplier;
-      this.playerHPMultiplier = gameData.difficulty.easy.playerHPMultiplier;
-    } else if (this.difficulty === "Hard") {
-      this.enemyHPMultiplier = gameData.difficulty.hard.enemyHPMultiplier;
-      this.enemyAttackMultiplier = gameData.difficulty.hard.enemyAttackMultiplier;
-      this.playerHPMultiplier = gameData.difficulty.hard.playerHPMultiplier;
-    }
 
     this.levelFactory = new LevelFactory();
 
@@ -150,7 +140,7 @@ class Game {
           console.log(this.canvas.width);
           console.log(this.canvas.height);
 
-          console.log("Current difficulty setting: " + this.difficulty);
+          console.log("Current difficulty setting: " + globals.difficulty);
         }
         break;
 
@@ -214,12 +204,12 @@ class Game {
       case GameState.MENU:
         if (globals.action.moveUp) {
           globals.action.moveUp = false;
-          globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 5;
+          globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 6;
         }
 
         if (globals.action.moveDown) {
           globals.action.moveDown = false;
-          globals.menuIndex = globals.menuIndex < 5 ? globals.menuIndex + 1 : 0;
+          globals.menuIndex = globals.menuIndex < 6 ? globals.menuIndex + 1 : 0;
         }
 
         if (globals.action.confirm) {
@@ -227,6 +217,13 @@ class Game {
 
           switch (globals.menuIndex) {
             case 0:
+              if (globals.difficulty === "easy") {
+                this.enemyHPMultiplier = this.gameData.difficulty.easy.enemyHPMultiplier;
+                this.enemyAttackMultiplier = this.gameData.difficulty.easy.enemyAttackMultiplier;
+              } else if (globals.difficulty === "hard") {
+                this.enemyHPMultiplier = this.gameData.difficulty.hard.enemyHPMultiplier;
+                this.enemyAttackMultiplier = this.gameData.difficulty.hard.enemyAttackMultiplier;
+              }
               this.gameState = GameState.PLAYING;
               globals.gameState = GameState.PLAYING;
               //this.timer = 400;
@@ -236,7 +233,7 @@ class Game {
                 globals.enemies[i].maxHp = globals.enemies[i].hp;
                 console.log("Enemy " + 1 + ": " + globals.enemies[i].hp);
               }
-              this.player.hp *= this.playerHPMultiplier;
+              this.player.hp;
               this.player.maxHp = this.player.hp;
               break;
 
@@ -259,6 +256,12 @@ class Game {
               break;
 
             case 5:
+              this.gameState = GameState.DIFFICULTY;
+              globals.gameState = GameState.DIFFICULTY;
+
+              break;
+
+            case 6:
               this.logout();
               break;
           }
@@ -392,7 +395,32 @@ class Game {
           globals.action.confirm = false;
         }
         break;
-
+      case GameState.DIFFICULTY:
+        if (globals.action.moveUp) {
+          globals.action.moveUp = false;
+          globals.subMenuIndex = globals.subMenuIndex > 0 ? globals.subMenuIndex - 1 : 1;
+        }
+        if (globals.action.moveDown) {
+          globals.action.moveDown = false;
+          globals.subMenuIndex = globals.subMenuIndex < 1 ? globals.subMenuIndex + 1 : 0;
+        }
+        if (globals.action.confirm) {
+          switch (globals.subMenuIndex) {
+            case 0:
+              globals.difficulty = "easy";
+              console.log("easy");
+              break;
+            case 1:
+              globals.difficulty = "hard";
+              console.log("hard");
+              break;
+          }
+          this.gameState = GameState.MENU;
+          globals.gameState = GameState.MENU;
+          globals.subMenuIndex = 0;
+          globals.action.confirm = false;
+        }
+        break;
       case GameState.HIGHSCORE:
         globals.subMenuIndex = 0;
         if (globals.action.confirm) {
