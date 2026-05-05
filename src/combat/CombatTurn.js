@@ -144,39 +144,90 @@ export default class CombatTurn {
 
 
   updateEnemyTurn() {
-    if (!this.entity || !this.entity.isAlive) {
-      this.completed = true;
-      return;
-    }
-   
-    if (this.attackExecuted) {
-      this.completed = true;
-      return;
-    }
-   
-    switch (this.state) {
-      case "idle":
-        this.startEnemyTurn();
-        break;
-      case "attacking":
-        this.executeEnemyAttack();
-        break;
-      case "finished":
-        this.attackExecuted = true;
-        this.completed = true;
-        break;
-    }
+  if (!this.entity || !this.entity.isAlive) {
+    this.completed = true;
+    return;
   }
+  
+  if (this.attackExecuted) {
+    this.completed = true;
+    return;
+  }
+  
+  switch (this.state) {
+    case "idle":
+      this.startEnemyTurn();
+      break;
+    case "deciding":
+      this.decideEnemyAction();
+      break;
+    case "moving":
+      this.executeEnemyMove();
+      break;
+    case "attacking":
+      this.executeEnemyAttack();
+      break;
+    case "finished":
+      this.attackExecuted = true;
+      this.completed = true;
+      break;
+  }
+}
 
+startEnemyTurn() {
+  console.log("=== ENEMY (" + this.entity.id + ") ===");
+  this.state = "deciding";
+}
 
-  startEnemyTurn() {
-    console.log("=== ENEMY (" + this.entity.id + ") ===");
+decideEnemyAction() {
+  let action = Math.floor(Math.random() * 2) + 1;
+  
+  if (action === 1) {
     this.state = "attacking";
     this.animationDelay = 30;
-   
     this.entity.state = 1;
     this.entity.animationTimer = 30;
+  } else {
+    this.state = "moving";
+    this.prepareEnemyMove();
   }
+}
+
+prepareEnemyMove() {
+    let positions = [0, 1, 2];
+    let availablePositions = [];
+
+    for (let i = 0; i < positions.length; i++) {
+        let pos = positions[i];
+        let diff = pos - this.entity.combatXIndex;
+        if (diff === 1 || diff === -1) {
+            availablePositions.push(pos);
+        }
+    }
+
+    let randomIndex = Math.floor(Math.random() * availablePositions.length);
+    this.targetPositionIndex = availablePositions[randomIndex];
+    this.animationDelay = 20;
+}
+
+executeEnemyMove() {
+  if (this.animationDelay > 0) {
+    this.animationDelay--;
+    return;
+  }
+  
+  let positions = [550, 650, 750];
+  this.entity.combatXIndex = this.targetPositionIndex;
+  this.entity.combatX = positions[this.targetPositionIndex];
+  
+  console.log("Enemy moved to position: " + this.targetPositionIndex);
+  
+  if (globals.ParticleSystem) {
+    globals.ParticleSystem.createExplosion(this.entity.combatX, 340, 0.5);
+  }
+  
+  this.state = "finished";
+}
 
 
   executeEnemyAttack() {
