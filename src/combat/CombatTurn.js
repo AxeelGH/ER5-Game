@@ -216,7 +216,7 @@ executeEnemyMove() {
     return;
   }
   
-  let positions = [550, 650, 750];
+  let positions = [450, 550, 650];
   this.entity.combatXIndex = this.targetPositionIndex;
   this.entity.combatX = positions[this.targetPositionIndex];
   

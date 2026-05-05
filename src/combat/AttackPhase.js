@@ -89,8 +89,28 @@ export default class AttackPhase extends CombatPhase {
   this.player.animationTimer = 30;
 
   let damage = 0;
+  
+  let criticalDamage = 0;
   let enemyPosition = targetEnemy.combatXIndex;
 
+  let isCritical = Math.random() < 0.1;
+
+if (isCritical) {
+  // Critical damage
+  if (enemyPosition === 0) {
+    let criticalDamage = 22;
+    damage = criticalDamage + 10 + this.dice.rollDice(6) + this.dice.rollDice(6);
+    console.log("¡CRÍTICO! Enemy in LEFT position: Full damage!");
+  } else if (enemyPosition === 1) {
+    let criticalDamage = 16;
+    damage = criticalDamage + 10 + this.dice.rollDice(6);
+    console.log("¡CRÍTICO! Enemy in CENTER position: Normal damage");
+  } else {
+    damage = 0;
+    console.log("¡CRÍTICO! Enemy in RIGHT position: No damage!");
+  }
+} else {
+  // Daño normal
   if (enemyPosition === 0) {
     damage = 10 + this.dice.rollDice(6) + this.dice.rollDice(6);
     console.log("Enemy in LEFT position: Full damage!");
@@ -101,6 +121,7 @@ export default class AttackPhase extends CombatPhase {
     damage = 0;
     console.log("Enemy in RIGHT position: No damage!");
   }
+}
   
   this.damage = damage;
 
