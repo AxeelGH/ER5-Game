@@ -55,56 +55,56 @@ export default class AttackPhase extends CombatPhase {
   }
 
   execute() {
-    console.log("Executing attack");
+  console.log("Executing attack");
 
-    if (!this.enemies[this.currentEnemyIndex].isAlive) {
-      let foundAlive = false;
-      for (let i = 0; i < this.enemies.length; i++) {
-        if (this.enemies[i].isAlive) {
-          this.currentEnemyIndex = i;
-          foundAlive = true;
-          break;
-        }
-      }
-      if (!foundAlive) {
-        console.log("No alive enemies to attack!");
-        this.cancelled = true;
-        this.state = "completed";
-        return;
+  if (!this.enemies[this.currentEnemyIndex].isAlive) {
+    let foundAlive = false;
+    for (let i = 0; i < this.enemies.length; i++) {
+      if (this.enemies[i].isAlive) {
+        this.currentEnemyIndex = i;
+        foundAlive = true;
+        break;
       }
     }
-
-    const targetEnemy = this.enemies[this.currentEnemyIndex];
-    if (!targetEnemy.isAlive) {
+    if (!foundAlive) {
       console.log("No alive enemies to attack!");
       this.cancelled = true;
       this.state = "completed";
       return;
     }
+  }
 
-    targetEnemy.state = 2;
-    targetEnemy.animationTimer = 20;
+  const targetEnemy = this.enemies[this.currentEnemyIndex];
+  if (!targetEnemy.isAlive) {
+    console.log("No alive enemies to attack!");
+    this.cancelled = true;
+    this.state = "completed";
+    return;
+  }
 
-    this.player.state = 4;
-    this.player.animationTimer = 30;
+  targetEnemy.state = 2;
+  targetEnemy.animationTimer = 20;
 
-    let damage = 0;
-  
-  if (this.player.xPos === 100) { // LEFT
-    damage = 0;
-    console.log("LEFT position: No damage!");
-  } else if (this.player.xPos === 450) { // RIGHT
-    damage = 10 + this.dice.rollDice(6) + (this.dice.rollDice(6)+4);
-    console.log("RIGHT position: Bonus damage!");
-  } else { // CENTER
+  this.player.state = 4;
+  this.player.animationTimer = 30;
+
+  let damage = 0;
+  let enemyPosition = targetEnemy.combatXIndex;
+
+  if (enemyPosition === 0) {
+    damage = 10 + this.dice.rollDice(6) + this.dice.rollDice(6);
+    console.log("Enemy in LEFT position: Full damage!");
+  } else if (enemyPosition === 1) {
     damage = 10 + this.dice.rollDice(6);
-    console.log("CENTER position: Normal damage");
+    console.log("Enemy in CENTER position: Normal damage");
+  } else {
+    damage = 0;
+    console.log("Enemy in RIGHT position: No damage!");
   }
   
   this.damage = damage;
-  
 
-if (this.damage > 0) {
+  if (this.damage > 0) {
     targetEnemy.hp -= this.damage;
     
     if (globals.damageNumbers) {
@@ -122,8 +122,6 @@ if (this.damage > 0) {
   if (this.player.mana < this.player.maxMana - 5) {
     this.player.mana += 5;
   }
-
-  console.log(`Position: ${this.player.xPos === 100 ? "LEFT" : this.player.xPos === 450 ? "RIGHT" : "CENTER"}`);
 
   if (globals.ParticleSystem) {
     const explosionX = 800;
