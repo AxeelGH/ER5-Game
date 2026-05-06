@@ -231,25 +231,36 @@ executeEnemyMove() {
 
 
   executeEnemyAttack() {
-    if (this.animationDelay > 0) {
-      this.animationDelay--;
-      return;
-    }
-   
-    const damage = 10 + this.dice.rollDice(6);
-    this.player.hp = this.player.hp - damage;
-    console.log("Enemy " + damage + " damage: " + this.player.hp + "/" + this.player.maxHp);
-   
-    if (globals.damageNumbers) {
-      globals.damageNumbers.addDamageNumber(damage, 230, 350, true);
-    }
-   
-    if (globals.ParticleSystem) {
-      globals.ParticleSystem.createExplosion(230, 340, 0.8);
-    }
-   
-    this.state = "finished";
+  if (this.animationDelay > 0) {
+    this.animationDelay--;
+    return;
   }
+  
+  const isCritical = Math.random() < 0.1;
+  
+  let damage;
+  
+  if (isCritical) {
+    damage = 22 + 10 + this.dice.rollDice(6);
+    console.log("¡ENEMIE CRITICAL DAMAGE! Damage: " + damage);
+  } else {
+    damage = 10 + this.dice.rollDice(6);
+  }
+  
+  this.player.hp -= damage;
+  console.log("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp + "/" + this.player.maxHp);
+  
+  if (globals.damageNumbers) {
+    globals.damageNumbers.addDamageNumber(damage, 230, 350, true);
+  }
+  
+  if (globals.ParticleSystem) {
+    const explosionScale = isCritical ? 1.5 : 0.8;
+    globals.ParticleSystem.createExplosion(230, 340, explosionScale);
+  }
+  
+  this.state = "finished";
+}
 
 
   isCompleted() {
