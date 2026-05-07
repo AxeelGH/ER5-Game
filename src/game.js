@@ -258,6 +258,10 @@ class Game {
               globals.gameState = GameState.DIFFICULTY;
 
               break;
+            case 5:
+              this.gameState = GameState.STATS;
+              globals.gameState = GameState.STATS;
+              break;
 
             case 6:
               this.logout();
@@ -358,7 +362,7 @@ class Game {
         if (allEnemiesDead) {
           this.gameState = GameState.VICTORY;
           globals.gameState = GameState.VICTORY;
-          globals.gameStats.finish("Victory", globals.score);
+          globals.gameStats.finish("Victory", this.score);
           this.postStats();
         }
         break;
@@ -437,7 +441,7 @@ class Game {
         break;
 
       case GameState.GAME_OVER:
-        globals.gameStats.finish("Defeat",globals.score);
+        globals.gameStats.finish("Defeat",this.score);
         this.postStats();
         if (globals.action.confirm) {
           this.gameState = GameState.MENU;
@@ -445,7 +449,16 @@ class Game {
           globals.action.confirm = false;
         }
         break;
-
+      case GameState.STATS:
+        globals.subMenuIndex = 0;
+        if (globals.action.confirm) {
+          this.gameState = GameState.MENU;
+          globals.gameState = GameState.MENU;
+          globals.subMenuIndex = 0;
+          globals.action.confirm = false;
+        }
+        break;
+        
       default:
         break;
     }
