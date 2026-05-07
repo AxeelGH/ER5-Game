@@ -1,9 +1,10 @@
 import globals from "../config/globals.js";
 import CombatPhase from "./CombatPhase.js";
+import Message from "./Message.js";
 
 export default class AttackPhase extends CombatPhase {
-  constructor(player, enemies, dice, combatTurn) {
-    super(player, enemies, dice, combatTurn);
+  constructor(player, enemies, dice, combatTurn, messageQueue) {
+    super(player, enemies, dice, combatTurn, messageQueue);
     this.damage = 0;
     this.currentEnemyIndex = 0;
   }
@@ -67,7 +68,10 @@ export default class AttackPhase extends CombatPhase {
       }
     }
     if (!foundAlive) {
+
+      this.messageQueue.push(new Message("No alive enemies to attack!"));
       console.log("No alive enemies to attack!");
+
       this.cancelled = true;
       this.state = "completed";
       return;
@@ -76,7 +80,10 @@ export default class AttackPhase extends CombatPhase {
 
   const targetEnemy = this.enemies[this.currentEnemyIndex];
   if (!targetEnemy.isAlive) {
+
+    this.messageQueue.push(new Message("No alive enemies to attack!"));
     console.log("No alive enemies to attack!");
+
     this.cancelled = true;
     this.state = "completed";
     return;
@@ -100,25 +107,41 @@ if (isCritical) {
   if (enemyPosition === 0) {
     let criticalDamage = 22;
     damage = criticalDamage + 10 + this.dice.rollDice(6) + this.dice.rollDice(6);
+
+    this.messageQueue.push(new Message('¡CRITICAL! ' + damage + ' damage!'));
     console.log("¡CRÍTICO! Enemy in LEFT position: Full damage!");
+
   } else if (enemyPosition === 1) {
     let criticalDamage = 16;
     damage = criticalDamage + 10 + this.dice.rollDice(6);
+
+    this.messageQueue.push(new Message('¡CRITICAL! ' + damage + 'damage!'));
     console.log("¡CRÍTICO! Enemy in CENTER position: Normal damage");
+
   } else {
     damage = 0;
+
+    this.messageQueue.push(new Message("¡CRITICAL! Attack dodged!"));
     console.log("¡CRÍTICO! Enemy in RIGHT position: No damage!");
   }
 } else {
   // Daño normal
   if (enemyPosition === 0) {
     damage = 10 + this.dice.rollDice(6) + this.dice.rollDice(6);
+
+    this.messageQueue.push(new Message('Player hits enemy causing ' + this.damage + ' damage!'));
     console.log("Enemy in LEFT position: Full damage!");
+
   } else if (enemyPosition === 1) {
     damage = 10 + this.dice.rollDice(6);
+
+    this.messageQueue.push(new Message('Player hits enemy causing ' + this.damage + ' damage!'));
     console.log("Enemy in CENTER position: Normal damage");
+
   } else {
     damage = 0;
+
+    this.messageQueue.push(new Message("Attack missed! No damage dealt."));
     console.log("Enemy in RIGHT position: No damage!");
   }
 }
@@ -152,7 +175,9 @@ if (isCritical) {
 
   if (targetEnemy.hp <= 0) {
     targetEnemy.isAlive = false;
-    console.log(`Enemy ${this.currentEnemyIndex + 1} defeated`);
+
+    this.messageQueue.push(new Message("Enemy defeated!"));
+    console.log('Enemy ' + (this.currentEnemyIndex + 1) + ' defeated');
   }
 
   this.state = "completed";

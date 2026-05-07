@@ -6,6 +6,7 @@ import ItemView from "./sprites/ItemView.js";
 
 import CombatView from "./combat/CombatView.js";
 import CombatTurn from "./combat/CombatTurn.js";
+import MessagesView from "./combat/MessagesView.js";
 
 export class View {
   constructor(ctx, game) {
@@ -34,6 +35,8 @@ export class View {
     this.victoryBackgroundImg.src = "./assets/images/VictoryBackground.png";
     this.gameOverBackgroundImg = new Image();
     this.gameOverBackgroundImg.src = "./assets/images/GameOverBackground.png";
+
+    this.messagesView = new MessagesView(ctx);
   }
 
   render() {
@@ -413,10 +416,7 @@ export class View {
     this.ctx.lineWidth = 3;
     this.ctx.strokeRect(360, 600, 661, 200);
 
-    this.ctx.fillStyle = "#ffffff";
-    this.ctx.font = "32px alkhemikal";
-    this.ctx.textAlign = "center";
-    this.ctx.fillText("Console log coming soon...", 520, 630);
+    this.messagesView.render(globals.messageQueue);
   }
 
   renderSettings() {

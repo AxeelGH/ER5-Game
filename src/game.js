@@ -1,5 +1,5 @@
 import globals from "./config/globals.js";
-import { GameState, Key, LoginData, SpriteID } from "./config/constants.js";
+import { GameState, Key, LOCAL_URL, SpriteID } from "./config/constants.js";
 import { Events } from "./events/Events.js";
 import { View } from "./View.js";
 import Asset from "./assets/assets.js";
@@ -19,6 +19,7 @@ import Slime from "./sprites/Slime.js";
 import Mage from "./sprites/Mage.js";
 import Skeleton from "./sprites/Skeleton.js";
 import Combat from "./combat/Combat.js";
+import MessageQueue from "./combat/MessageQueue.js";
 
 class Game {
   constructor(canvas, gameData) {
@@ -82,6 +83,7 @@ class Game {
     globals.assetsLoaded = 0;
 
     globals.inventory = new Inventory();
+    globals.messageQueue = new MessageQueue();
 
     game.assets = new Asset();
     game.assets.loadAssets();
@@ -551,7 +553,7 @@ class Game {
       password: password,
     };
 
-    fetch(LoginData, {
+    fetch(LOCAL_URL + "login", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {

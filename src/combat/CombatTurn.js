@@ -8,6 +8,7 @@ import MovePhase from "./MovePhase.js";
 import { GameState } from "../config/constants.js";
 import SpriteFactory from "../sprites/SpriteFactory.js";
 import { Game } from "../game.js";
+import Message from "./Message.js";
 
 export default class CombatTurn {
   constructor(player, enemies, dice, combat) {
@@ -94,19 +95,22 @@ export default class CombatTurn {
   }
 
   createPhase(phaseName) {
+
+    const mq = globals.messageQueue;
+
     switch (phaseName) {
       case "Attack":
-        return new AttackPhase(this.player, this.enemies, this.dice, this);
+        return new AttackPhase(this.player, this.enemies, this.dice, this, mq);
       case "Ability":
-        return new AbilityPhase(this.player, this.enemies, this.dice, this);
+        return new AbilityPhase(this.player, this.enemies, this.dice, this, mq);
       case "Inventory":
-        return new InventoryPhase(this.player, this.enemies, this.dice, this);
+        return new InventoryPhase(this.player, this.enemies, this.dice, this, mq);
       case "Move":
-        return new MovePhase(this.player, this.enemies, this.dice, this);
+        return new MovePhase(this.player, this.enemies, this.dice, this, mq);
       case "Flee":
-        return new FleePhase(this.player, this.enemies, this.dice, this);
+        return new FleePhase(this.player, this.enemies, this.dice, this, mq);
       default:
-        return new AttackPhase(this.player, this.enemies, this.dice, this);
+        return new AttackPhase(this.player, this.enemies, this.dice, this, mq);
     }
   }
 
@@ -219,7 +223,8 @@ executeEnemyMove() {
   let positions = [450, 550, 650];
   this.entity.combatXIndex = this.targetPositionIndex;
   this.entity.combatX = positions[this.targetPositionIndex];
-  
+
+  globals.messageQueue.push(new Message("Enemy moved to position: " + this.entity.combatXIndex));
   console.log("Enemy moved to position: " + this.targetPositionIndex);
   
   if (globals.ParticleSystem) {
@@ -242,12 +247,16 @@ executeEnemyMove() {
   
   if (isCritical) {
     damage = 22 + 10 + this.dice.rollDice(6);
+
+    globals.messageQueue.push(new Message("¡ENEMY CRITICAL DAMAGE! Damage: " + damage));
     console.log("¡ENEMIE CRITICAL DAMAGE! Damage: " + damage);
+
   } else {
     damage = 10 + this.dice.rollDice(6);
   }
   
   this.player.hp -= damage;
+  globals.messageQueue.push(new Message("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp));
   console.log("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp + "/" + this.player.maxHp);
   
   if (globals.damageNumbers) {

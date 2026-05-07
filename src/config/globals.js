@@ -53,4 +53,6 @@ export default {
   userName: "",
 
   damageNumbers: new DamageNumbers(),
+
+  messageQueue: null,
 };

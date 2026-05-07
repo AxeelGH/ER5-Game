@@ -1,9 +1,10 @@
 import globals from "../config/globals.js";
 import CombatPhase from "./CombatPhase.js";
+import Message from "./Message.js";
 
 export default class MovePhase extends CombatPhase {
-  constructor(player, enemies, dice, combatTurn) {
-    super(player, enemies, dice, combatTurn);
+  constructor(player, enemies, dice, combatTurn, messageQueue) {
+    super(player, enemies, dice, combatTurn, messageQueue);
     this.movePositions = [100, 250, 450];
     this.selectedIndex = 1;
     this.targetX = null;
@@ -90,6 +91,8 @@ export default class MovePhase extends CombatPhase {
   }
   
   this.targetX = this.movePositions[this.selectedIndex];
+
+  this.messageQueue.push(new Message('Player moves to ' + this.getPositionName() + ' position.'));
   console.log("Moving player from position " + currentIndex + " to " + this.selectedIndex);
 
   if (this.player) {
