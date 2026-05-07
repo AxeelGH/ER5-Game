@@ -1,7 +1,8 @@
 import globals from "../config/globals.js";
-import { GameState, SpriteID, mapID, Border } from "../config/constants.js";
+import { GameState, SpriteID, mapID, Border, CombatState } from "../config/constants.js";
 import CombatTurn from "../combat/CombatTurn.js";
 import SpriteFactory from "../sprites/SpriteFactory.js";
+import Combat from "../combat/Combat.js";
 
 export default class CollisionManager {
   static getSolidTileIds() {
@@ -365,35 +366,38 @@ export default class CollisionManager {
   }
 
   static onCollisionWithEnemy(enemy) {
-    console.log("Collision with enemy:", enemy.id);
+  console.log("Collision with enemy:", enemy.id);
 
-    if (enemy.id === SpriteID.SLIME) {
-      console.log("Slime detected! Creating two SuperSlimes for combat!");
+  if (enemy.id === SpriteID.SLIME) {
+    console.log("Slime detected! Creating two SuperSlimes for combat!");
 
-      const superSlime1 = SpriteFactory.createSuperSlime(500, 200);
-      superSlime1.hp = 80;
-      superSlime1.maxHp = 80;
+    const superSlime1 = SpriteFactory.createSuperSlime(550, 200);
+    superSlime1.hp = 80;
+    superSlime1.maxHp = 80;
+    superSlime1.isAlive = true;
 
-      const superSlime2 = SpriteFactory.createSuperSlime(750, 200);
-      superSlime2.hp = 80;
-      superSlime2.maxHp = 80;
+    const superSlime2 = SpriteFactory.createSuperSlime(650, 200);
+    superSlime2.hp = 80;
+    superSlime2.maxHp = 80;
+    superSlime2.isAlive = true;
 
-      // Siempre pasar un array
-      globals.currentEnemies = [superSlime1, superSlime2];
-      globals.currentEnemy = superSlime1;
-    } else {
-      // Siempre pasar un array aunque sea un solo enemigo
-      globals.currentEnemies = [enemy];
-      globals.currentEnemy = enemy;
-    }
-
-    globals.gameState = GameState.COMBAT;
-
-    if (globals.gameInstance) {
-      globals.gameInstance.gameState = GameState.COMBAT;
-      globals.gameInstance.combatTurn = new CombatTurn(globals.player, globals.currentEnemies, globals.gameInstance.inputManager);
-    }
+    globals.currentEnemies = [superSlime1, superSlime2];
+    globals.currentEnemy = superSlime1;
+    
+    console.log("Created 2 enemies for combat");
+  } else {
+    globals.currentEnemies = [enemy];
+    globals.currentEnemy = enemy;
   }
+  
+  globals.combatState = CombatState.INIT_COMBAT;
+  globals.gameState = GameState.COMBAT;
+
+  if (globals.gameInstance) {
+    globals.gameInstance.gameState = GameState.COMBAT;
+    globals.gameInstance.combat = new Combat(globals.player, globals.currentEnemies);
+  }
+}
 
   static onCollisionWithPotion() {
     console.log("Collision with potion");

@@ -55,70 +55,111 @@ export default class AttackPhase extends CombatPhase {
   }
 
   execute() {
-    console.log("Executing attack");
+  console.log("Executing attack");
 
-    // Si el objetivo actual está muerto, buscar el primer enemigo vivo
-    if (!this.enemies[this.currentEnemyIndex].isAlive) {
-      let foundAlive = false;
-      for (let i = 0; i < this.enemies.length; i++) {
-        if (this.enemies[i].isAlive) {
-          this.currentEnemyIndex = i;
-          foundAlive = true;
-          break;
-        }
-      }
-      if (!foundAlive) {
-        console.log("No alive enemies to attack!");
-        this.cancelled = true;
-        this.state = "completed";
-        return;
+  if (!this.enemies[this.currentEnemyIndex].isAlive) {
+    let foundAlive = false;
+    for (let i = 0; i < this.enemies.length; i++) {
+      if (this.enemies[i].isAlive) {
+        this.currentEnemyIndex = i;
+        foundAlive = true;
+        break;
       }
     }
-
-    const targetEnemy = this.enemies[this.currentEnemyIndex];
-    if (!targetEnemy.isAlive) {
+    if (!foundAlive) {
       console.log("No alive enemies to attack!");
       this.cancelled = true;
       this.state = "completed";
       return;
     }
+  }
 
-    targetEnemy.state = 2;
-    targetEnemy.animationTimer = 20;
+  const targetEnemy = this.enemies[this.currentEnemyIndex];
+  if (!targetEnemy.isAlive) {
+    console.log("No alive enemies to attack!");
+    this.cancelled = true;
+    this.state = "completed";
+    return;
+  }
 
-    this.player.state = 4;
-    this.player.animationTimer = 30;
+  targetEnemy.state = 2;
+  targetEnemy.animationTimer = 20;
 
-    this.damage = 10 + this.dice.rollDice(6) + this.dice.rollDice(6);
+  this.player.state = 4;
+  this.player.animationTimer = 30;
+
+  let damage = 0;
+  
+  let criticalDamage = 0;
+  let enemyPosition = targetEnemy.combatXIndex;
+
+  let isCritical = Math.random() < 0.1;
+
+if (isCritical) {
+  // Critical damage
+  if (enemyPosition === 0) {
+    let criticalDamage = 22;
+    damage = criticalDamage + 10 + this.dice.rollDice(6) + this.dice.rollDice(6);
+    console.log("¡CRÍTICO! Enemy in LEFT position: Full damage!");
+  } else if (enemyPosition === 1) {
+    let criticalDamage = 16;
+    damage = criticalDamage + 10 + this.dice.rollDice(6);
+    console.log("¡CRÍTICO! Enemy in CENTER position: Normal damage");
+  } else {
+    damage = 0;
+    console.log("¡CRÍTICO! Enemy in RIGHT position: No damage!");
+  }
+} else {
+  // Daño normal
+  if (enemyPosition === 0) {
+    damage = 10 + this.dice.rollDice(6) + this.dice.rollDice(6);
+    console.log("Enemy in LEFT position: Full damage!");
+  } else if (enemyPosition === 1) {
+    damage = 10 + this.dice.rollDice(6);
+    console.log("Enemy in CENTER position: Normal damage");
+  } else {
+    damage = 0;
+    console.log("Enemy in RIGHT position: No damage!");
+  }
+}
+  
+  this.damage = damage;
+
+  if (this.damage > 0) {
     targetEnemy.hp -= this.damage;
-    globals.gameStats.addStatDamage(this.damage);
+        globals.gameStats.addStatDamage(this.damage);
     console.log("Damage done: ", globals.gameStats.damageDone);
     if (globals.damageNumbers) {
       globals.damageNumbers.addDamageNumber(this.damage, 700, 250, false);
     }
-
-    if (this.player.mana < this.player.maxMana - 5) {
-      this.player.mana += 5;
-    }
-
+    
     console.log(`Damage to enemy ${this.currentEnemyIndex + 1}: ${this.damage}`);
-
-    if (globals.ParticleSystem) {
-      const explosionX = 800;
-      const explosionY = 340;
-      globals.ParticleSystem.createExplosion(explosionX, explosionY, 1.5);
+  } else {
+    console.log("Attack missed! No damage dealt.");
+    if (globals.damageNumbers) {
+      globals.damageNumbers.addDamageNumber(0, 700, 250, false);
     }
-
-    if (targetEnemy.hp <= 0) {
-      targetEnemy.isAlive = false;
-      console.log(`Enemy ${this.currentEnemyIndex + 1} defeated`);
-    }
-
-    this.state = "completed";
   }
 
+  if (this.player.mana < this.player.maxMana - 5) {
+    this.player.mana += 5;
+  }
+
+  if (globals.ParticleSystem) {
+    const explosionX = 800;
+    const explosionY = 340;
+    globals.ParticleSystem.createExplosion(explosionX, explosionY, 1.5);
+  }
+
+  if (targetEnemy.hp <= 0) {
+    targetEnemy.isAlive = false;
+    console.log(`Enemy ${this.currentEnemyIndex + 1} defeated`);
+  }
+
+  this.state = "completed";
+}
+
   renderUI(ctx) {
-    // Contar enemigos vivos
     let aliveCount = 0;
     for (let i = 0; i < this.enemies.length; i++) {
       if (this.enemies[i].isAlive) aliveCount++;

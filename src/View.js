@@ -153,10 +153,10 @@ export class View {
     this.ctx.fillText("THE STORM OF ", this.ctx.canvas.width / 2, this.ctx.canvas.height * 0.1);
     this.ctx.fillText("THE ANCIENT WARRIORS", this.ctx.canvas.width / 2, this.ctx.canvas.height * 0.2);
 
-    const menuItems = ["Play", "Story", "Controls", "High Score", "Difficulty", "Stats", "Logout"];
+    const menuItems = ["Play", "Story", "Controls", "High Score", "Stats", "Difficulty", "Logout"];
     const startY = 400;
     const itemHeight = 50;
-    const selectedIndex = globals.menuIndex !== undefined ? globals.menuIndex : 0;
+    const selectedIndex = globals.menuIndex;
 
     for (let index = 0; index < menuItems.length; index++) {
       const text = menuItems[index];
@@ -286,7 +286,7 @@ export class View {
     this.ctx.fillStyle = "#ffffff";
     this.ctx.font = "48px alkhemikal";
     this.ctx.textAlign = "center";
-    this.ctx.fillText("Turn " + this.game.combatTurn.currentTurn, this.ctx.canvas.width / 2, 50);
+    this.ctx.fillText("Turn " + this.game.combat.currentRound, this.ctx.canvas.width / 2, 50);
 
     this.ctx.fillStyle = "#ff4444";
     this.ctx.fillText("COMBAT", 120, 50);
@@ -335,22 +335,35 @@ export class View {
     globals.damageNumbers.update();
     globals.damageNumbers.render(this.ctx);
 
-    const combatTurn = this.game.combatTurn;
-    const isMovePhase =
-      combatTurn &&
-      combatTurn.selectedPhase &&
-      combatTurn.selectedPhase.constructor.name === "MovePhase" &&
-      combatTurn.selectedPhase.state === "waiting";
+      if (this.game.combat && this.game.combat.turns && this.game.combat.turns.length > 0) {
+    const currentTurn = this.game.combat.turns[this.game.combat.currentTurnIndex];
+    const isMovePhase = currentTurn && currentTurn.selectedPhase && currentTurn.selectedPhase.constructor.name === "MovePhase" && currentTurn.selectedPhase.state === "waiting";
 
-    if (isMovePhase) {
-      combatTurn.selectedPhase.renderUI(this.ctx);
-    } else if (combatTurn && combatTurn.state === "selecting") {
+    if (isMovePhase && currentTurn.selectedPhase.renderUI) {
+      currentTurn.selectedPhase.renderUI(this.ctx);
+    } else if (currentTurn && currentTurn.type === "player" && currentTurn.state === "selecting") {
       this.renderCombatMenu();
+    } else if (currentTurn && currentTurn.type === "player" && currentTurn.selectedPhase && currentTurn.selectedPhase.renderUI) {
+      currentTurn.selectedPhase.renderUI(this.ctx);
     }
+  } else if (this.game.combatTurn && this.game.combatTurn.state === "selecting") {
+    this.renderCombatMenu();
+  }
   }
 
   renderCombatMenu() {
-    if (!this.game.combatTurn) return;
+
+    let currentTurn = null;
+  let phaseIndex = 0;
+
+      if (this.game.combat && this.game.combat.turns && this.game.combat.turns.length > 0) {
+    currentTurn = this.game.combat.turns[this.game.combat.currentTurnIndex];
+    if (currentTurn && currentTurn.type === "player") {
+      phaseIndex = currentTurn.currentPhaseIndex;
+    }
+  } else if (this.game.combatTurn) {
+    phaseIndex = this.game.combatTurn.getPhaseIndex();
+  }
 
     this.ctx.fillStyle = "rgba(0,0,0,0.85)";
     this.ctx.fillRect(3, 600, 354, 200);
@@ -358,7 +371,6 @@ export class View {
     this.ctx.lineWidth = 3;
     this.ctx.strokeRect(3, 600, 354, 200);
 
-    const phaseIndex = this.game.combatTurn.getPhaseIndex();
     const options = ["ATTACK", "ABILITY", "ITEM", "MOVE", "FLEE"];
 
     const positions = [

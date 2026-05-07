@@ -1,4 +1,4 @@
-import { FPS, GameState } from "./constants.js";
+import { FPS, GameState, CombatState } from "./constants.js";
 import { ParticleSystem } from "../particles/Particles.js";
 import DamageNumbers from "../combat/DamageNumbers.js";
 
@@ -11,6 +11,7 @@ export default {
   frameTimeObj: 1 / FPS,
   gameInstance: 0,
   gameState: GameState.INVALID,
+  combatState: CombatState.INVALID,
 
   action: {},
 
@@ -42,6 +43,7 @@ export default {
   sounds: [],
 
   currentSound: -1,
+  menuIndex: 0,
 
   buttonStart: {},
   buttonStartClicked: false,

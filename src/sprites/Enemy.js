@@ -22,6 +22,8 @@ export default class Enemy extends Sprite {
     this.isAlive = true;
     this.isCollidingWithPlayer = false;
     this.animationTimer = 0;
+    this.combatX = 650;  
+    this.combatXIndex = 1;
   }
 
   update() {
