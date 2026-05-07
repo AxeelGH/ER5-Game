@@ -53,4 +53,5 @@ export default {
   userName: "",
 
   damageNumbers: new DamageNumbers(),
+  eventWrath: null,
 };

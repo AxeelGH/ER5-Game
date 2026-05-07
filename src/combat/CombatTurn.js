@@ -230,28 +230,29 @@ executeEnemyMove() {
 }
 
 
-  executeEnemyAttack() {
+executeEnemyAttack() {
   if (this.animationDelay > 0) {
     this.animationDelay--;
     return;
   }
   
   const isCritical = Math.random() < 0.1;
+  const damageMultiplier = globals.eventWrath.getEnemyDamageMultiplier();
   
   let damage;
   
   if (isCritical) {
-    damage = 22 + 10 + this.dice.rollDice(6);
-    console.log("¡ENEMIE CRITICAL DAMAGE! Damage: " + damage);
+    damage = (22 + 10 + this.dice.rollDice(6)) * damageMultiplier;
+    console.log("¡ENEMY CRITICAL DAMAGE! Damage: " + damage);
   } else {
-    damage = 10 + this.dice.rollDice(6);
+    damage = (10 + this.dice.rollDice(6)) * damageMultiplier;
   }
   
   this.player.hp -= damage;
   console.log("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp + "/" + this.player.maxHp);
   
   if (globals.damageNumbers) {
-    globals.damageNumbers.addDamageNumber(damage, 230, 350, true);
+    globals.damageNumbers.addDamageNumber(Math.floor(damage), 230, 350, true);
   }
   
   if (globals.ParticleSystem) {

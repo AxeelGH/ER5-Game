@@ -191,6 +191,14 @@ export default class Combat {
       globals.gameState = GameState.GAME_OVER;
     } else {
       console.log("=== WIN ===");
+      if (globals.gameInstance) {
+        for (let i = 0; i < this.enemies.length; i++) {
+          if (!this.enemies[i].isAlive) {
+            globals.gameInstance.addEnemyProgress();
+          }
+        }
+      }
+      
       this.player.mana = this.player.mana + 10 * this.enemies.length;
       if (this.player.mana > this.player.maxMana) {
         this.player.mana = this.player.maxMana;
