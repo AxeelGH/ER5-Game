@@ -151,11 +151,19 @@ if (isCritical) {
     globals.ParticleSystem.createExplosion(explosionX, explosionY, 1.5);
   }
 
-  if (targetEnemy.hp <= 0) {
-    targetEnemy.isAlive = false;
-    console.log(`Enemy ${this.currentEnemyIndex + 1} defeated`);
+if (targetEnemy.hp <= 0) {
+  targetEnemy.isAlive = false;
+
+  for (let i = 0; i < globals.map.enemies.length; i++) {
+
+    if (globals.map.enemies[i].id === targetEnemy.id) {
+      globals.map.enemies[i].active = false;
+    }
+
   }
 
+  console.log(`Enemy ${this.currentEnemyIndex + 1} defeated`);
+}
   this.state = "completed";
 }
 

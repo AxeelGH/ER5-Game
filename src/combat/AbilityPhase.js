@@ -29,10 +29,19 @@ export default class AbilityPhase extends CombatPhase {
 
           console.log(`Damage to enemy: ${this.damage}`);
 
-          if (enemy.hp <= 0) {
-            enemy.isAlive = false;
-            console.log("Enemy defeated");
-          }
+    if (enemy.hp <= 0) {
+        enemy.isAlive = false;
+
+        for (let i = 0; i < globals.map.enemies.length; i++) {
+
+          if (globals.map.enemies[i].id === enemy.id) {
+          globals.map.enemies[i].active = false;
+        }
+
+    }
+
+  console.log("Enemy defeated");
+}
         }
       }
 

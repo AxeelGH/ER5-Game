@@ -24,6 +24,7 @@ export default class Enemy extends Sprite {
     this.animationTimer = 0;
     this.combatX = 650;  
     this.combatXIndex = 1;
+    this.active = true;
   }
 
   update() {

@@ -513,26 +513,33 @@ class Game {
     }
   }
 
-  loadScreen(newScreen) {
-    console.log("loading Screen: " + newScreen);
+ loadScreen(newScreen) {
+  console.log("loading Screen: " + newScreen);
 
-    let level = this.levelFactory.getLevelById(newScreen);
+  let level = this.levelFactory.getLevelById(newScreen);
 
-    if (level) {
-      globals.map = level;
-      let cloneEnemies = [];
-      for (let i = 0; i < level.enemies.length; i++) {
-        let enemy = level.enemies[i];
+  if (level) {
+    globals.map = level;
+    let cloneEnemies = [];
+
+    for (let i = 0; i < level.enemies.length; i++) {
+      let enemy = level.enemies[i];
+
+      if (enemy.active !== false) {
+
         if (enemy.id === SpriteID.SLIME) {
-          cloneEnemies[i] = Slime.clone(level.enemies[i]);
+          cloneEnemies.push(Slime.clone(enemy));
+
         } else if (enemy.id === SpriteID.MAGE) {
-          cloneEnemies[i] = Mage.clone(level.enemies[i]);
+          cloneEnemies.push(Mage.clone(enemy));
+
         } else {
-          cloneEnemies[i] = Skeleton.clone(level.enemies[i]);
+          cloneEnemies.push(Skeleton.clone(enemy));
         }
-        console.log("Cloned enemy: ", cloneEnemies[i]);
       }
-      globals.enemies = cloneEnemies;
+    }
+
+    globals.enemies = cloneEnemies;
 
       let cloneItems = [];
       for (let i = 0; i < level.items.length; i++) {
