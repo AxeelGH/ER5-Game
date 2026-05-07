@@ -256,9 +256,6 @@ class Game {
               break;
 
             case 4:
-              break;
-
-            case 5:
               this.gameState = GameState.DIFFICULTY;
               globals.gameState = GameState.DIFFICULTY;
 
@@ -446,7 +443,7 @@ class Game {
           globals.gameState = GameState.MENU;
           globals.action.confirm = false;
         }
-        break;
+        break;  
 
       case GameState.GAME_OVER:
         globals.gameStats.finish("Defeat",this.score);

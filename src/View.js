@@ -153,7 +153,7 @@ export class View {
     this.ctx.fillText("THE STORM OF ", this.ctx.canvas.width / 2, this.ctx.canvas.height * 0.1);
     this.ctx.fillText("THE ANCIENT WARRIORS", this.ctx.canvas.width / 2, this.ctx.canvas.height * 0.2);
 
-    const menuItems = ["Play", "Story", "Controls", "High Score", "Stats", "Difficulty", "Logout"];
+    const menuItems = ["Play", "Story", "Controls", "High Score", "Difficulty", "Stats", "Logout"];
     const startY = 400;
     const itemHeight = 50;
     const selectedIndex = globals.menuIndex;
