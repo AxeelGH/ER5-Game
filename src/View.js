@@ -6,6 +6,7 @@ import ItemView from "./sprites/ItemView.js";
 
 import CombatView from "./combat/CombatView.js";
 import CombatTurn from "./combat/CombatTurn.js";
+import MessagesView from "./combat/MessagesView.js";
 
 export class View {
   constructor(ctx, game) {
@@ -35,67 +36,75 @@ export class View {
     this.gameOverBackgroundImg = new Image();
     this.gameOverBackgroundImg.src = "./assets/images/GameOverBackground.png";
 
+    this.messagesView = new MessagesView(ctx);
   }
 
   render() {
-    switch (globals.gameState) {
-      case GameState.LOADING:
-        this.renderLoading();
-        break;
+  switch (globals.gameState) {
+    case GameState.LOADING:
+      this.renderLoading();
+      break;
 
-      case GameState.INTRO:
-        this.renderIntro();
-        break;
+    case GameState.INTRO:
+      this.renderIntro();
+      break;
 
-      case GameState.MENU:
-        this.renderMenu();
-        break;
+    case GameState.MENU:
+      this.renderMenu();
+      break;
 
-      case GameState.PLAYING:
-        this.renderPlaying();
-        this.renderHUD();
-        break;
+    case GameState.PLAYING:
+      this.renderPlaying();
+      this.renderHUD();
+      break;
 
-      case GameState.COMBAT:
-        this.renderCombat();
-        break;
+    case GameState.COMBAT:
+      this.renderCombat();
+      break;
 
-      case GameState.GAME_OVER:
-        this.renderGameOver();
-        break;
+    case GameState.GAME_OVER:
+      this.renderGameOver();
+      break;
 
-      case GameState.VICTORY:
-        this.renderVictory();
-        break;
+    case GameState.VICTORY:
+      this.renderVictory();
+      break;
 
-      case GameState.SETTINGS:
-        this.renderSettings();
-        break;
+    case GameState.SETTINGS:
+      this.renderSettings();
+      break;
 
-      case GameState.HISTORY:
-        this.renderHistory();
-        break;
+    case GameState.HISTORY:
+      this.renderHistory();
+      break;
 
-      case GameState.DIFFICULTY:
-        this.renderDifficulty();
-        break;
+    case GameState.DIFFICULTY:
+      this.renderDifficulty();
+      break;
 
-      case GameState.HIGHSCORE:
-        this.renderHighScore();
-        break;
+    case GameState.HIGHSCORE:
+      this.renderHighScore();
+      break;
 
-      case GameState.PAUSE:
-        this.renderPause();
-        break;
+    case GameState.PAUSE:
+      this.renderPause();
+      break;
 
-      case GameState.LOGIN:
-        this.renderLogin();
-        break;
+    case GameState.LOGIN:
+      this.renderLogin();
+      break;
 
-      case GameState.LOGIN_LOADING:
-        this.renderLoginLoading();
-        break;
+    case GameState.LOGIN_LOADING:
+      this.renderLoginLoading();
+      break;
 
+    case GameState.LOAD_SCREEN:
+      this.renderLoadScreen();
+      break;
+      
+    case GameState.CINEMATIC:
+      this.renderCinematic();
+      break;
       case GameState.LOAD_SCREEN:
         this.renderLoadScreen();
         break;
@@ -105,6 +114,7 @@ export class View {
         break;
     }
   }
+
 
   renderLoading() {
     this.ctx.fillStyle = "black";
@@ -170,54 +180,55 @@ export class View {
   }
 
   renderPlaying() {
-    if (globals.map && this.mapView) {
-      this.mapView.render();
-    }
+  if (globals.map && this.mapView) {
+    this.mapView.render();
+  }
 
-    if (globals.enemies) {
-      for (let i = 0; i < globals.enemies.length; i++) {
-        const enemy = globals.enemies[i];
-        if (enemy.isAlive && enemy.draw) {
-          enemy.draw(this.ctx);
-          //enemy.drawHitBox(this.ctx);
-        }
+  if (globals.enemies) {
+    for (let i = 0; i < globals.enemies.length; i++) {
+      const enemy = globals.enemies[i];
+      if (enemy.isAlive && enemy.draw) {
+        enemy.draw(this.ctx);
       }
-    }
-    if (globals.items) {
-      for (let i = 0; i < globals.items.length; i++) {
-        const obj = globals.items[i];
-        if (obj && obj.imageSet) {
-          const img = globals.tileSets[2];
-          if (img && img.complete) {
-            this.ctx.drawImage(img, 0, 0, 16, 16, obj.xPos, obj.yPos, 16, 16);
-          }
-        }
-      }
-    }
-
-    for (let i = 0; i < globals.potionDrops.length; i++) {
-      const potion = globals.potionDrops[i];
-      const img = globals.tileSets[2];
-
-      if (img && img.complete) {
-        this.ctx.drawImage(img, 0, 0, 16, 16, potion.xPos, potion.yPos, 16, 16);
-      }
-    }
-
-    if (globals.ParticleSystem) {
-      globals.ParticleSystem.update();
-      globals.ParticleSystem.draw(this.ctx);
-    }
-
-    if (globals.player) {
-      //this.playerView.drawHitBox();
-      this.playerView.render();
-    }
-
-    if (globals.object) {
-      this.objectView.render();
     }
   }
+  if (globals.items) {
+    for (let i = 0; i < globals.items.length; i++) {
+      const obj = globals.items[i];
+      if (obj && obj.imageSet) {
+        const img = globals.tileSets[2];
+        if (img && img.complete) {
+          this.ctx.drawImage(img, 0, 0, 16, 16, obj.xPos, obj.yPos, 16, 16);
+        }
+      }
+    }
+  }
+
+  for (let i = 0; i < globals.potionDrops.length; i++) {
+    const potion = globals.potionDrops[i];
+    const img = globals.tileSets[2];
+    if (img && img.complete) {
+      this.ctx.drawImage(img, 0, 0, 16, 16, potion.xPos, potion.yPos, 16, 16);
+    }
+  }
+
+  if (globals.ParticleSystem) {
+    globals.ParticleSystem.update();
+    globals.ParticleSystem.draw(this.ctx);
+  }
+
+  if (globals.player) {
+    this.playerView.render();
+  }
+
+  if (globals.object) {
+    this.objectView.render();
+  }
+  
+  if (this.game.showLevelUpMessageTimer > 0) {
+    this.renderLevelUpMessage();
+  }
+}
 
   drawAllHitBoxes() {
     if (globals.player) {
@@ -237,6 +248,40 @@ export class View {
       }
     }
   }
+
+  renderLevelUpMessage() {
+  const timer = this.game.showLevelUpMessageTimer;
+  const maxTime = 180;
+  
+  let alpha = 1;
+  if (timer < 30) {
+    alpha = timer / 30;
+  } else if (timer > 150) {
+    alpha = (maxTime - timer) / 30;
+  }
+  
+  this.ctx.fillStyle = `rgba(0, 0, 0, ${0.7 * alpha})`;
+  this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+  
+  this.ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+  this.ctx.shadowBlur = 10;
+  
+  this.ctx.fillStyle = "rgb(227, 4, 4)";
+  this.ctx.font = "bold 56px alkhemikal";
+  this.ctx.textAlign = "center";
+  this.ctx.fillText("💀 LEVEL 2 UNLOCKED 💀", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 60);
+  
+  this.ctx.fillStyle = "rgb(179, 0, 0)";
+  this.ctx.font = "40px alkhemikal";
+  this.ctx.fillText("The Scholar's Wrath Intensifies!", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+  
+  this.ctx.fillStyle = "rgb(255, 255, 255)";
+  this.ctx.font = "28px alkhemikal";
+  this.ctx.fillText("Enemies grow stronger...", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 60);
+  
+  this.ctx.shadowColor = "transparent";
+  this.ctx.shadowBlur = 0;
+}
 
   renderGameOver() {
     this.ctx.drawImage(this.gameOverBackgroundImg, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -374,11 +419,11 @@ export class View {
     const options = ["ATTACK", "ABILITY", "ITEM", "MOVE", "FLEE"];
 
     const positions = [
-      { x: 15, y: 615 }, // ATTACK
-      { x: 185, y: 615 }, // ABILITY
-      { x: 15, y: 665 }, // ITEM
-      { x: 185, y: 665 }, // MOVE
-      { x: 100, y: 720 }, // FLEE
+      { x: 15, y: 615 },
+      { x: 185, y: 615 },
+      { x: 15, y: 665 },
+      { x: 185, y: 665 },
+      { x: 100, y: 720 },
     ];
 
     for (let i = 0; i < options.length; i++) {
@@ -418,10 +463,7 @@ export class View {
     this.ctx.lineWidth = 3;
     this.ctx.strokeRect(360, 600, 661, 200);
 
-    this.ctx.fillStyle = "#ffffff";
-    this.ctx.font = "32px alkhemikal";
-    this.ctx.textAlign = "center";
-    this.ctx.fillText("Console log coming soon...", 520, 630);
+    this.messagesView.render(globals.messageQueue);
   }
 
   renderSettings() {
@@ -444,6 +486,33 @@ export class View {
     this.ctx.fillStyle = "yellow";
     this.ctx.fillText("Press SPACE to go back", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 340);
   }
+
+  renderCinematic() {
+  const alpha = Math.min(1, this.game.cinematicTimer / 30);
+  this.ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+  this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+  
+  const message = this.game.eventWrath.getCinematicMessage();
+  
+  if (message) {
+    this.ctx.fillStyle = "#ff4444";
+    this.ctx.font = "bold 48px alkhemikal";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText(message.title, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 100);
+    
+    this.ctx.fillStyle = "#ffffff";
+    this.ctx.font = "32px alkhemikal";
+    const lines = message.message.split('\n');
+    let yOffset = this.ctx.canvas.height / 2 - 20;
+    for (let i = 0; i < lines.length; i++) {
+      this.ctx.fillText(lines[i], this.ctx.canvas.width / 2, yOffset + (i * 50));
+    }
+    
+    this.ctx.font = "24px alkhemikal";
+    this.ctx.fillStyle = "#888888";
+    this.ctx.fillText("Press SPACE to continue...", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 150);
+  }
+}
 
   renderHistory() {
     this.ctx.drawImage(this.storyBackgroundImg, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -525,28 +594,24 @@ export class View {
   renderHUD() {
     if (!globals.player) return;
 
-    //Player HP box
     this.ctx.fillStyle = "rgba(0,0,0,0.7)";
     this.ctx.fillRect(2, 3, 200, 70);
     this.ctx.strokeStyle = "white";
     this.ctx.lineWidth = 2;
     this.ctx.strokeRect(2, 3, 200, 70);
 
-    //Enemy and time box
     this.ctx.fillStyle = "rgba(0,0,0,0.7)";
-    this.ctx.fillRect(2, 78, 200, 60);
+    this.ctx.fillRect(2, 78, 200, 100);
     this.ctx.strokeStyle = "white";
     this.ctx.lineWidth = 2;
-    this.ctx.strokeRect(2, 78, 200, 60);
+    this.ctx.strokeRect(2, 78, 200, 100);
 
-    //Score and highscore box
     this.ctx.fillStyle = "rgba(0,0,0,0.7)";
     this.ctx.fillRect(800, 3, 222, 70);
     this.ctx.strokeStyle = "white";
     this.ctx.lineWidth = 2;
     this.ctx.strokeRect(800, 3, 222, 70);
 
-    //Player HP bar
     this.ctx.fillStyle = "#ff0000";
     this.ctx.fillRect(7, 40, 190, 20);
 
@@ -582,7 +647,13 @@ export class View {
     this.ctx.textAlign = "left";
     this.ctx.fillText("Score: " + this.game.score, 805, 30);
     this.ctx.fillText("HighScore: " + this.game.highScore, 805, 60);
-  }
+    
+    if (globals.eventWrath) {   
+      this.ctx.fillStyle = "#d20707";
+      this.ctx.font = "32px alkhemikal";
+      this.ctx.fillText(`Wrath: ${globals.eventWrath.progress}/100`, 7, 160);
+    }
+}
 
   renderLogin() {
     const canvas = this.ctx.canvas;
@@ -642,6 +713,7 @@ export class View {
     this.ctx.textAlign = "center";
     this.ctx.fillText("LOADING...", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
   }
+
 
  renderStats() {
   const stats = globals.gameStats;

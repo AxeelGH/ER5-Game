@@ -358,7 +358,6 @@ export default class CollisionManager {
     }
 
     this.collisionDropPotion();
-    //this.checkBorderCollision(player);
   }
 
   static rectIntersect(rect1, rect2) {
@@ -366,43 +365,95 @@ export default class CollisionManager {
   }
 
   static onCollisionWithEnemy(enemy) {
-  console.log("Collision with enemy:", enemy.id);
+    console.log("Collision with enemy:", enemy.id);
 
-  if (enemy.id === SpriteID.SLIME) {
-    console.log("Slime detected! Creating two SuperSlimes for combat!");
+    const eventWrath = globals.eventWrath;
+    const extraEnemies = eventWrath.getExtraEnemyCount();
+    const hpMultiplier = eventWrath.getEnemyHpMultiplier();
 
-    const superSlime1 = SpriteFactory.createSuperSlime(550, 200);
-    superSlime1.hp = 80;
-    superSlime1.maxHp = 80;
-    superSlime1.isAlive = true;
+    if (enemy.id === SpriteID.SLIME) {
+      console.log("Slime detected! Creating SuperSlimes for combat!");
 
-    const superSlime2 = SpriteFactory.createSuperSlime(650, 200);
-    superSlime2.hp = 80;
-    superSlime2.maxHp = 80;
-    superSlime2.isAlive = true;
+      const superSlime1 = SpriteFactory.createSuperSlime(550, 200);
+      superSlime1.hp = 80 * hpMultiplier;
+      superSlime1.maxHp = 80 * hpMultiplier;
+      superSlime1.isAlive = true;
 
-    globals.currentEnemies = [superSlime1, superSlime2];
-    globals.currentEnemy = superSlime1;
+      const superSlime2 = SpriteFactory.createSuperSlime(650, 200);
+      superSlime2.hp = 80 * hpMultiplier;
+      superSlime2.maxHp = 80 * hpMultiplier;
+      superSlime2.isAlive = true;
+
+      let enemiesToSpawn = [superSlime1, superSlime2];
+
+      for (let i = 0; i < extraEnemies; i++) {
+        const availableTypes = eventWrath.getAvailableEnemyTypes();
+        const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+        const xPos = 550 + (i * 50);
+        let extraEnemy;
+        
+        if (randomType === "slime") {
+          extraEnemy = SpriteFactory.createSuperSlime(xPos, 200);
+          extraEnemy.hp = 80 * hpMultiplier;
+          extraEnemy.maxHp = 80 * hpMultiplier;
+        } else {
+          extraEnemy = SpriteFactory.createSuperSkeleton(xPos, 150);
+          extraEnemy.hp = 100 * hpMultiplier;
+          extraEnemy.maxHp = 100 * hpMultiplier;
+        }
+        extraEnemy.isAlive = true;
+        enemiesToSpawn.push(extraEnemy);
+        console.log(`[EventWrath] Extra enemy spawned! Level ${eventWrath.level}`);
+      }
+
+      globals.currentEnemies = enemiesToSpawn;
+      globals.currentEnemy = superSlime1;
+      
+      console.log(`Created ${enemiesToSpawn.length} enemies for combat`);
+    } else {
+      let enemiesToSpawn = [enemy];
+      
+      for (let i = 0; i < extraEnemies; i++) {
+        const availableTypes = eventWrath.getAvailableEnemyTypes();
+        const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+        const xPos = 550 + (i * 100);
+        let extraEnemy;
+        
+        if (randomType === "slime") {
+          extraEnemy = SpriteFactory.createSuperSlime(xPos, 200);
+          extraEnemy.hp = 80 * hpMultiplier;
+          extraEnemy.maxHp = 80 * hpMultiplier;
+        } else {
+          extraEnemy = SpriteFactory.createSuperSkeleton(xPos, 150);
+          extraEnemy.hp = 100 * hpMultiplier;
+          extraEnemy.maxHp = 100 * hpMultiplier;
+        }
+        extraEnemy.isAlive = true;
+        enemiesToSpawn.push(extraEnemy);
+        console.log(`[EventWrath] Extra enemy spawned! Level ${eventWrath.level}`);
+      }
+
+      globals.currentEnemies = enemiesToSpawn;
+      globals.currentEnemy = enemy;
+    }
     
-    console.log("Created 2 enemies for combat");
-  } else {
-    globals.currentEnemies = [enemy];
-    globals.currentEnemy = enemy;
-  }
-  
-  globals.combatState = CombatState.INIT_COMBAT;
-  globals.gameState = GameState.COMBAT;
+    globals.combatState = CombatState.INIT_COMBAT;
+    globals.gameState = GameState.COMBAT;
 
-  if (globals.gameInstance) {
-    globals.gameInstance.gameState = GameState.COMBAT;
-    globals.gameInstance.combat = new Combat(globals.player, globals.currentEnemies);
+    if (globals.gameInstance) {
+      globals.gameInstance.gameState = GameState.COMBAT;
+      globals.gameInstance.combat = new Combat(globals.player, globals.currentEnemies);
+    }
   }
-}
 
   static onCollisionWithPotion() {
     console.log("Collision with potion");
     if (globals.inventory) {
       globals.inventory.addPotion();
+      
+      if (globals.gameInstance) {
+        globals.gameInstance.addItemProgress();
+      }
     }
     globals.item = null;
   }
@@ -437,19 +488,15 @@ export default class CollisionManager {
       case "left":
         newScreen = Border[globals.currentScreen].left;
         return newScreen;
-
       case "right":
         newScreen = Border[globals.currentScreen].right;
         return newScreen;
-
       case "up":
         newScreen = Border[globals.currentScreen].up;
         return newScreen;
-
       case "down":
         newScreen = Border[globals.currentScreen].down;
         return newScreen;
-
       default:
         return newScreen;
     }
