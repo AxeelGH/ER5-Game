@@ -34,8 +34,8 @@ export default class AbilityPhase extends CombatPhase {
 
     if (enemy.hp <= 0) {
         enemy.isAlive = false;
-            
-            this.messageQueue.push(new Message("Enemy defeated by ability!"));
+        this.messageQueue.push(new Message("Enemy defeated by ability!"));
+        console.log("Enemy defeated");
 
         for (let i = 0; i < globals.map.enemies.length; i++) {
 
