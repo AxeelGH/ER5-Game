@@ -2,7 +2,7 @@ export default class GameStatistics {
   constructor(playerId) {
     this.sessionId = crypto.randomUUID();
     this.playerId = playerId;
-    this.startedAt = new Date().toISOString();
+    this.startedAt = new Date(Date.now()).toISOString().replace('T',' ').replace('Z','');
     this.finishedAt = null;
 
     this.enemiesKilled = 0;
@@ -37,7 +37,7 @@ export default class GameStatistics {
   }
 
   finish(result, score) {
-    this.finishedAt = new Date().toISOString();
+    this.finishedAt = new Date(Date.now()).toISOString().replace('T',' ').replace('Z','');
     this.result = result;
     this.finalScore = score;
   }

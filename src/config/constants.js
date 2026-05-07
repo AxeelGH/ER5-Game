@@ -119,6 +119,8 @@ export const Sound = {
 
 export const BASE_URL = "https://er5game.free.laravel.cloud/api/";
 
+export const LOCAL_URL = "http://127.0.0.1:8000/api/"
+
 export const mapID = {
   INVALID: -1,
   START: 0,

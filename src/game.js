@@ -1,5 +1,5 @@
 import globals from "./config/globals.js";
-import { BASE_URL, GameState, Key, SpriteID } from "./config/constants.js";
+import { BASE_URL, GameState, Key, LOCAL_URL, SpriteID } from "./config/constants.js";
 import { Events } from "./events/Events.js";
 import { View } from "./View.js";
 import Asset from "./assets/assets.js";
@@ -437,6 +437,8 @@ class Game {
         break;
 
       case GameState.GAME_OVER:
+        globals.gameStats.finish("Defeat",globals.score);
+        this.postStats();
         if (globals.action.confirm) {
           this.gameState = GameState.MENU;
           globals.gameState = GameState.MENU;
@@ -604,13 +606,16 @@ class Game {
   }
 
   postStats() {
-    fetch(BASE_URL + "stats", {
+    fetch(LOCAL_URL + "stats", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(globals.gameStats.toPayload()),
+      
     });
+    console.log("stats post" + JSON.stringify(globals.gameStats.toPayload()));
   }
 }
 
