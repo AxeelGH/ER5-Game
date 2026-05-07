@@ -1,5 +1,5 @@
 import globals from "./config/globals.js";
-import { GameState, Key, LOCAL_URL, SpriteID } from "./config/constants.js";
+import { BASE_URL, GameState, Key, LOCAL_URL, SpriteID } from "./config/constants.js";
 import { Events } from "./events/Events.js";
 import { View } from "./View.js";
 import Asset from "./assets/assets.js";
@@ -18,8 +18,10 @@ import Item from "./sprites/Item.js";
 import Slime from "./sprites/Slime.js";
 import Mage from "./sprites/Mage.js";
 import Skeleton from "./sprites/Skeleton.js";
+import GameStatistics from "./GameStatistics.js";
 import Combat from "./combat/Combat.js";
 import MessageQueue from "./combat/MessageQueue.js";
+import EventWrath from "./events/EventWrath.js"; 
 
 class Game {
   constructor(canvas, gameData) {
@@ -39,7 +41,6 @@ class Game {
 
     this.levelFactory = new LevelFactory();
 
-    // Managers
     this.inputManager = new Events();
     this.view = new View(this.ctx, this);
 
@@ -48,7 +49,6 @@ class Game {
     this.mapView = new MapView(this.ctx);
     this.playerView = new playerView(this.ctx);
 
-    //key actions
     globals.action = {
       moveUp: false,
       moveDown: false,
@@ -57,7 +57,6 @@ class Game {
       confirm: false,
     };
 
-    //Initialize enemy array
     globals.enemies = [];
     globals.currentEnemy = null;
 
@@ -67,9 +66,41 @@ class Game {
 
     this.loginLoadingFrames = 0;
     this.pendingScreen = null;
+    this.pendingScreenForCinematic = null;
     this.loadScreenFrames = 0;
     this.loginMessage = "";
+    this.cinematicTimer = 0;
+    this.showLevelUpMessageTimer = 0;
+
+    this.eventWrath = new EventWrath();
+    globals.eventWrath = this.eventWrath;
   }
+
+  addEnemyProgress() {
+  const leveledUp = this.eventWrath.addProgress(20);
+  if (leveledUp && this.eventWrath.level === 2) {
+    this.showLevelUpMessage();
+  }
+}
+
+addScreenProgress() {
+  const leveledUp = this.eventWrath.addProgress(100);
+  if (leveledUp && this.eventWrath.level === 2) {
+    this.showLevelUpMessage();
+  }
+}
+
+addItemProgress() {
+  const leveledUp = this.eventWrath.addProgress(20);
+  if (leveledUp && this.eventWrath.level === 2) {
+    this.showLevelUpMessage();
+  }
+}
+
+showLevelUpMessage() {
+  this.showLevelUpMessageTimer = 180;
+  this.eventWrath.markCinematicShown();
+}
 
   static async create(canvas, gameData) {
     console.log("Initializing...");
@@ -87,8 +118,10 @@ class Game {
 
     game.assets = new Asset();
     game.assets.loadAssets();
-    game.player = SpriteFactory.createPlayer(100, 220, 120, 70);
+    game.player = SpriteFactory.createPlayer(100, 220, 120, 70, Math.floor(Math.random() * 100) + 1);
     globals.player = game.player;
+    game.gameStats = new GameStatistics(game.player.playerId);
+    globals.gameStats = game.gameStats;
     globals.sprites.push(globals.player);
     console.log(globals.sprites[0]);
 
@@ -166,7 +199,6 @@ class Game {
           globals.menuIndex = 0;
           globals.action.confirm = false;
         }
-
         break;
 
       case GameState.LOGIN:
@@ -191,7 +223,6 @@ class Game {
             this.login(email, password);
           }
         }
-
         break;
 
       case GameState.LOGIN_LOADING:
@@ -200,7 +231,6 @@ class Game {
         if (this.loginLoadingFrames >= 120) {
           this.loginLoadingFrames = 0;
         }
-
         break;
 
       case GameState.MENU:
@@ -228,7 +258,6 @@ class Game {
               }
               this.gameState = GameState.PLAYING;
               globals.gameState = GameState.PLAYING;
-              //this.timer = 400;
               console.log("Game State: PLAYING");
               for (let i = 0; i < globals.enemies.length; i++) {
                 globals.enemies[i].hp *= this.enemyHPMultiplier;
@@ -255,12 +284,12 @@ class Game {
               break;
 
             case 4:
-              break;
-
-            case 5:
               this.gameState = GameState.DIFFICULTY;
               globals.gameState = GameState.DIFFICULTY;
-
+              break;
+            case 5:
+              this.gameState = GameState.STATS;
+              globals.gameState = GameState.STATS;
               break;
 
             case 6:
@@ -325,6 +354,17 @@ class Game {
           globals.gameState = GameState.GAME_OVER;
         }
 
+        if (this.showLevelUpMessageTimer > 0) {
+          this.showLevelUpMessageTimer--;
+        }
+
+        if (this.eventWrath.level >= 2) {
+          const spawnChance = this.eventWrath.getEnemySpawnChance() * (dt * 60);
+          if (Math.random() < spawnChance && globals.enemies.length < 6) {
+            this.spawnRandomEnemy();
+          }
+        }
+
         if (globals.player) {
           globals.player.update();
         }
@@ -362,16 +402,19 @@ class Game {
         if (allEnemiesDead) {
           this.gameState = GameState.VICTORY;
           globals.gameState = GameState.VICTORY;
+          globals.gameStats.finish("Victory", this.score);
+          this.postStats();
         }
         break;
 
+      case GameState.CINEMATIC:
+        this.updateCinematic();
+        break;
+
       case GameState.INIT_COMBAT:
-
-        const combat = combat.create(player, enemies);
-
-        this.gameState = GameState.COMBAT
+        const combat = Combat.create(player, enemies);
+        this.gameState = GameState.COMBAT;
         globals.gameState = GameState.COMBAT;
-
         break;
 
       case GameState.COMBAT:
@@ -397,6 +440,7 @@ class Game {
           globals.action.confirm = false;
         }
         break;
+
       case GameState.DIFFICULTY:
         if (globals.action.moveUp) {
           globals.action.moveUp = false;
@@ -423,6 +467,7 @@ class Game {
           globals.action.confirm = false;
         }
         break;
+
       case GameState.HIGHSCORE:
         globals.subMenuIndex = 0;
         if (globals.action.confirm) {
@@ -439,19 +484,96 @@ class Game {
           globals.gameState = GameState.MENU;
           globals.action.confirm = false;
         }
-        break;
+        break;  
 
       case GameState.GAME_OVER:
+        globals.gameStats.finish("Defeat",this.score);
+        this.postStats();
         if (globals.action.confirm) {
           this.gameState = GameState.MENU;
           globals.gameState = GameState.MENU;
           globals.action.confirm = false;
         }
         break;
-
+      case GameState.STATS:
+        globals.subMenuIndex = 0;
+        if (globals.action.confirm) {
+          this.gameState = GameState.MENU;
+          globals.gameState = GameState.MENU;
+          globals.subMenuIndex = 0;
+          globals.action.confirm = false;
+        }
+        break;
+        
       default:
         break;
     }
+  }
+
+  updateCinematic() {
+    if (this.cinematicTimer > 0) {
+      this.cinematicTimer--;
+      if (this.cinematicTimer <= 0) {
+        if (this.pendingScreenForCinematic !== null) {
+          this.gameState = GameState.LOAD_SCREEN;
+          globals.gameState = GameState.LOAD_SCREEN;
+          this.loadScreen(this.pendingScreenForCinematic);
+          this.pendingScreenForCinematic = null;
+        } else {
+          this.gameState = GameState.PLAYING;
+          globals.gameState = GameState.PLAYING;
+        }
+      }
+    }
+    
+    if (globals.action.confirm) {
+      globals.action.confirm = false;
+      this.cinematicTimer = 0;
+    }
+  }
+
+  spawnRandomEnemy() {
+    const availableTypes = this.eventWrath.getAvailableEnemyTypes();
+    const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+    const hpMultiplier = this.eventWrath.getEnemyHpMultiplier();
+    
+    const side = Math.floor(Math.random() * 4);
+    let x, y;
+    
+    switch(side) {
+      case 0:
+        x = Math.random() * (this.canvas.width - 100) + 50;
+        y = -50;
+        break;
+      case 1:
+        x = Math.random() * (this.canvas.width - 100) + 50;
+        y = this.canvas.height + 50;
+        break;
+      case 2:
+        x = -50;
+        y = Math.random() * (this.canvas.height - 100) + 50;
+        break;
+      default:
+        x = this.canvas.width + 50;
+        y = Math.random() * (this.canvas.height - 100) + 50;
+    }
+    
+    let newEnemy;
+    if (randomType === "slime") {
+      newEnemy = SpriteFactory.createSlime(x, y);
+      newEnemy.hp = 50 * hpMultiplier;
+      newEnemy.maxHp = 50 * hpMultiplier;
+    } else {
+      newEnemy = SpriteFactory.createSkeleton(x, y);
+      newEnemy.hp = 80 * hpMultiplier;
+      newEnemy.maxHp = 80 * hpMultiplier;
+    }
+    
+    newEnemy.isAlive = true;
+    globals.enemies.push(newEnemy);
+    globals.sprites.push(newEnemy);
+    
+    console.log(`[EventWrath] New ${randomType} spawned at (${Math.floor(x)}, ${Math.floor(y)})`);
   }
 
   async initializeLevels() {
@@ -499,42 +621,44 @@ class Game {
   }
 
   loadScreen(newScreen) {
-    console.log("loading Screen: " + newScreen);
+  console.log("loading Screen: " + newScreen);
 
-    let level = this.levelFactory.getLevelById(newScreen);
+  this.addScreenProgress();
 
-    if (level) {
-      globals.map = level;
-      let cloneEnemies = [];
-      for (let i = 0; i < level.enemies.length; i++) {
-        let enemy = level.enemies[i];
-        if (enemy.id === SpriteID.SLIME) {
-          cloneEnemies[i] = Slime.clone(level.enemies[i]);
-        } else if (enemy.id === SpriteID.MAGE) {
-          cloneEnemies[i] = Mage.clone(level.enemies[i]);
-        } else {
-          cloneEnemies[i] = Skeleton.clone(level.enemies[i]);
-        }
-        console.log("Cloned enemy: ", cloneEnemies[i]);
+  let level = this.levelFactory.getLevelById(newScreen);
+
+  if (level) {
+    globals.map = level;
+    let cloneEnemies = [];
+    for (let i = 0; i < level.enemies.length; i++) {
+      let enemy = level.enemies[i];
+      if (enemy.id === SpriteID.SLIME) {
+        cloneEnemies[i] = Slime.clone(level.enemies[i]);
+      } else if (enemy.id === SpriteID.MAGE) {
+        cloneEnemies[i] = Mage.clone(level.enemies[i]);
+      } else {
+        cloneEnemies[i] = Skeleton.clone(level.enemies[i]);
       }
-      globals.enemies = cloneEnemies;
-
-      let cloneItems = [];
-      for (let i = 0; i < level.items.length; i++) {
-        cloneItems[i] = Item.clone(level.items[i]);
-        console.log("Cloned potion: ", cloneItems[i]);
-      }
-      globals.items = cloneItems;
-
-      console.log("Screen: " + level.name);
-      console.log("Enemies: " + globals.enemies.length);
-
-      this.gameState = GameState.PLAYING;
-      globals.gameState = GameState.PLAYING;
-    } else {
-      console.log("error: " + newScreen);
+      console.log("Cloned enemy: ", cloneEnemies[i]);
     }
+    globals.enemies = cloneEnemies;
+
+    let cloneItems = [];
+    for (let i = 0; i < level.items.length; i++) {
+      cloneItems[i] = Item.clone(level.items[i]);
+      console.log("Cloned potion: ", cloneItems[i]);
+    }
+    globals.items = cloneItems;
+
+    console.log("Screen: " + level.name);
+    console.log("Enemies: " + globals.enemies.length);
+
+    this.gameState = GameState.PLAYING;
+    globals.gameState = GameState.PLAYING;
+  } else {
+    console.log("error: " + newScreen);
   }
+}
 
   render() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -553,7 +677,7 @@ class Game {
       password: password,
     };
 
-    fetch(LOCAL_URL + "login", {
+    fetch(BASE_URL+"login", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -606,6 +730,19 @@ class Game {
     const passwordInput = document.getElementById("password");
     if (emailInput) emailInput.value = "";
     if (passwordInput) passwordInput.value = "";
+  }
+
+  postStats() {
+    fetch(LOCAL_URL + "stats", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(globals.gameStats.toPayload()),
+      
+    });
+    console.log("stats post" + JSON.stringify(globals.gameStats.toPayload()));
   }
 }
 

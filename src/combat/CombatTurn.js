@@ -200,6 +200,10 @@ decideEnemyAction() {
 prepareEnemyMove() {
     let positions = [0, 1, 2];
     let availablePositions = [];
+    for (let i = 0; i < this.enemies.length; i++) {
+      globals.gameStats.registerKill();
+      console.log("Enemies killed: ", globals.gameStats.enemiesKilled);
+    }
 
     for (let i = 0; i < positions.length; i++) {
         let pos = positions[i];
@@ -235,32 +239,38 @@ executeEnemyMove() {
 }
 
 
-  executeEnemyAttack() {
+executeEnemyAttack() {
   if (this.animationDelay > 0) {
     this.animationDelay--;
     return;
   }
   
   const isCritical = Math.random() < 0.1;
+  const damageMultiplier = globals.eventWrath.getEnemyDamageMultiplier();
   
   let damage;
   
   if (isCritical) {
-    damage = 22 + 10 + this.dice.rollDice(6);
+
+    damage = (22 + 10 + this.dice.rollDice(6)) * damageMultiplier;
 
     globals.messageQueue.push(new Message("¡ENEMY CRITICAL DAMAGE! Damage: " + damage));
-    console.log("¡ENEMIE CRITICAL DAMAGE! Damage: " + damage);
-
+    console.log("¡ENEMY CRITICAL DAMAGE! Damage: " + damage);
+    
   } else {
-    damage = 10 + this.dice.rollDice(6);
+    damage = (10 + this.dice.rollDice(6)) * damageMultiplier;
   }
   
   this.player.hp -= damage;
+
   globals.messageQueue.push(new Message("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp));
+  
+  globals.gameStats.takenStatDamage(damage);
+  console.log("Damage taken: ", globals.gameStats.damageTaken);
   console.log("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp + "/" + this.player.maxHp);
   
   if (globals.damageNumbers) {
-    globals.damageNumbers.addDamageNumber(damage, 230, 350, true);
+    globals.damageNumbers.addDamageNumber(Math.floor(damage), 230, 350, true);
   }
   
   if (globals.ParticleSystem) {
@@ -277,8 +287,8 @@ executeEnemyMove() {
   }
 
 
-  hasFled() {
-    return this.fled;
+  isFinished() {
+    return this.state === "finished";
   }
 
 

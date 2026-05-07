@@ -8,7 +8,7 @@ import globals from "../config/globals.js";
 import CollisionManager from "../map/CollisionManager.js";
 
 export default class Player extends Sprite {
-  constructor(xPos, yPos, hp, mana) {
+  constructor(xPos, yPos, hp, mana,playerId) {
     super();
 
     this.id = SpriteID.HERO;
@@ -19,6 +19,7 @@ export default class Player extends Sprite {
     this.maxHp = hp;
     this.mana = mana;
     this.maxMana = mana;
+    this.playerId = playerId;
 
     this.imageSet = new ImageSet(39, 0, 48, 64, 0, 0);
     this.frames = new Frames(3, 8);

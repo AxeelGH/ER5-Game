@@ -16,7 +16,10 @@ export const GameState = {
   LOGIN_LOADING: 13,
   LOAD_SCREEN: 14,
   DIFFICULTY: 15,
-  INIT_COMBAT: 16
+  INIT_COMBAT: 16,
+  CINEMATIC: 17,
+  STATS: 18,
+  INIT_COMBAT: 19
 };
 
 export const FPS = 60;

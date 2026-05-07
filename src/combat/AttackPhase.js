@@ -150,7 +150,8 @@ if (isCritical) {
 
   if (this.damage > 0) {
     targetEnemy.hp -= this.damage;
-    
+        globals.gameStats.addStatDamage(this.damage);
+    console.log("Damage done: ", globals.gameStats.damageDone);
     if (globals.damageNumbers) {
       globals.damageNumbers.addDamageNumber(this.damage, 700, 250, false);
     }

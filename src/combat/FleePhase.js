@@ -21,6 +21,7 @@ export default class FleePhase extends CombatPhase {
 
         this.fled = true;
 
+        globals.gameStats.registerFlee();
       } else if (fleeResult === 2) {
 
         this.player.hp -= 5 + this.dice.rollDice(6);
@@ -29,6 +30,8 @@ export default class FleePhase extends CombatPhase {
         console.log("You fled but received damage");
         this.messageQueue.push(new Message("Player fled but took damage!"));
 
+        globals.gameStats.registerFlee();
+        
       } else {
         
         this.player.hp -= 10 + this.dice.rollDice(6);
@@ -36,6 +39,8 @@ export default class FleePhase extends CombatPhase {
         
         console.log("You failed to flee and received damage");
         this.messageQueue.push(new Message("Failed to flee! Took damage."));
+        
+        globals.gameStats.registerFailedFlee();
       }
 
       if (this.fled === true) {
@@ -48,7 +53,8 @@ export default class FleePhase extends CombatPhase {
 
       this.cancelled = true;
     }
-
+    console.log("Successful flees: ", globals.gameStats.successfulFlees);
+    console.log("Failed flees: ", globals.gameStats.failedFlees);
     this.state = "completed";
   }
 

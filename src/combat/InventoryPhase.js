@@ -17,6 +17,9 @@ export default class InventoryPhase extends CombatPhase {
       this.messageQueue.push(new Message("Player uses a potion! Gained 30 HP."));
       console.log("You used a potion, gained 30 HP");
       
+      this.cancelled = true;
+      globals.gameStats.registerConsumedPotion();
+      
     } else {
 
       this.cancelled = true;
@@ -25,7 +28,7 @@ export default class InventoryPhase extends CombatPhase {
       console.log("No potions available!");
       
     }
-
+    console.log("Consumed potions: " + globals.gameStats.consumedPotions);
     this.state = "completed";
   }
 }
