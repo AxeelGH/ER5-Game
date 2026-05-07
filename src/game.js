@@ -1,5 +1,5 @@
 import globals from "./config/globals.js";
-import { GameState, Key, LoginData, SpriteID } from "./config/constants.js";
+import { BASE_URL, GameState, Key, LOCAL_URL, SpriteID } from "./config/constants.js";
 import { Events } from "./events/Events.js";
 import { View } from "./View.js";
 import Asset from "./assets/assets.js";
@@ -18,6 +18,7 @@ import Item from "./sprites/Item.js";
 import Slime from "./sprites/Slime.js";
 import Mage from "./sprites/Mage.js";
 import Skeleton from "./sprites/Skeleton.js";
+import GameStatistics from "./GameStatistics.js";
 import Combat from "./combat/Combat.js";
 import EventWrath from "./events/EventWrath.js"; 
 
@@ -115,8 +116,10 @@ showLevelUpMessage() {
 
     game.assets = new Asset();
     game.assets.loadAssets();
-    game.player = SpriteFactory.createPlayer(100, 220, 120, 70);
+    game.player = SpriteFactory.createPlayer(100, 220, 120, 70, Math.floor(Math.random() * 100) + 1);
     globals.player = game.player;
+    game.gameStats = new GameStatistics(game.player.playerId);
+    globals.gameStats = game.gameStats;
     globals.sprites.push(globals.player);
     console.log(globals.sprites[0]);
 
@@ -279,11 +282,12 @@ showLevelUpMessage() {
               break;
 
             case 4:
-              break;
-
-            case 5:
               this.gameState = GameState.DIFFICULTY;
               globals.gameState = GameState.DIFFICULTY;
+              break;
+            case 5:
+              this.gameState = GameState.STATS;
+              globals.gameState = GameState.STATS;
               break;
 
             case 6:
@@ -396,6 +400,8 @@ showLevelUpMessage() {
         if (allEnemiesDead) {
           this.gameState = GameState.VICTORY;
           globals.gameState = GameState.VICTORY;
+          globals.gameStats.finish("Victory", this.score);
+          this.postStats();
         }
         break;
 
@@ -476,16 +482,27 @@ showLevelUpMessage() {
           globals.gameState = GameState.MENU;
           globals.action.confirm = false;
         }
-        break;
+        break;  
 
       case GameState.GAME_OVER:
+        globals.gameStats.finish("Defeat",this.score);
+        this.postStats();
         if (globals.action.confirm) {
           this.gameState = GameState.MENU;
           globals.gameState = GameState.MENU;
           globals.action.confirm = false;
         }
         break;
-
+      case GameState.STATS:
+        globals.subMenuIndex = 0;
+        if (globals.action.confirm) {
+          this.gameState = GameState.MENU;
+          globals.gameState = GameState.MENU;
+          globals.subMenuIndex = 0;
+          globals.action.confirm = false;
+        }
+        break;
+        
       default:
         break;
     }
@@ -658,7 +675,7 @@ showLevelUpMessage() {
       password: password,
     };
 
-    fetch(LoginData, {
+    fetch(BASE_URL+"login", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -711,6 +728,19 @@ showLevelUpMessage() {
     const passwordInput = document.getElementById("password");
     if (emailInput) emailInput.value = "";
     if (passwordInput) passwordInput.value = "";
+  }
+
+  postStats() {
+    fetch(LOCAL_URL + "stats", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(globals.gameStats.toPayload()),
+      
+    });
+    console.log("stats post" + JSON.stringify(globals.gameStats.toPayload()));
   }
 }
 

@@ -54,4 +54,5 @@ export default {
 
   damageNumbers: new DamageNumbers(),
   eventWrath: null,
+  gameStats : null,
 };

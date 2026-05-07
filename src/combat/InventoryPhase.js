@@ -13,11 +13,12 @@ export default class InventoryPhase extends CombatPhase {
       globals.inventory.usePotion(this.player);
       console.log("You used a potion, gained 30 HP");
       this.cancelled = true;
+      globals.gameStats.registerConsumedPotion();
     } else {
       console.log("No potions available!");
       this.cancelled = true;
     }
-
+    console.log("Consumed potions: " + globals.gameStats.consumedPotions);
     this.state = "completed";
   }
 }

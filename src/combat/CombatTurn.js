@@ -196,6 +196,10 @@ decideEnemyAction() {
 prepareEnemyMove() {
     let positions = [0, 1, 2];
     let availablePositions = [];
+    for (let i = 0; i < this.enemies.length; i++) {
+      globals.gameStats.registerKill();
+      console.log("Enemies killed: ", globals.gameStats.enemiesKilled);
+    }
 
     for (let i = 0; i < positions.length; i++) {
         let pos = positions[i];
@@ -249,6 +253,8 @@ executeEnemyAttack() {
   }
   
   this.player.hp -= damage;
+      globals.gameStats.takenStatDamage(damage);
+      console.log("Damage taken: ", globals.gameStats.damageTaken);
   console.log("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp + "/" + this.player.maxHp);
   
   if (globals.damageNumbers) {
@@ -269,8 +275,8 @@ executeEnemyAttack() {
   }
 
 
-  hasFled() {
-    return this.fled;
+  isFinished() {
+    return this.state === "finished";
   }
 
 

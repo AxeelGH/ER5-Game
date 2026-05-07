@@ -34,6 +34,7 @@ export class View {
     this.victoryBackgroundImg.src = "./assets/images/VictoryBackground.png";
     this.gameOverBackgroundImg = new Image();
     this.gameOverBackgroundImg.src = "./assets/images/GameOverBackground.png";
+
   }
 
   render() {
@@ -102,8 +103,16 @@ export class View {
     case GameState.CINEMATIC:
       this.renderCinematic();
       break;
+      case GameState.LOAD_SCREEN:
+        this.renderLoadScreen();
+        break;
+      
+      case GameState.STATS:
+        this.renderStats();
+        break;
+    }
   }
-}
+
 
   renderLoading() {
     this.ctx.fillStyle = "black";
@@ -152,7 +161,7 @@ export class View {
     this.ctx.fillText("THE STORM OF ", this.ctx.canvas.width / 2, this.ctx.canvas.height * 0.1);
     this.ctx.fillText("THE ANCIENT WARRIORS", this.ctx.canvas.width / 2, this.ctx.canvas.height * 0.2);
 
-    const menuItems = ["Play", "Story", "Controls", "High Score", "Stats", "Difficulty", "Logout"];
+    const menuItems = ["Play", "Story", "Controls", "High Score", "Difficulty", "Stats", "Logout"];
     const startY = 400;
     const itemHeight = 50;
     const selectedIndex = globals.menuIndex;
@@ -705,4 +714,37 @@ export class View {
     this.ctx.textAlign = "center";
     this.ctx.fillText("LOADING...", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
   }
+
+
+ renderStats() {
+  const stats = globals.gameStats;
+
+  this.ctx.drawImage(this.storyBackgroundImg, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+
+  this.ctx.fillStyle = "#e9b200";
+  this.ctx.font = "48px alkhemikal";
+  this.ctx.textAlign = "center";
+  this.ctx.fillText("STATISTICS", this.ctx.canvas.width / 2, 80);
+
+  this.ctx.font = "32px alkhemikal";
+  this.ctx.fillStyle = "#ffffff";
+
+  const leftCol = 400;
+  const rightCol = (this.ctx.canvas.width / 4) * 2.5;
+  const startY = 220;
+  const gap = 60;
+
+  this.ctx.textAlign = "center";
+  this.ctx.fillText("Enemies Killed: "   + stats.enemiesKilled,   leftCol, startY);
+  this.ctx.fillText("Damage Done: "      + stats.damageDone,      rightCol, startY);
+  this.ctx.fillText("Damage Taken: "     + stats.damageTaken,     leftCol, startY + gap);
+  this.ctx.fillText("Potions Used: "     + stats.consumedPotions, rightCol, startY + gap);
+  this.ctx.fillText("Successful Flees: " + stats.successfulFlees, leftCol, startY + gap * 2);
+  this.ctx.fillText("Failed Flees: "     + stats.failedFlees,     rightCol, startY + gap * 2);
+  this.ctx.fillText("Final Score: "      + stats.finalScore,      leftCol, startY + gap * 3);
+  this.ctx.fillText("Result: "           + stats.result,          rightCol, startY + gap * 3);
+
+  this.ctx.fillStyle = "yellow";
+  this.ctx.fillText("Press SPACE to go back", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 340);
+}
 }

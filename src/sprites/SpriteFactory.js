@@ -8,7 +8,7 @@ import SuperMage from "./SuperMage.js";
 import SuperSkeleton from "./SuperSkeleton.js";
 
 export default class SpriteFactory {
-  static createPlayer(xPos, yPos, hp, mana) {
+  static createPlayer(xPos, yPos, hp, mana, playerId) {
     return new Player(xPos, yPos, hp, mana);
   }
 
