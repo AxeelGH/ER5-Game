@@ -5,6 +5,7 @@ import SuperSkeleton from "../sprites/SuperSkeleton.js";
 import globals from "../config/globals.js";
 import { SpriteID, CombatState, GameState } from "../config/constants.js";
 import CombatTurn from "./CombatTurn.js";
+import Message from "./Message.js";
 
 export default class Combat {
   constructor(player, enemies) {
@@ -93,6 +94,15 @@ export default class Combat {
     for (let i = 0; i < this.turns.length; i++) {
       console.log(i + 1 + ": " + this.turns[i].type + " (roll: " + this.turns[i].roll + ")");
     }
+
+    if (this.turns.length > 0) {
+      const first = this.turns[0];
+      if (first.type === "player") {
+        globals.messageQueue.push(new Message("You go first!"));
+      } else {
+        globals.messageQueue.push(new Message("Enemy attacks first!"));
+      }
+    }
   }
 
   initCombat() {
@@ -179,6 +189,9 @@ export default class Combat {
   }
 
   endCombat(playerDied) {
+
+    globals.messageQueue.clear();
+
     this.state = CombatState.END_COMBAT;
     globals.combatState = CombatState.END_COMBAT;
     

@@ -1,7 +1,8 @@
 import globals from "../config/globals.js";
+import Message from "./Message.js";
 
 export default class CombatPhase {
-  constructor(player, enemies, dice, combatTurn) {
+  constructor(player, enemies, dice, combatTurn, messageQueue) {
     this.player = player;
     this.enemies = enemies;
     this.dice = dice;
@@ -10,6 +11,7 @@ export default class CombatPhase {
     this.result = null;
     this.cancelled = false;
     this.fled = false;
+    this.messageQueue = messageQueue;
   }
 
   init() {

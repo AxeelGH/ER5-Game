@@ -1,9 +1,10 @@
 import globals from "../config/globals.js";
 import CombatPhase from "./CombatPhase.js";
+import Message from "./Message.js";
 
 export default class FleePhase extends CombatPhase {
-  constructor(player, enemy, dice, combatTurn) {
-    super(player, enemy, dice, combatTurn);
+  constructor(player, enemy, dice, combatTurn, messageQueue) {
+    super(player, enemy, dice, combatTurn, messageQueue);
     this.fled = false;
   }
 
@@ -14,18 +15,31 @@ export default class FleePhase extends CombatPhase {
       console.log("Flee result: " + fleeResult);
 
       if (fleeResult === 1) {
+
+        this.messageQueue.push(new Message("Player fled successfully!"));
         console.log("You fled successfully");
+
         this.fled = true;
+
         globals.gameStats.registerFlee();
       } else if (fleeResult === 2) {
-        console.log("You fled but received damage");
+
         this.player.hp -= 5 + this.dice.rollDice(6);
         this.fled = true;
+
+        console.log("You fled but received damage");
+        this.messageQueue.push(new Message("Player fled but took damage!"));
+
         globals.gameStats.registerFlee();
+        
       } else {
-        console.log("You failed to flee and received damage");
+        
         this.player.hp -= 10 + this.dice.rollDice(6);
         this.fled = false;
+        
+        console.log("You failed to flee and received damage");
+        this.messageQueue.push(new Message("Failed to flee! Took damage."));
+        
         globals.gameStats.registerFailedFlee();
       }
 
@@ -33,7 +47,10 @@ export default class FleePhase extends CombatPhase {
         this.echoesOfTheCoward();
       }
     } else {
+
+      this.messageQueue.push(new Message("Cannot flee again! Enemy trapped you."));
       console.log("You already tried to flee and the enemy has trapped you, you can't flee!!");
+
       this.cancelled = true;
     }
     console.log("Successful flees: ", globals.gameStats.successfulFlees);
@@ -59,15 +76,23 @@ export default class FleePhase extends CombatPhase {
           enemy.hp += 20;
         }
       }
+
+      this.messageQueue.push(new Message("Enemies became stronger!"));
       console.log("The enemies have seen you flee and have become more confident; their maximum health has increased!");
+
     } else if (result === 2) {
       globals.player.maxHp -= 10;
       if (this.player.hp > this.player.maxHp) {
         this.player.hp = this.player.maxHp;
       }
+
+      this.messageQueue.push(new Message("Lost 10 max HP from cowardice!"));
       console.log("Your cowardice has made you lose 10 points of maximum health!");
+
     } else {
       globals.inventory.removePotion();
+
+      this.messageQueue.push(new Message("Stumbled while fleeing! Lost a potion."));
       console.log("You stumbled while trying to flee and lost a potion!");
     }
   }

@@ -1,9 +1,10 @@
 import globals from "../config/globals.js";
 import CombatPhase from "./CombatPhase.js";
+import Message from "./Message.js";
 
 export default class AbilityPhase extends CombatPhase {
-  constructor(player, enemies, dice, combatTurn) {
-    super(player, enemies, dice, combatTurn);
+  constructor(player, enemies, dice, combatTurn, messageQueue) {
+    super(player, enemies, dice, combatTurn, messageQueue);
     this.damage = 0;
   }
 
@@ -15,6 +16,8 @@ export default class AbilityPhase extends CombatPhase {
 
     if (this.player.mana >= 20) {
       this.damage = 20 + this.dice.rollDice(6) + this.dice.rollDice(6);
+
+      this.messageQueue.push(new Message('Ability deals ' + this.damage + ' damage to all enemies!'));
 
       // Damage to all enemies
       for (let i = 0; i < this.enemies.length; i++) {
@@ -29,10 +32,21 @@ export default class AbilityPhase extends CombatPhase {
 
           console.log(`Damage to enemy: ${this.damage}`);
 
-          if (enemy.hp <= 0) {
-            enemy.isAlive = false;
-            console.log("Enemy defeated");
-          }
+    if (enemy.hp <= 0) {
+        enemy.isAlive = false;
+        this.messageQueue.push(new Message("Enemy defeated by ability!"));
+        console.log("Enemy defeated");
+
+        for (let i = 0; i < globals.map.enemies.length; i++) {
+
+          if (globals.map.enemies[i].id === enemy.id) {
+          globals.map.enemies[i].active = false;
+        }
+
+    }
+
+  console.log("Enemy defeated");
+}
         }
       }
 
@@ -44,7 +58,10 @@ export default class AbilityPhase extends CombatPhase {
         globals.ParticleSystem.createExplosion(explosionX, explosionY, 1.5);
       }
     } else {
+
+      this.messageQueue.push(new Message("Not enough mana to use ability!"));
       console.log("Not enough mana to use ability");
+      
       this.cancelled = true;
     }
 

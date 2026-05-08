@@ -20,6 +20,7 @@ import Mage from "./sprites/Mage.js";
 import Skeleton from "./sprites/Skeleton.js";
 import GameStatistics from "./GameStatistics.js";
 import Combat from "./combat/Combat.js";
+import MessageQueue from "./combat/MessageQueue.js";
 import EventWrath from "./events/EventWrath.js"; 
 
 class Game {
@@ -113,6 +114,7 @@ showLevelUpMessage() {
     globals.assetsLoaded = 0;
 
     globals.inventory = new Inventory();
+    globals.messageQueue = new MessageQueue();
 
     game.assets = new Asset();
     game.assets.loadAssets();
@@ -618,7 +620,7 @@ showLevelUpMessage() {
     }
   }
 
-  loadScreen(newScreen) {
+loadScreen(newScreen) {
   console.log("loading Screen: " + newScreen);
 
   this.addScreenProgress();
@@ -627,25 +629,36 @@ showLevelUpMessage() {
 
   if (level) {
     globals.map = level;
+
     let cloneEnemies = [];
+
     for (let i = 0; i < level.enemies.length; i++) {
+
       let enemy = level.enemies[i];
-      if (enemy.id === SpriteID.SLIME) {
-        cloneEnemies[i] = Slime.clone(level.enemies[i]);
-      } else if (enemy.id === SpriteID.MAGE) {
-        cloneEnemies[i] = Mage.clone(level.enemies[i]);
-      } else {
-        cloneEnemies[i] = Skeleton.clone(level.enemies[i]);
+
+      if (enemy.active !== false) {
+
+        if (enemy.id === SpriteID.SLIME) {
+          cloneEnemies.push(Slime.clone(enemy));
+
+        } else if (enemy.id === SpriteID.MAGE) {
+          cloneEnemies.push(Mage.clone(enemy));
+
+        } else {
+          cloneEnemies.push(Skeleton.clone(enemy));
+        }
       }
-      console.log("Cloned enemy: ", cloneEnemies[i]);
     }
+
     globals.enemies = cloneEnemies;
 
     let cloneItems = [];
+
     for (let i = 0; i < level.items.length; i++) {
       cloneItems[i] = Item.clone(level.items[i]);
       console.log("Cloned potion: ", cloneItems[i]);
     }
+
     globals.items = cloneItems;
 
     console.log("Screen: " + level.name);
@@ -653,8 +666,11 @@ showLevelUpMessage() {
 
     this.gameState = GameState.PLAYING;
     globals.gameState = GameState.PLAYING;
+
   } else {
+
     console.log("error: " + newScreen);
+
   }
 }
 

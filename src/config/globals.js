@@ -53,6 +53,9 @@ export default {
   userName: "",
 
   damageNumbers: new DamageNumbers(),
+
+  messageQueue: null,
+  
   eventWrath: null,
   gameStats : null,
 };
