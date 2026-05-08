@@ -201,7 +201,7 @@ prepareEnemyMove() {
     let positions = [0, 1, 2];
     let availablePositions = [];
     for (let i = 0; i < this.enemies.length; i++) {
-      globals.gameStats.registerKill();
+      
       console.log("Enemies killed: ", globals.gameStats.enemiesKilled);
     }
 
@@ -252,13 +252,13 @@ executeEnemyAttack() {
   
   if (isCritical) {
 
-    damage = (22 + 10 + this.dice.rollDice(6)) * damageMultiplier;
+    damage = Math.floor((22 + 10 + this.dice.rollDice(6)) * damageMultiplier);
 
     globals.messageQueue.push(new Message("¡ENEMY CRITICAL DAMAGE! Damage: " + damage));
     console.log("¡ENEMY CRITICAL DAMAGE! Damage: " + damage);
     
   } else {
-    damage = (10 + this.dice.rollDice(6)) * damageMultiplier;
+    damage = Math.floor((10 + this.dice.rollDice(6)) * damageMultiplier);
   }
   
   this.player.hp -= damage;
