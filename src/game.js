@@ -234,6 +234,10 @@ showLevelUpMessage() {
         break;
 
       case GameState.MENU:
+
+        globals.sounds[Sound.START_MUSIC].play();
+        globals.sounds[Sound.START_MUSIC].volume = 0.5;
+
         if (globals.action.moveUp) {
           globals.action.moveUp = false;
           globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 6;
@@ -691,7 +695,7 @@ loadScreen(newScreen) {
       password: password,
     };
 
-    fetch(BASE_URL+"login", {
+    fetch(LOCAL_URL+"login", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {

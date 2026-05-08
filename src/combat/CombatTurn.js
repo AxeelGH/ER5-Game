@@ -201,7 +201,7 @@ prepareEnemyMove() {
     let positions = [0, 1, 2];
     let availablePositions = [];
     for (let i = 0; i < this.enemies.length; i++) {
-      globals.gameStats.registerKill();
+      
       console.log("Enemies killed: ", globals.gameStats.enemiesKilled);
     }
 
@@ -259,29 +259,37 @@ executeEnemyAttack() {
       console.log("¡CRÍTICO! Player in RIGHT position: No damage!");
     } else if (playerPosition === 1) { // CENTER
       criticalDamage = 16;
-      damage = (criticalDamage + 5 + this.dice.rollDice(6)) * damageMultiplier;
+      damage = Math.floor((criticalDamage + 5 + this.dice.rollDice(6)) * damageMultiplier);
+      globals.messageQueue.push(new Message("¡ENEMY CRITICAL DAMAGE! Damage: " + damage));
       console.log("¡CRÍTICO! Player in CENTER position: Normal damage");
     } else { // RIGHT
       criticalDamage = 22;
-      damage = (criticalDamage + 5 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier;
+      damage = Math.floor((criticalDamage + 5 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier);
+      globals.messageQueue.push(new Message("¡ENEMY CRITICAL DAMAGE! Full damage: " + damage));
       console.log("¡CRÍTICO! Player in LEFT position: Full damage!");
     }
   } else {
     // Normal damage
     if (playerPosition === 0) { // LEFT
       damage = 0;
+      globals.messageQueue.push(new Message("Player in RIGHT position: No damage!"));
       console.log("Player in RIGHT position: No damage!");
     } else if (playerPosition === 1) { // CENTER
-      damage = (5 + this.dice.rollDice(6)) * damageMultiplier;
+      damage = Math.floor((5 + this.dice.rollDice(6)) * damageMultiplier);
+      globals.messageQueue.push(new Message('Enemy damage: ' + damage));
       console.log("Player in CENTER position: Normal damage");
     } else { // RIGHT
-      damage = (5 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier;
+      damage = Math.floor((5 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier);
+      globals.messageQueue.push(new Message('Enemy damage: ' + damage));
       console.log("Player in LEFT position: Full damage!");
     }
   }
   
   if (damage > 0) {
     this.player.hp -= damage;
+
+    globals.messageQueue.push(new Message("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp));
+
     globals.gameStats.takenStatDamage(damage);
     console.log("Damage taken: ", globals.gameStats.damageTaken);
     console.log("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp + "/" + this.player.maxHp);

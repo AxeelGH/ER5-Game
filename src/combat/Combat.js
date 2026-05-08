@@ -207,6 +207,7 @@ export default class Combat {
       if (globals.gameInstance) {
         for (let i = 0; i < this.enemies.length; i++) {
           if (!this.enemies[i].isAlive) {
+            globals.gameStats.registerKill();
             globals.gameInstance.addEnemyProgress();
           }
         }

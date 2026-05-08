@@ -129,13 +129,13 @@ if (isCritical) {
   if (enemyPosition === 0) {
     damage = 10 + this.dice.rollDice(6) + this.dice.rollDice(6);
 
-    this.messageQueue.push(new Message('Player hits enemy causing ' + this.damage + ' damage!'));
+    this.messageQueue.push(new Message('Player hits enemy causing ' + damage + ' damage!'));
     console.log("Enemy in LEFT position: Full damage!");
 
   } else if (enemyPosition === 1) {
     damage = 10 + this.dice.rollDice(6);
 
-    this.messageQueue.push(new Message('Player hits enemy causing ' + this.damage + ' damage!'));
+    this.messageQueue.push(new Message('Player hits enemy causing ' + damage + ' damage!'));
     console.log("Enemy in CENTER position: Normal damage");
 
   } else {
