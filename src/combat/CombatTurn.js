@@ -259,11 +259,11 @@ executeEnemyAttack() {
       console.log("¡CRÍTICO! Player in RIGHT position: No damage!");
     } else if (playerPosition === 1) { // CENTER
       criticalDamage = 16;
-      damage = (criticalDamage + 10 + this.dice.rollDice(6)) * damageMultiplier;
+      damage = (criticalDamage + 5 + this.dice.rollDice(6)) * damageMultiplier;
       console.log("¡CRÍTICO! Player in CENTER position: Normal damage");
     } else { // RIGHT
       criticalDamage = 22;
-      damage = (criticalDamage + 10 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier;
+      damage = (criticalDamage + 5 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier;
       console.log("¡CRÍTICO! Player in LEFT position: Full damage!");
     }
   } else {
@@ -272,10 +272,10 @@ executeEnemyAttack() {
       damage = 0;
       console.log("Player in RIGHT position: No damage!");
     } else if (playerPosition === 1) { // CENTER
-      damage = (10 + this.dice.rollDice(6)) * damageMultiplier;
+      damage = (5 + this.dice.rollDice(6)) * damageMultiplier;
       console.log("Player in CENTER position: Normal damage");
     } else { // RIGHT
-      damage = (10 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier;
+      damage = (5 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier;
       console.log("Player in LEFT position: Full damage!");
     }
   }

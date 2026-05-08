@@ -84,7 +84,7 @@ class Game {
 }
 
 addScreenProgress() {
-  const leveledUp = this.eventWrath.addProgress(100);
+  const leveledUp = this.eventWrath.addProgress(10);
   if (leveledUp && this.eventWrath.level === 2) {
     this.showLevelUpMessage();
   }
@@ -565,8 +565,8 @@ showLevelUpMessage() {
       newEnemy.maxHp = 50 * hpMultiplier;
     } else {
       newEnemy = SpriteFactory.createSkeleton(x, y);
-      newEnemy.hp = 80 * hpMultiplier;
-      newEnemy.maxHp = 80 * hpMultiplier;
+      newEnemy.hp = 50 * hpMultiplier;
+      newEnemy.maxHp = 50 * hpMultiplier;
     }
     
     newEnemy.isAlive = true;

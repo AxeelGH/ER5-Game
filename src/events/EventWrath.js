@@ -37,7 +37,7 @@ export default class EventWrath {
       case 1: 
         return 1.0;
       case 2: 
-        return 1.2;
+        return 1.1;
       default: 
         return 1.0;
     }

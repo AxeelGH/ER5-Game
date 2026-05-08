@@ -269,7 +269,7 @@ export class View {
   this.ctx.fillStyle = "rgb(227, 4, 4)";
   this.ctx.font = "bold 56px alkhemikal";
   this.ctx.textAlign = "center";
-  this.ctx.fillText("💀 LEVEL 2 UNLOCKED 💀", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 60);
+  this.ctx.fillText("💀 LEVEL 1 UNLOCKED 💀", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 60);
   
   this.ctx.fillStyle = "rgb(179, 0, 0)";
   this.ctx.font = "40px alkhemikal";
