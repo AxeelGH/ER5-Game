@@ -259,12 +259,12 @@ executeEnemyAttack() {
       console.log("¡CRÍTICO! Player in RIGHT position: No damage!");
     } else if (playerPosition === 1) { // CENTER
       criticalDamage = 16;
-      damage = (criticalDamage + 10 + this.dice.rollDice(6)) * damageMultiplier;
+      damage = Math.floor((criticalDamage + 10 + this.dice.rollDice(6)) * damageMultiplier);
       globals.messageQueue.push(new Message("¡ENEMY CRITICAL DAMAGE! Damage: " + damage));
       console.log("¡CRÍTICO! Player in CENTER position: Normal damage");
     } else { // RIGHT
       criticalDamage = 22;
-      damage = (criticalDamage + 10 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier;
+      damage = Math.floor((criticalDamage + 10 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier);
       globals.messageQueue.push(new Message("¡ENEMY CRITICAL DAMAGE! Full damage: " + damage));
       console.log("¡CRÍTICO! Player in LEFT position: Full damage!");
     }
@@ -272,12 +272,15 @@ executeEnemyAttack() {
     // Normal damage
     if (playerPosition === 0) { // LEFT
       damage = 0;
+      globals.messageQueue.push(new Message("Player in RIGHT position: No damage!"));
       console.log("Player in RIGHT position: No damage!");
     } else if (playerPosition === 1) { // CENTER
-      damage = (10 + this.dice.rollDice(6)) * damageMultiplier;
+      damage = Math.floor((10 + this.dice.rollDice(6)) * damageMultiplier);
+      globals.messageQueue.push(new Message('Enemy damage: ' + damage));
       console.log("Player in CENTER position: Normal damage");
     } else { // RIGHT
-      damage = (10 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier;
+      damage = Math.floor((10 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier);
+      globals.messageQueue.push(new Message('Enemy damage: ' + damage));
       console.log("Player in LEFT position: Full damage!");
     }
   }
