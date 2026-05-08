@@ -245,40 +245,79 @@ executeEnemyAttack() {
     return;
   }
   
-  const isCritical = Math.random() < 0.1;
   const damageMultiplier = globals.eventWrath.getEnemyDamageMultiplier();
+  const playerPosition = this.getPlayerPositionIndex(); 
   
-  let damage;
+  let isCritical = Math.random() < 0.1;
+  let damage = 0;
+  let criticalDamage = 0;
   
   if (isCritical) {
-
-    damage = Math.floor((22 + 10 + this.dice.rollDice(6)) * damageMultiplier);
-
-    globals.messageQueue.push(new Message("¡ENEMY CRITICAL DAMAGE! Damage: " + damage));
-    console.log("¡ENEMY CRITICAL DAMAGE! Damage: " + damage);
-    
+    // Critical damage
+    if (playerPosition === 0) { // LEFT
+      damage = 0;
+      console.log("¡CRÍTICO! Player in RIGHT position: No damage!");
+    } else if (playerPosition === 1) { // CENTER
+      criticalDamage = 16;
+      damage = (criticalDamage + 10 + this.dice.rollDice(6)) * damageMultiplier;
+      globals.messageQueue.push(new Message("¡ENEMY CRITICAL DAMAGE! Damage: " + damage));
+      console.log("¡CRÍTICO! Player in CENTER position: Normal damage");
+    } else { // RIGHT
+      criticalDamage = 22;
+      damage = (criticalDamage + 10 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier;
+      globals.messageQueue.push(new Message("¡ENEMY CRITICAL DAMAGE! Full damage: " + damage));
+      console.log("¡CRÍTICO! Player in LEFT position: Full damage!");
+    }
   } else {
-    damage = Math.floor((10 + this.dice.rollDice(6)) * damageMultiplier);
+    // Normal damage
+    if (playerPosition === 0) { // LEFT
+      damage = 0;
+      console.log("Player in RIGHT position: No damage!");
+    } else if (playerPosition === 1) { // CENTER
+      damage = (10 + this.dice.rollDice(6)) * damageMultiplier;
+      console.log("Player in CENTER position: Normal damage");
+    } else { // RIGHT
+      damage = (10 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier;
+      console.log("Player in LEFT position: Full damage!");
+    }
   }
   
-  this.player.hp -= damage;
+  if (damage > 0) {
+    this.player.hp -= damage;
 
-  globals.messageQueue.push(new Message("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp));
-  
-  globals.gameStats.takenStatDamage(damage);
-  console.log("Damage taken: ", globals.gameStats.damageTaken);
-  console.log("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp + "/" + this.player.maxHp);
-  
-  if (globals.damageNumbers) {
-    globals.damageNumbers.addDamageNumber(Math.floor(damage), 230, 350, true);
-  }
-  
-  if (globals.ParticleSystem) {
-    const explosionScale = isCritical ? 1.5 : 0.8;
-    globals.ParticleSystem.createExplosion(230, 340, explosionScale);
+    globals.messageQueue.push(new Message("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp));
+
+    globals.gameStats.takenStatDamage(damage);
+    console.log("Damage taken: ", globals.gameStats.damageTaken);
+    console.log("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp + "/" + this.player.maxHp);
+    
+    if (globals.damageNumbers) {
+      globals.damageNumbers.addDamageNumber(Math.floor(damage), 230, 350, true);
+    }
+    
+    if (globals.ParticleSystem) {
+      const explosionScale = isCritical ? 1.5 : 0.8;
+      globals.ParticleSystem.createExplosion(230, 340, explosionScale);
+    }
+  } else {
+    console.log("Attack missed! No damage dealt.");
+    if (globals.damageNumbers) {
+      globals.damageNumbers.addDamageNumber(0, 230, 350, true);
+    }
   }
   
   this.state = "finished";
+}
+
+getPlayerPositionIndex() {
+  if (this.player.xPos === 100) {
+    return 0; // LEFT
+  } else if (this.player.xPos === 250) {
+    return 1; // CENTER
+  } else if (this.player.xPos === 450) {
+    return 2; // RIGHT
+  }
+  return 1; //CENTER
 }
 
 
