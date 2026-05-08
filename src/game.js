@@ -357,7 +357,7 @@ showLevelUpMessage() {
         }
 
         if (this.eventWrath.level >= 2) {
-          const spawnChance = this.eventWrath.getEnemySpawnChance() * (dt * 60);
+          const spawnChance = this.eventWrath.getEnemySpawnChance() * 0.5;
           if (Math.random() < spawnChance && globals.enemies.length < 6) {
             this.spawnRandomEnemy();
           }
@@ -539,21 +539,21 @@ showLevelUpMessage() {
     let x, y;
     
     switch(side) {
-      case 0:
-        x = Math.random() * (this.canvas.width - 100) + 50;
-        y = -50;
-        break;
+      case 0: //Left
+        x = Math.random() * (this.canvas.width - 300) + 50;
+        y = 200;
+        break; //Down
       case 1:
-        x = Math.random() * (this.canvas.width - 100) + 50;
-        y = this.canvas.height + 50;
+        x = Math.random() * (this.canvas.width - 300) + 50;
+        y = this.canvas.height + 200;
         break;
-      case 2:
-        x = -50;
-        y = Math.random() * (this.canvas.height - 100) + 50;
+      case 2: //Left
+        x = 100;
+        y = Math.random() * (this.canvas.height - 300) + 50;
         break;
-      default:
-        x = this.canvas.width + 50;
-        y = Math.random() * (this.canvas.height - 100) + 50;
+      default: //Right
+        x = this.canvas.width - 50;
+        y = Math.random() * (this.canvas.height - 300) + 50;
     }
     
     let newEnemy;
