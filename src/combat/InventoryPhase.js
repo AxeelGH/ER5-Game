@@ -8,27 +8,17 @@ export default class InventoryPhase extends CombatPhase {
   }
 
   execute() {
-    console.log("use item");
-
     if (globals.inventory && globals.inventory.getPotions() > 0) {
       globals.inventory.usePotion(this.player);
-      this.cancelled = true;
-
-      this.messageQueue.push(new Message("Player uses a potion! Gained 30 HP."));
-      console.log("You used a potion, gained 30 HP");
-      
-      this.cancelled = true;
+      let playerName = this.player.name || "Player";
+      this.messageQueue.push(new Message(playerName + " used Potion!", 'heal'));
+      this.messageQueue.push(new Message(playerName + " restored 30 HP!", 'heal'));
       globals.gameStats.registerConsumedPotion();
-      
-    } else {
-
       this.cancelled = true;
-
-      this.messageQueue.push(new Message("No potions available!"));
-      console.log("No potions available!");
-      
+    } else {
+      this.messageQueue.push(new Message("But there are no potions left!", 'error'));
+      this.cancelled = true;
     }
-    console.log("Consumed potions: " + globals.gameStats.consumedPotions);
     this.state = "completed";
   }
 }

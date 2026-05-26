@@ -3,58 +3,38 @@ import CombatPhase from "./CombatPhase.js";
 import Message from "./Message.js";
 
 export default class FleePhase extends CombatPhase {
-  constructor(player, enemy, dice, combatTurn, messageQueue) {
-    super(player, enemy, dice, combatTurn, messageQueue);
+  constructor(player, enemies, dice, combatTurn, messageQueue) {
+    super(player, enemies, dice, combatTurn, messageQueue);
     this.fled = false;
   }
 
   execute() {
     if (!globals.triedToFlee) {
-      const fleeResult = this.dice.evaluateFlee(this.combatTurn.currentTurn);
+      let fleeResult = this.dice.evaluateFlee(this.combatTurn.currentTurn);
       globals.triedToFlee = true;
-      console.log("Flee result: " + fleeResult);
-
       if (fleeResult === 1) {
-
-        this.messageQueue.push(new Message("Player fled successfully!"));
-        console.log("You fled successfully");
-
+        this.messageQueue.push(new Message("Got away safely!", 'flee'));
         this.fled = true;
-
         globals.gameStats.registerFlee();
       } else if (fleeResult === 2) {
-
         this.player.hp -= 5 + this.dice.rollDice(6);
+        this.messageQueue.push(new Message("Got away but took damage!", 'flee'));
+        let playerName = this.player.name || "Player";
+        this.messageQueue.push(new Message(playerName + " is hurt by the recoil!", 'damage'));
         this.fled = true;
-
-        console.log("You fled but received damage");
-        this.messageQueue.push(new Message("Player fled but took damage!"));
-
         globals.gameStats.registerFlee();
-        
       } else {
-        
         this.player.hp -= 10 + this.dice.rollDice(6);
+        this.messageQueue.push(new Message("Can't escape!", 'error'));
+        this.messageQueue.push(new Message("The enemy blocked the way!", 'error'));
         this.fled = false;
-        
-        console.log("You failed to flee and received damage");
-        this.messageQueue.push(new Message("Failed to flee! Took damage."));
-        
         globals.gameStats.registerFailedFlee();
       }
-
-      if (this.fled === true) {
-        this.echoesOfTheCoward();
-      }
+      if (this.fled) this.echoesOfTheCoward();
     } else {
-
-      this.messageQueue.push(new Message("Cannot flee again! Enemy trapped you."));
-      console.log("You already tried to flee and the enemy has trapped you, you can't flee!!");
-
+      this.messageQueue.push(new Message("Cannot flee again! The enemy trapped you!", 'error'));
       this.cancelled = true;
     }
-    console.log("Successful flees: ", globals.gameStats.successfulFlees);
-    console.log("Failed flees: ", globals.gameStats.failedFlees);
     this.state = "completed";
   }
 
@@ -65,35 +45,22 @@ export default class FleePhase extends CombatPhase {
     } else {
       result = Math.floor(Math.random() * 2) + 1;
     }
-
-    console.log("Potions: " + globals.inventory.potions);
-
     if (result === 1) {
       for (let i = 0; i < this.enemies.length; i++) {
-        const enemy = this.enemies[i];
+        let enemy = this.enemies[i];
         if (enemy.isAlive) {
           enemy.maxHp += 20;
           enemy.hp += 20;
         }
       }
-
-      this.messageQueue.push(new Message("Enemies became stronger!"));
-      console.log("The enemies have seen you flee and have become more confident; their maximum health has increased!");
-
+      this.messageQueue.push(new Message("Enemies became stronger!", 'info'));
     } else if (result === 2) {
       globals.player.maxHp -= 10;
-      if (this.player.hp > this.player.maxHp) {
-        this.player.hp = this.player.maxHp;
-      }
-
-      this.messageQueue.push(new Message("Lost 10 max HP from cowardice!"));
-      console.log("Your cowardice has made you lose 10 points of maximum health!");
-
+      if (this.player.hp > this.player.maxHp) this.player.hp = this.player.maxHp;
+      this.messageQueue.push(new Message("Lost 10 max HP from cowardice!", 'error'));
     } else {
       globals.inventory.removePotion();
-
-      this.messageQueue.push(new Message("Stumbled while fleeing! Lost a potion."));
-      console.log("You stumbled while trying to flee and lost a potion!");
+      this.messageQueue.push(new Message("Stumbled while fleeing! Lost a potion.", 'error'));
     }
   }
 }

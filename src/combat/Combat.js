@@ -30,9 +30,10 @@ export default class Combat {
   }
 
   update(combatState) {
+    if (globals.messageQueue) globals.messageQueue.update();
+
     switch (combatState) {
       case CombatState.INIT_COMBAT:
-        console.log("Combat Start");
         this.initCombat();
         break;
       case CombatState.PLAY_TURN:
@@ -41,71 +42,56 @@ export default class Combat {
       case CombatState.END_COMBAT:
         console.log("Combat finished");
         break;
-      default:
-        break;
     }
   }
 
   combatSprites(player, enemies) {
     this.player = player;
     for (let i = 0; i < enemies.length; i++) {
-      const enemy = enemies[i];
-      if (enemy.id === SpriteID.SLIME) {
-        enemy.superSprite = new SuperSlime(0, 0);
-      } else if (enemy.id === SpriteID.MAGE) {
-        enemy.superSprite = new SuperMage(0, 0);
-      } else if (enemy.id === SpriteID.SKELETON) {
-        enemy.superSprite = new SuperSkeleton(0, 0);
-      }
+      let enemy = enemies[i];
+      if (enemy.id === SpriteID.SLIME) enemy.superSprite = new SuperSlime(0, 0);
+      else if (enemy.id === SpriteID.MAGE) enemy.superSprite = new SuperMage(0, 0);
+      else if (enemy.id === SpriteID.SKELETON) enemy.superSprite = new SuperSkeleton(0, 0);
     }
   }
 
   orderTurn(player, enemies) {
     this.turns = [];
-    
-    const playerTurn = new CombatTurn(player, enemies, this.dice, this);
+    let playerTurn = new CombatTurn(player, enemies, this.dice, this);
     playerTurn.type = "player";
     playerTurn.roll = this.dice.rollDice(6);
     playerTurn.completed = false;
     this.turns.push(playerTurn);
-    
     for (let i = 0; i < enemies.length; i++) {
-      if (enemies[i].isAlive) {
-        const enemyTurn = new CombatTurn(player, enemies, this.dice, this);
+      let enemy = enemies[i];
+      if (enemy.isAlive) {
+        let enemyTurn = new CombatTurn(player, enemies, this.dice, this);
         enemyTurn.type = "enemy";
-        enemyTurn.entity = enemies[i];
+        enemyTurn.entity = enemy;
         enemyTurn.roll = this.dice.rollDice(6);
         enemyTurn.completed = false;
         this.turns.push(enemyTurn);
       }
     }
-    
     for (let i = 0; i < this.turns.length - 1; i++) {
       for (let j = i + 1; j < this.turns.length; j++) {
         if (this.turns[j].roll > this.turns[i].roll) {
-          const temp = this.turns[i];
+          let temp = this.turns[i];
           this.turns[i] = this.turns[j];
           this.turns[j] = temp;
         }
       }
     }
-    
-    console.log("=== Turn ===");
-    for (let i = 0; i < this.turns.length; i++) {
-      console.log(i + 1 + ": " + this.turns[i].type + " (roll: " + this.turns[i].roll + ")");
-    }
-
-    if (this.turns.length > 0) {
-      const first = this.turns[0];
-      if (first.type === "player") {
-        globals.messageQueue.push(new Message("You go first!"));
-      } else {
-        globals.messageQueue.push(new Message("Enemy attacks first!"));
-      }
+    if (this.turns[0].type === "player") {
+      globals.messageQueue.push(new Message("You go first!", 'info'));
+    } else {
+      globals.messageQueue.push(new Message("Enemy attacks first!", 'info'));
     }
   }
 
   initCombat() {
+    let enemyName = this.enemies[0] ? (this.enemies[0].name || "wild enemy") : "wild enemy";
+    globals.messageQueue.push(new Message("A wild " + enemyName + " appeared!", 'info'));
     this.state = CombatState.PLAY_TURN;
     globals.combatState = CombatState.PLAY_TURN;
     this.currentTurnIndex = 0;
@@ -122,101 +108,81 @@ export default class Combat {
       }
       return;
     }
-    
     for (let i = this.currentTurnIndex; i < this.turns.length; i++) {
-      const currentTurn = this.turns[i];
-      
-      if (currentTurn.completed) {
-        continue;
-      }
-      
+      let currentTurn = this.turns[i];
+      if (currentTurn.completed) continue;
       if (currentTurn.type === "enemy" && currentTurn.attackExecuted) {
         this.currentTurnIndex = i;
         this.waitingForEnemyAttack = true;
-        this.enemyAttackTimer = 40;
+        this.enemyAttackTimer = 60;   //enemy timer
         return;
       }
-      
       currentTurn.update();
-      
       if (!currentTurn.completed) {
         this.currentTurnIndex = i;
         return;
       }
-      
       if (currentTurn.fled) {
         this.endCombat(false);
         return;
       }
-      
       if (this.player.hp <= 0) {
         this.endCombat(true);
         return;
       }
-      
-      let allEnemiesDead = true;
+      let allDead = true;
       for (let j = 0; j < this.enemies.length; j++) {
         if (this.enemies[j].isAlive) {
-          allEnemiesDead = false;
+          allDead = false;
           break;
         }
       }
-      
-      if (allEnemiesDead) {
+      if (allDead) {
         this.endCombat(false);
         return;
       }
     }
-    
     this.startNewRound();
   }
 
   startNewRound() {
     this.currentRound++;
-    console.log("=== ROUND " + this.currentRound + " ===");
-    
+    globals.messageQueue.push(new Message("Round " + this.currentRound + "!", 'info'));
     for (let i = 0; i < this.turns.length; i++) {
-      this.turns[i].completed = false;
-      if (this.turns[i].type === "enemy") {
-        this.turns[i].attackExecuted = false;
-      }
-      this.turns[i].state = "idle";
+      let turn = this.turns[i];
+      turn.completed = false;
+      if (turn.type === "enemy") turn.attackExecuted = false;
+      turn.state = "idle";
     }
-    
     this.currentTurnIndex = 0;
     this.waitingForEnemyAttack = false;
     this.enemyAttackTimer = 0;
   }
 
   endCombat(playerDied) {
-
     globals.messageQueue.clear();
-
-    this.state = CombatState.END_COMBAT;
-    globals.combatState = CombatState.END_COMBAT;
-    
     if (playerDied) {
-      console.log("=== DEFEAT ===");
+      globals.messageQueue.push(new Message((this.player.name || "Player") + " blacked out!", 'error'));
       if (globals.gameInstance) {
         globals.gameInstance.combat = null;
         globals.gameInstance.gameState = GameState.GAME_OVER;
       }
       globals.gameState = GameState.GAME_OVER;
     } else {
-      console.log("=== WIN ===");
+      globals.messageQueue.push(new Message("You won the battle!", 'info'));
+      globals.messageQueue.push(new Message("Got " + (100 * this.enemies.length) + " experience!", 'info'));
       if (globals.gameInstance) {
         for (let i = 0; i < this.enemies.length; i++) {
-          if (!this.enemies[i].isAlive) {
+          let enemy = this.enemies[i];
+          if (!enemy.isAlive) {
             globals.gameStats.registerKill();
             globals.gameInstance.addEnemyProgress();
           }
         }
       }
-      
-      this.player.mana = this.player.mana + 10 * this.enemies.length;
-      if (this.player.mana > this.player.maxMana) {
-        this.player.mana = this.player.maxMana;
-      }
+      let manaGain = 10 * this.enemies.length;
+      this.player.mana = this.player.mana + manaGain;
+      if (this.player.mana > this.player.maxMana) this.player.mana = this.player.maxMana;
       if (globals.gameInstance) {
         globals.gameInstance.score += 100 * this.enemies.length;
         globals.gameInstance.combat = null;
@@ -224,7 +190,6 @@ export default class Combat {
       }
       globals.gameState = GameState.PLAYING;
     }
-    
     globals.currentEnemy = null;
     globals.currentEnemies = null;
   }

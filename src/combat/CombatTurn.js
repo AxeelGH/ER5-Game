@@ -4,10 +4,7 @@ import AbilityPhase from "./AbilityPhase.js";
 import InventoryPhase from "./InventoryPhase.js";
 import FleePhase from "./FleePhase.js";
 import MovePhase from "./MovePhase.js";
-
 import { GameState } from "../config/constants.js";
-import SpriteFactory from "../sprites/SpriteFactory.js";
-import { Game } from "../game.js";
 import Message from "./Message.js";
 
 export default class CombatTurn {
@@ -28,39 +25,36 @@ export default class CombatTurn {
     this.phases = ["Attack", "Ability", "Inventory", "Move", "Flee"];
     this.animationDelay = 0;
     globals.triedToFlee = false;
+    this.announceTimer = 0;
+    this.pendingAction = null;
   }
 
-
   update() {
-    if (this.completed) {
-      return;
-    }
-    if (this.type === "player") {
-      this.updatePlayerTurn();
-    } else if (this.type === "enemy") {
-      this.updateEnemyTurn();
-    }
+    if (this.completed) return;
+    if (this.type === "player") this.updatePlayerTurn();
+    else if (this.type === "enemy") this.updateEnemyTurn();
   }
 
   updatePlayerTurn() {
     switch (this.state) {
-      case "idle":
-        this.startPlayerTurn();
+      case "idle": 
+        this.startPlayerTurn(); 
         break;
-      case "selecting":
-        this.handlePhaseSelection();
+      case "selecting": 
+        this.handlePhaseSelection(); 
         break;
-      case "executing":
-        this.updatePhaseExecution();
+      case "executing": 
+        this.updatePhaseExecution(); 
         break;
-      case "finished":
-        this.completed = true;
+      case "finished": 
+        this.completed = true; 
         break;
     }
   }
 
   startPlayerTurn() {
     console.log("=== Player ===");
+    globals.messageQueue.push(new Message("Your turn!", 'info'));
     this.state = "selecting";
     this.currentPhaseIndex = 0;
     this.selectedPhase = null;
@@ -70,18 +64,14 @@ export default class CombatTurn {
   handlePhaseSelection() {
     if (globals.action.moveUp) {
       globals.action.moveUp = false;
-      this.currentPhaseIndex = this.currentPhaseIndex - 1;
-      if (this.currentPhaseIndex < 0) {
-        this.currentPhaseIndex = this.phases.length - 1;
-      }
+      this.currentPhaseIndex--;
+      if (this.currentPhaseIndex < 0) this.currentPhaseIndex = this.phases.length - 1;
       console.log("selected: " + this.phases[this.currentPhaseIndex]);
     }
     if (globals.action.moveDown) {
       globals.action.moveDown = false;
-      this.currentPhaseIndex = this.currentPhaseIndex + 1;
-      if (this.currentPhaseIndex >= this.phases.length) {
-        this.currentPhaseIndex = 0;
-      }
+      this.currentPhaseIndex++;
+      if (this.currentPhaseIndex >= this.phases.length) this.currentPhaseIndex = 0;
       console.log("selected: " + this.phases[this.currentPhaseIndex]);
     }
     if (globals.action.confirm) {
@@ -95,22 +85,14 @@ export default class CombatTurn {
   }
 
   createPhase(phaseName) {
-
-    const mq = globals.messageQueue;
-
+    let mq = globals.messageQueue;
     switch (phaseName) {
-      case "Attack":
-        return new AttackPhase(this.player, this.enemies, this.dice, this, mq);
-      case "Ability":
-        return new AbilityPhase(this.player, this.enemies, this.dice, this, mq);
-      case "Inventory":
-        return new InventoryPhase(this.player, this.enemies, this.dice, this, mq);
-      case "Move":
-        return new MovePhase(this.player, this.enemies, this.dice, this, mq);
-      case "Flee":
-        return new FleePhase(this.player, this.enemies, this.dice, this, mq);
-      default:
-        return new AttackPhase(this.player, this.enemies, this.dice, this, mq);
+      case "Attack": return new AttackPhase(this.player, this.enemies, this.dice, this, mq);
+      case "Ability": return new AbilityPhase(this.player, this.enemies, this.dice, this, mq);
+      case "Inventory": return new InventoryPhase(this.player, this.enemies, this.dice, this, mq);
+      case "Move": return new MovePhase(this.player, this.enemies, this.dice, this, mq);
+      case "Flee": return new FleePhase(this.player, this.enemies, this.dice, this, mq);
+      default: return new AttackPhase(this.player, this.enemies, this.dice, this, mq);
     }
   }
 
@@ -119,17 +101,10 @@ export default class CombatTurn {
       this.state = "selecting";
       return;
     }
-    if (this.selectedPhase.state === "waiting") {
-      this.selectedPhase.handleInput();
-    }
-    if (this.selectedPhase.state === "executing") {
-      this.selectedPhase.execute();
-    }
-    if (this.selectedPhase.isFinished()) {
-      this.onPhaseComplete();
-    }
+    if (this.selectedPhase.state === "waiting") this.selectedPhase.handleInput();
+    if (this.selectedPhase.state === "executing") this.selectedPhase.execute();
+    if (this.selectedPhase.isFinished()) this.onPhaseComplete();
   }
-
 
   onPhaseComplete() {
     if (this.selectedPhase.cancelled) {
@@ -148,209 +123,164 @@ export default class CombatTurn {
 
 
   updateEnemyTurn() {
-  if (!this.entity || !this.entity.isAlive) {
-    this.completed = true;
-    return;
-  }
-  
-  if (this.attackExecuted) {
-    this.completed = true;
-    return;
-  }
-  
-  switch (this.state) {
-    case "idle":
-      this.startEnemyTurn();
-      break;
-    case "deciding":
-      this.decideEnemyAction();
-      break;
-    case "moving":
-      this.executeEnemyMove();
-      break;
-    case "attacking":
-      this.executeEnemyAttack();
-      break;
-    case "finished":
-      this.attackExecuted = true;
+    if (!this.entity || !this.entity.isAlive) {
       this.completed = true;
-      break;
-  }
-}
-
-startEnemyTurn() {
-  console.log("=== ENEMY (" + this.entity.id + ") ===");
-  this.state = "deciding";
-}
-
-decideEnemyAction() {
-  let action = Math.floor(Math.random() * 2) + 1;
-  
-  if (action === 1) {
-    this.state = "attacking";
-    this.animationDelay = 30;
-    this.entity.state = 1;
-    this.entity.animationTimer = 30;
-  } else {
-    this.state = "moving";
-    this.prepareEnemyMove();
-  }
-}
-
-prepareEnemyMove() {
-    let positions = [0, 1, 2];
-    let availablePositions = [];
-    for (let i = 0; i < this.enemies.length; i++) {
-      
-      console.log("Enemies killed: ", globals.gameStats.enemiesKilled);
+      return;
+    }
+    if (this.attackExecuted) {
+      this.completed = true;
+      return;
     }
 
-    for (let i = 0; i < positions.length; i++) {
-        let pos = positions[i];
-        let diff = pos - this.entity.combatXIndex;
-        if (diff === 1 || diff === -1) {
-            availablePositions.push(pos);
+    switch (this.state) {
+      case "idle": this.startEnemyTurn(); break;
+      case "deciding": this.decideEnemyAction(); break;
+      case "announcing":
+        if (this.announceTimer > 0) {
+          this.announceTimer--;
+        } else {
+          if (this.pendingAction === "attack") {
+            this.state = "attacking";
+            this.animationDelay = 45;
+            this.entity.state = 1;
+            this.entity.animationTimer = 30;
+          } else if (this.pendingAction === "move") {
+            this.state = "moving";
+            this.prepareEnemyMove();
+            this.animationDelay = 45;
+          }
         }
+        break;
+      case "moving": this.executeEnemyMove(); break;
+      case "attacking": this.executeEnemyAttack(); break;
+      case "finished":
+        this.attackExecuted = true;
+        this.completed = true;
+        break;
+    }
+  }
+
+  startEnemyTurn() {
+    console.log("=== ENEMY (" + this.entity.id + ") ===");
+    globals.messageQueue.push(new Message("Enemy's turn!", 'info'));
+    this.state = "deciding";
+  }
+
+  decideEnemyAction() {
+    let action = Math.floor(Math.random() * 2) + 1;
+    this.pendingAction = (action === 1) ? "attack" : "move";
+    let actionText = (this.pendingAction === "attack") ? "preparing an attack" : "trying to move";
+    globals.messageQueue.push(new Message("Wild enemy is " + actionText + "!", 'info'));
+    this.state = "announcing";
+    this.announceTimer = 60;
+  }
+
+  prepareEnemyMove() {
+    let positions = [0, 1, 2];
+    let availablePositions = [];
+
+    for (let i = 0; i < positions.length; i++) {
+      let pos = positions[i];
+      let diff = pos - this.entity.combatXIndex;
+      if (diff === 1 || diff === -1) {
+        availablePositions.push(pos);
+      }
     }
 
     let randomIndex = Math.floor(Math.random() * availablePositions.length);
     this.targetPositionIndex = availablePositions[randomIndex];
-    this.animationDelay = 20;
-}
-
-executeEnemyMove() {
-  if (this.animationDelay > 0) {
-    this.animationDelay--;
-    return;
   }
-  
-  let positions = [450, 550, 650];
-  this.entity.combatXIndex = this.targetPositionIndex;
-  this.entity.combatX = positions[this.targetPositionIndex];
 
-  globals.messageQueue.push(new Message("Enemy moved to position: " + this.entity.combatXIndex));
-  console.log("Enemy moved to position: " + this.targetPositionIndex);
-  
-  if (globals.ParticleSystem) {
-    globals.ParticleSystem.createExplosion(this.entity.combatX, 340, 0.5);
-  }
-  
-  this.state = "finished";
-}
-
-
-executeEnemyAttack() {
-  if (this.animationDelay > 0) {
-    this.animationDelay--;
-    return;
-  }
-  
-  const damageMultiplier = globals.eventWrath.getEnemyDamageMultiplier();
-  const playerPosition = this.getPlayerPositionIndex(); 
-  
-  let isCritical = Math.random() < 0.1;
-  let damage = 0;
-  let criticalDamage = 0;
-  
-  if (isCritical) {
-    // Critical damage
-    if (playerPosition === 0) { // LEFT
-      damage = 0;
-      console.log("¡CRÍTICO! Player in RIGHT position: No damage!");
-    } else if (playerPosition === 1) { // CENTER
-      criticalDamage = 16;
-      damage = Math.floor((criticalDamage + 5 + this.dice.rollDice(6)) * damageMultiplier);
-      globals.messageQueue.push(new Message("¡ENEMY CRITICAL DAMAGE! Damage: " + damage));
-      console.log("¡CRÍTICO! Player in CENTER position: Normal damage");
-    } else { // RIGHT
-      criticalDamage = 22;
-      damage = Math.floor((criticalDamage + 5 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier);
-      globals.messageQueue.push(new Message("¡ENEMY CRITICAL DAMAGE! Full damage: " + damage));
-      console.log("¡CRÍTICO! Player in LEFT position: Full damage!");
+  executeEnemyMove() {
+    if (this.animationDelay > 0) {
+      this.animationDelay--;
+      return;
     }
-  } else {
-    // Normal damage
-    if (playerPosition === 0) { // LEFT
-      damage = 0;
-      globals.messageQueue.push(new Message("Player in RIGHT position: No damage!"));
-      console.log("Player in RIGHT position: No damage!");
-    } else if (playerPosition === 1) { // CENTER
-      damage = Math.floor((5 + this.dice.rollDice(6)) * damageMultiplier);
-      globals.messageQueue.push(new Message('Enemy damage: ' + damage));
-      console.log("Player in CENTER position: Normal damage");
-    } else { // RIGHT
-      damage = Math.floor((5 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier);
-      globals.messageQueue.push(new Message('Enemy damage: ' + damage));
-      console.log("Player in LEFT position: Full damage!");
+    let positions = [650, 550, 450];
+    this.entity.combatXIndex = this.targetPositionIndex;
+    this.entity.combatX = positions[this.targetPositionIndex];
+    globals.messageQueue.push(new Message("Enemy moved to the " + this.getPositionName(this.targetPositionIndex) + "!", 'move'));
+    if (globals.ParticleSystem) globals.ParticleSystem.createExplosion(this.entity.combatX, 340, 0.5);
+    this.state = "finished";
+  }
+
+  executeEnemyAttack() {
+    if (this.animationDelay > 0) {
+      this.animationDelay--;
+      return;
     }
-  }
-  
-  if (damage > 0) {
-    this.player.hp -= damage;
+    const damageMultiplier = globals.eventWrath.getEnemyDamageMultiplier();
+    const playerPosition = this.getPlayerPositionIndex();
+    let isCritical = Math.random() < 0.1;
+    let damage = 0;
 
-    globals.messageQueue.push(new Message("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp));
-
-    globals.gameStats.takenStatDamage(damage);
-    console.log("Damage taken: ", globals.gameStats.damageTaken);
-    console.log("Enemy dealt " + damage + " damage. Player HP: " + this.player.hp + "/" + this.player.maxHp);
-    
-    if (globals.damageNumbers) {
-      globals.damageNumbers.addDamageNumber(Math.floor(damage), 230, 350, true);
-    }
-    
-    if (globals.ParticleSystem) {
-      const explosionScale = isCritical ? 1.5 : 0.8;
-      globals.ParticleSystem.createExplosion(230, 340, explosionScale);
-    }
-  } else {
-    console.log("Attack missed! No damage dealt.");
-    if (globals.damageNumbers) {
-      globals.damageNumbers.addDamageNumber(0, 230, 350, true);
-    }
-  }
-  
-  this.state = "finished";
-}
-
-getPlayerPositionIndex() {
-  if (this.player.xPos === 100) {
-    return 0; // LEFT
-  } else if (this.player.xPos === 250) {
-    return 1; // CENTER
-  } else if (this.player.xPos === 450) {
-    return 2; // RIGHT
-  }
-  return 1; //CENTER
-}
-
-
-  isCompleted() {
-    return this.completed;
-  }
-
-
-  isFinished() {
-    return this.state === "finished";
-  }
-
-
-  getPhaseIndex() {
-    return this.currentPhaseIndex;
-  }
-
-
-  getPhaseName() {
-    return this.phases[this.currentPhaseIndex];
-  }
-
-
-  getAliveEnemies() {
-    const aliveEnemies = [];
-    for (let i = 0; i < this.enemies.length; i++) {
-      if (this.enemies[i].isAlive) {
-        aliveEnemies.push(this.enemies[i]);
+    if (isCritical) {
+      if (playerPosition === 0) {
+        damage = 0;
+        globals.messageQueue.push(new Message("Player avoided the attack!", 'move'));
+      } else if (playerPosition === 1) {
+        damage = Math.floor((16 + 5 + this.dice.rollDice(6)) * damageMultiplier);
+        globals.messageQueue.push(new Message("Critical hit! It's super effective!", 'critical'));
+      } else {
+        damage = Math.floor((22 + 5 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier);
+        globals.messageQueue.push(new Message("Critical hit! It's super effective!", 'critical'));
+      }
+    } else {
+      if (playerPosition === 0) {
+        damage = 0;
+        globals.messageQueue.push(new Message("Player avoided the attack!", 'move'));
+      } else if (playerPosition === 1) {
+        damage = Math.floor((5 + this.dice.rollDice(6)) * damageMultiplier);
+        globals.messageQueue.push(new Message("Enemy dealt " + damage + " damage!", 'damage'));
+      } else {
+        damage = Math.floor((5 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier);
+        globals.messageQueue.push(new Message("Enemy dealt " + damage + " damage!", 'damage'));
       }
     }
-    return aliveEnemies;
+
+    if (damage > 0) {
+      this.player.hp -= damage;
+      globals.gameStats.takenStatDamage(damage);
+      if (globals.damageNumbers) globals.damageNumbers.addDamageNumber(Math.floor(damage), 230, 350, true);
+      if (globals.ParticleSystem) globals.ParticleSystem.createExplosion(230, 340, isCritical ? 1.5 : 0.8);
+    } else if (!isCritical) {
+      globals.messageQueue.push(new Message("But it failed!", 'error'));
+    }
+    this.state = "finished";
+  }
+
+  getPlayerPositionIndex() {
+    if (this.player.xPos === 100) return 0;
+    if (this.player.xPos === 450) return 2;
+    return 1;
+  }
+
+  getPositionName(index) {
+    let names = ["back", "middle", "front"];
+    return names[index];
+  }
+
+  isCompleted() { 
+    return this.completed; 
+  }
+
+  isFinished() { 
+    return this.state === "finished"; 
+  }
+
+  getPhaseIndex() { 
+    return this.currentPhaseIndex; 
+  }
+  
+  getPhaseName() { 
+    return this.phases[this.currentPhaseIndex]; 
+  }
+  
+  getAliveEnemies() {
+    const alive = [];
+    for (let i = 0; i < this.enemies.length; i++) {
+      if (this.enemies[i].isAlive) alive.push(this.enemies[i]);
+    }
+    return alive;
   }
 }

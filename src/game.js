@@ -423,6 +423,9 @@ showLevelUpMessage() {
 
       case GameState.COMBAT:
         this.combat.update(globals.combatState);
+        if (globals.messageQueue) {
+          globals.messageQueue.update();
+        }
         break;
 
       case GameState.HISTORY:
