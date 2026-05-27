@@ -196,7 +196,7 @@ export default class CombatTurn {
       this.animationDelay--;
       return;
     }
-    let positions = [650, 550, 450];
+    const positions = [650, 500, 400];
     this.entity.combatXIndex = this.targetPositionIndex;
     this.entity.combatX = positions[this.targetPositionIndex];
     globals.messageQueue.push(new Message("Enemy moved to the " + this.getPositionName(this.targetPositionIndex) + "!", 'move'));

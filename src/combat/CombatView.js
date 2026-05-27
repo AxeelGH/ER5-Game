@@ -23,7 +23,8 @@ export default class CombatView {
 
     enemy.combatUpdate();
 
-    let xPos = enemy.combatX || 575;
+    let basePositions = [650, 500, 400]; // back, middle, front
+    let xPos = enemy.combatX || basePositions[1]; // Por defecto centro
     let yPos = 160;
     let width = 500;
     let height = 500;
