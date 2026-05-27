@@ -595,16 +595,16 @@ export class View {
     if (!globals.player) return;
 
     this.ctx.fillStyle = "rgba(0,0,0,0.7)";
-    this.ctx.fillRect(2, 3, 200, 70);
+    this.ctx.fillRect(2, 3, 200, 125);
     this.ctx.strokeStyle = "white";
     this.ctx.lineWidth = 2;
-    this.ctx.strokeRect(2, 3, 200, 70);
+    this.ctx.strokeRect(2, 3, 200, 125);
 
     this.ctx.fillStyle = "rgba(0,0,0,0.7)";
-    this.ctx.fillRect(2, 78, 200, 100);
+    this.ctx.fillRect(2, 135, 200, 100);
     this.ctx.strokeStyle = "white";
     this.ctx.lineWidth = 2;
-    this.ctx.strokeRect(2, 78, 200, 100);
+    this.ctx.strokeRect(2, 135, 200, 100);
 
     this.ctx.fillStyle = "rgba(0,0,0,0.7)";
     this.ctx.fillRect(800, 3, 222, 70);
@@ -627,11 +627,23 @@ export class View {
     this.ctx.textAlign = "left";
     this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/" + globals.player.maxHp, 7, 30);
 
+    this.ctx.fillStyle = "#002aff";
+    var manaPercent = globals.player.mana / globals.player.maxMana;
+    this.ctx.fillRect(7, 100, 190 * manaPercent, 20);
+    this.ctx.strokeStyle = "grey";
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeRect(7, 100, 190, 20);
+
+    this.ctx.fillStyle = "white";
+    this.ctx.font = "32px alkhemikal";
+    this.ctx.textAlign = "left";
+    this.ctx.fillText("Mana: " + Math.floor(globals.player.mana) + "/" + globals.player.maxMana, 7, 90);
+
     if (globals.gameInstance) {
       var timer = Math.max(0, Math.floor(globals.gameInstance.timer));
       this.ctx.fillStyle = "white";
       this.ctx.textAlign = "left";
-      this.ctx.fillText("Time: " + timer, 7, 105);
+      this.ctx.fillText("Time: " + timer, 7, 165);
     }
 
     if (globals.enemies) {
@@ -640,7 +652,7 @@ export class View {
         if (globals.enemies[i].isAlive) aliveCount++;
       }
       this.ctx.fillStyle = "#ffffff";
-      this.ctx.fillText("Enemies: " + aliveCount, 7, 130);
+      this.ctx.fillText("Enemies: " + aliveCount, 7, 195);
     }
 
     this.ctx.fillStyle = "white";
@@ -651,7 +663,7 @@ export class View {
     if (globals.eventWrath) {   
       this.ctx.fillStyle = "#d20707";
       this.ctx.font = "32px alkhemikal";
-      this.ctx.fillText(`Wrath: ${globals.eventWrath.progress}/100`, 7, 160);
+      this.ctx.fillText(`Wrath: ${globals.eventWrath.progress}/100`, 7, 225);
     }
 }
 
