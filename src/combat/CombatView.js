@@ -150,7 +150,6 @@ export default class CombatView {
     const col = player.imageSet.initCol + frameIndex;
     const row = player.imageSet.initFil + player.state;
     
-    let row = player.imageSet.initFil;
     if (player.id !== SpriteID.SUPER_HERO) {
         row += player.state;
     }
@@ -158,12 +157,9 @@ export default class CombatView {
     const xTile = col * originalWidth + player.imageSet.xOffset;
     const yTile = row * originalHeight + player.imageSet.yOffset;
 
-    this.ctx.drawImage(img, xTile, yTile, originalWidth, originalHeight, x, y, width, height);
     if (player.id === SpriteID.SUPER_HERO) {
-  
         const scale = 1.5; 
         width *= scale;
-        
         height = (originalHeight / originalWidth) * width; 
         const extraHeight = height - (width / scale); 
         y -= (extraHeight / 2); 
