@@ -32,7 +32,7 @@ export const Tile = {
 //IDENTIFY ID SPRITE
 export const SpriteID = {
   HERO: 0,
-  HERO2: 1,
+  SUPER_HERO: 1,
   SLIME: 2,
   SKELETON: 3,
   MAGE: 4,
@@ -54,7 +54,7 @@ export const State = {
   DOWN: 0,
 
   //PLAYER COMBAT
-  ATTACK: 0,
+  STILL: 0,
   ATTACK_2: 1,
   DEFENSE: 2,
 

@@ -367,6 +367,22 @@ export default class CollisionManager {
   static onCollisionWithEnemy(enemy) {
     console.log("Collision with enemy:", enemy.id);
 
+    if (globals.gameInstance) {
+      globals.gameInstance.backupPlayer = globals.player; 
+    }
+    
+    const superPlayer = SpriteFactory.createSuperPlayer(
+      globals.player.xPos,
+      globals.player.yPos,
+      globals.player.hp,
+      globals.player.mana,
+      globals.player.playerId
+    );
+
+    superPlayer.maxHp = globals.player.maxHp * 2; 
+    superPlayer.maxMana = globals.player.maxMana * 2;
+    globals.player = superPlayer;
+
     const eventWrath = globals.eventWrath;
     const extraEnemies = eventWrath.getExtraEnemyCount();
     const hpMultiplier = eventWrath.getEnemyHpMultiplier();

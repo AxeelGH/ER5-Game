@@ -6,10 +6,15 @@ import Item from "./Item.js";
 import SuperSlime from "./SuperSlime.js";
 import SuperMage from "./SuperMage.js";
 import SuperSkeleton from "./SuperSkeleton.js";
+import SuperPlayer from "./SuperPlayer.js";
 
 export default class SpriteFactory {
   static createPlayer(xPos, yPos, hp, mana, playerId) {
     return new Player(xPos, yPos, hp, mana);
+  }
+
+  static createSuperPlayer(xPos, yPos, hp, mana, playerId) {
+    return new SuperPlayer(xPos, yPos, hp, mana, playerId);
   }
 
   static createSlime(xPos, yPos) {

@@ -27,6 +27,7 @@ export default {
 
   sprites: [],
   player: null,
+  superPlayer: null,
   map: null,
 
   enemies: [],

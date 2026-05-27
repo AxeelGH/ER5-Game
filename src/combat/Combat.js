@@ -20,6 +20,7 @@ export default class Combat {
     this.enemyAttackTimer = 0;
     this.combatSprites(player, enemies);
     this.orderTurn(player, enemies);
+    this.assignCombatPositions();
   }
 
   create(player, enemies) {
@@ -42,6 +43,20 @@ export default class Combat {
       case CombatState.END_COMBAT:
         console.log("Combat finished");
         break;
+    }
+  }
+
+  assignCombatPositions() {
+    const positionX = [650, 500, 400];
+    const enemiesAlive = [];
+    for (let i = 0; i < this.enemies.length; i++) {
+      if (this.enemies[i].isAlive) enemiesAlive.push(this.enemies[i]);
+    }
+
+    for (let i = 0; i < enemiesAlive.length; i++) {
+      let indexPosition = i % 3;
+      enemiesAlive[i].combatXIndex = indexPosition;
+      enemiesAlive[i].combatX = positionX[indexPosition];
     }
   }
 
@@ -171,6 +186,16 @@ export default class Combat {
     } else {
       globals.messageQueue.push(new Message("You won the battle!", 'info'));
       globals.messageQueue.push(new Message("Got " + (100 * this.enemies.length) + " experience!", 'info'));
+
+      if (globals.gameInstance && globals.gameInstance.backupPlayer) {
+      const original = globals.gameInstance.backupPlayer;
+
+      original.hp = Math.min(original.maxHp, Math.ceil(this.player.hp / 2));
+      original.mana = Math.min(original.maxMana, Math.ceil(this.player.mana / 2));
+
+      globals.player = original;
+      globals.gameInstance.backupPlayer = null;
+    }
       if (globals.gameInstance) {
         for (let i = 0; i < this.enemies.length; i++) {
           let enemy = this.enemies[i];

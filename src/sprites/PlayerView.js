@@ -7,7 +7,7 @@ export default class playerView {
   }
 
   render() {
-    const player = globals.player;
+    const player = globals.superPlayer || globals.player;
 
     if (!globals.player) return;
 
@@ -34,7 +34,7 @@ export default class playerView {
   }
 
   drawSpriteRectangle() {
-    const player = globals.player;
+    const player = globals.superPlayer || globals.player;
     const x = Math.floor(player.xPos);
     const y = Math.floor(player.yPos);
     this.ctx.fillStyle = "rgba(255, 0, 255, 0.5)";
@@ -42,7 +42,7 @@ export default class playerView {
   }
 
   drawHitBox() {
-    const player = globals.player;
+    const player = globals.superPlayer || globals.player;
     const x = Math.floor(player.xPos) + player.hitBox.xOffset;
     const y = Math.floor(player.yPos) + player.hitBox.yOffset;
     this.ctx.strokeStyle = "red";

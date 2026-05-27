@@ -24,7 +24,7 @@ export default class CombatView {
     enemy.combatUpdate();
 
     let basePositions = [650, 500, 400]; // back, middle, front
-    let xPos = enemy.combatX || basePositions[1]; // Por defecto centro
+    let xPos = enemy.combatX || basePositions[1];
     let yPos = 160;
     let width = 500;
     let height = 500;
@@ -149,11 +149,37 @@ export default class CombatView {
 
     const col = player.imageSet.initCol + frameIndex;
     const row = player.imageSet.initFil + player.state;
+    
+    let row = player.imageSet.initFil;
+    if (player.id !== SpriteID.SUPER_HERO) {
+        row += player.state;
+    }
 
     const xTile = col * originalWidth + player.imageSet.xOffset;
     const yTile = row * originalHeight + player.imageSet.yOffset;
 
     this.ctx.drawImage(img, xTile, yTile, originalWidth, originalHeight, x, y, width, height);
+    if (player.id === SpriteID.SUPER_HERO) {
+  
+        const scale = 1.5; 
+        width *= scale;
+        
+        height = (originalHeight / originalWidth) * width; 
+        const extraHeight = height - (width / scale); 
+        y -= (extraHeight / 2); 
+    }
+
+    this.ctx.drawImage(
+        img, 
+        xTile, 
+        yTile, 
+        originalWidth, 
+        originalHeight, 
+        Math.floor(x), 
+        Math.floor(y), 
+        width, 
+        height
+    );
   }
 
   renderPhaseUI(ctx, combatTurn) {

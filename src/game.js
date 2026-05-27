@@ -576,6 +576,26 @@ showLevelUpMessage() {
       newEnemy.maxHp = 50 * hpMultiplier;
     }
     
+    let empty = [false, false, false];
+    for ( let i = 0; i < globals.enemies.length; i++) {
+      let enemy = globals.enemies[i];
+      if (enemy.isAlive && enemy.combatXIndex !== undefined) {
+        let idx = enemy.combatXIndex;
+        if (idx >= 0 && idx < 3) empty[idx] = true;
+      }
+    }
+    
+    const positionX = [650, 500, 400];
+    let positionSelected = -1;
+    for (let i = 0; i < 3; i++) {
+      if (!empty[i]) { 
+        positionSelected = i;  
+      }
+    }
+    if (positionSelected === -1) positionSelected = 0;
+    newEnemy.combatXIndex = positionSelected;
+    newEnemy.combatX = positionX[positionSelected];
+
     newEnemy.isAlive = true;
     globals.enemies.push(newEnemy);
     globals.sprites.push(newEnemy);
