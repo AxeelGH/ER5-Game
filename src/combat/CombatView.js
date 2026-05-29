@@ -14,7 +14,12 @@ export default class CombatView {
   }
 
   render() {
-  let enemies = globals.currentEnemies || (globals.currentEnemy ? [globals.currentEnemy] : []);
+    let enemies = [];
+    if (globals.gameInstance && globals.gameInstance.combat) {
+      enemies = globals.gameInstance.combat.enemies;
+    } else {
+      enemies = globals.currentEnemies || (globals.currentEnemy ? [globals.currentEnemy] : []);
+    }
   let player = globals.player;
 
   for (let i = 0; i < enemies.length; i++) {
@@ -58,6 +63,7 @@ export default class CombatView {
   }
 
   if (player) {
+    player.combatUpdate();
     this.drawPlayer(player, player.xPos, player.yPos, 300, 300);
   }
 }
@@ -87,6 +93,7 @@ export default class CombatView {
 
   updateSuperEnemy(superEnemy, normalEnemy) {
     superEnemy.animationTimer = normalEnemy.animationTimer;
+    superEnemy.hitBlinkTimer = normalEnemy.hitBlinkTimer;
 
     if (normalEnemy.id === SpriteID.SLIME) {
       if (normalEnemy.state === 0) {
@@ -137,7 +144,9 @@ export default class CombatView {
     const xTile = col * originalWidth + enemy.imageSet.xOffset;
     const yTile = row * originalHeight + enemy.imageSet.yOffset;
 
-    this.ctx.drawImage(img, xTile, yTile, originalWidth, originalHeight, x, y, width, height);
+    if (enemy.hitBlinkTimer === 0 || (enemy.hitBlinkTimer % 2 === 0)) {
+      this.ctx.drawImage(img, xTile, yTile, originalWidth, originalHeight, x, y, width, height);
+    }
   }
 
   drawPlayer(player, x, y, width, height) {
@@ -158,24 +167,16 @@ export default class CombatView {
     const yTile = row * originalHeight + player.imageSet.yOffset;
 
     if (player.id === SpriteID.SUPER_HERO) {
-        const scale = 1.5; 
+        const scale = 2; 
         width *= scale;
         height = (originalHeight / originalWidth) * width; 
         const extraHeight = height - (width / scale); 
         y -= (extraHeight / 2); 
     }
 
-    this.ctx.drawImage(
-        img, 
-        xTile, 
-        yTile, 
-        originalWidth, 
-        originalHeight, 
-        Math.floor(x), 
-        Math.floor(y), 
-        width, 
-        height
-    );
+    if (player.hitBlinkTimer === 0 || (player.hitBlinkTimer % 2 === 0)) {
+      this.ctx.drawImage(img, xTile, yTile, originalWidth, originalHeight, Math.floor(x), Math.floor(y), width, height);
+    }
   }
 
   renderPhaseUI(ctx, combatTurn) {

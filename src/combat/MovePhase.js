@@ -75,7 +75,8 @@ export default class MovePhase extends CombatPhase {
     this.messageQueue.push(new Message(`${this.player.name || "Player"} moved to the ${this.getPositionName()}!`, 'move'));
     
     if (this.player.state !== undefined) {
-      this.player.state = 2; 
+      this.player.state = -1; 
+      this.player.animationTimer = 20;
       this.player.frames.frameCounter = 0;
     }
 

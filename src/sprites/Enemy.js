@@ -25,6 +25,7 @@ export default class Enemy extends Sprite {
     this.combatX = 500;  
     this.combatXIndex = 1;
     this.active = true;
+    this.hitBlinkTimer = 0;
   }
 
   update() {
@@ -32,6 +33,8 @@ export default class Enemy extends Sprite {
   }
 
   combatUpdate() {
+    this.updateHitBlink();
+
     if (this.animationTimer > 0) {
       this.animationTimer--;
       this.updateAnimationFrame();
@@ -39,6 +42,12 @@ export default class Enemy extends Sprite {
       this.state = 0;
     }
   }
+
+  updateHitBlink() {
+    if (this.hitBlinkTimer > 0) {
+      this.hitBlinkTimer--;
+    }
+}
 
   draw(ctx) {
     const x = Math.floor(this.xPos);

@@ -47,16 +47,23 @@ export default class Combat {
   }
 
   assignCombatPositions() {
-    const positionX = [650, 500, 400];
+    const positionX = [650, 500, 400]; 
     const enemiesAlive = [];
+    
     for (let i = 0; i < this.enemies.length; i++) {
       if (this.enemies[i].isAlive) enemiesAlive.push(this.enemies[i]);
     }
 
-    for (let i = 0; i < enemiesAlive.length; i++) {
-      let indexPosition = i % 3;
-      enemiesAlive[i].combatXIndex = indexPosition;
-      enemiesAlive[i].combatX = positionX[indexPosition];
+    if (enemiesAlive.length === 1) {
+      enemiesAlive[0].combatXIndex = 1;
+      enemiesAlive[0].combatX = positionX[1];
+    } else {
+
+      for (let i = 0; i < enemiesAlive.length; i++) {
+        let indexPosition = i % 3;
+        enemiesAlive[i].combatXIndex = indexPosition;
+        enemiesAlive[i].combatX = positionX[indexPosition];
+      }
     }
   }
 
@@ -163,6 +170,7 @@ export default class Combat {
   startNewRound() {
     this.currentRound++;
     globals.messageQueue.push(new Message("Round " + this.currentRound + "!", 'info'));
+    
     for (let i = 0; i < this.turns.length; i++) {
       let turn = this.turns[i];
       turn.completed = false;

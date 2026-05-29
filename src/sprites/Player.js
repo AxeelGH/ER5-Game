@@ -20,6 +20,7 @@ export default class Player extends Sprite {
     this.mana = mana;
     this.maxMana = mana;
     this.playerId = playerId;
+    this.hitBlinkTimer = 0;
 
     this.imageSet = new ImageSet(39, 0, 48, 64, 0, 0);
     this.frames = new Frames(3, 8);
@@ -78,11 +79,20 @@ export default class Player extends Sprite {
   }
 
   combatUpdate() {
+
+    this.updateAnimationFrame();
+    this.updateHitBlink();
+
     if (this.animationTimer > 0) {
       this.animationTimer--;
-      this.updateAnimationFrame();
     } else {
-      this.state = State.RIGHT;
+      this.state = -5;
+    }
+  }
+
+  updateHitBlink() {
+    if (this.hitBlinkTimer > 0) {
+      this.hitBlinkTimer--;
     }
   }
 

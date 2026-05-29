@@ -176,19 +176,32 @@ export default class CombatTurn {
   }
 
   prepareEnemyMove() {
-    let positions = [0, 1, 2];
+    let currentPos = this.entity.combatXIndex;
     let availablePositions = [];
-
-    for (let i = 0; i < positions.length; i++) {
-      let pos = positions[i];
-      let diff = pos - this.entity.combatXIndex;
-      if (diff === 1 || diff === -1) {
-        availablePositions.push(pos);
+    
+    let neighbors = [];
+    if (currentPos > 0) neighbors.push(currentPos - 1);
+    if (currentPos < 2) neighbors.push(currentPos + 1);
+    
+    for (let i = 0; i < neighbors.length; i++) {
+      let pos = neighbors[i];
+      let occupied = false;
+      for (let j = 0; j < this.enemies.length; j++) {
+        let other = this.enemies[j];
+        if (other !== this.entity && other.isAlive && other.combatXIndex === pos) {
+          occupied = true;
+          break;
+        }
       }
+      if (!occupied) availablePositions.push(pos);
     }
-
-    let randomIndex = Math.floor(Math.random() * availablePositions.length);
-    this.targetPositionIndex = availablePositions[randomIndex];
+    
+    if (availablePositions.length === 0) {
+      this.targetPositionIndex = currentPos; 
+    } else {
+      let randomIndex = Math.floor(Math.random() * availablePositions.length);
+      this.targetPositionIndex = availablePositions[randomIndex];
+    }
   }
 
   executeEnemyMove() {
@@ -196,6 +209,23 @@ export default class CombatTurn {
       this.animationDelay--;
       return;
     }
+    
+    let occupied = false;
+    for (let i = 0; i < this.enemies.length; i++) {
+      let other = this.enemies[i];
+      if (other !== this.entity && other.isAlive && other.combatXIndex === this.targetPositionIndex) {
+        occupied = true;
+        break;
+      }
+    }
+    
+    if (occupied || this.targetPositionIndex === this.entity.combatXIndex) {
+
+      globals.messageQueue.push(new Message("Enemy tried to move but the spot is blocked!", 'error'));
+      this.state = "finished";
+      return;
+    }
+    
     const positions = [650, 500, 400];
     this.entity.combatXIndex = this.targetPositionIndex;
     this.entity.combatX = positions[this.targetPositionIndex];
@@ -240,13 +270,34 @@ export default class CombatTurn {
 
     if (damage > 0) {
       this.player.hp -= damage;
+      this.player.hitBlinkTimer = 18;
       globals.gameStats.takenStatDamage(damage);
       if (globals.damageNumbers) globals.damageNumbers.addDamageNumber(Math.floor(damage), 230, 350, true);
       if (globals.ParticleSystem) globals.ParticleSystem.createExplosion(230, 340, isCritical ? 1.5 : 0.8);
+
+      if (isCritical) {
+        this.pushBackPlayer();
+      }
+
     } else if (!isCritical) {
       globals.messageQueue.push(new Message("But it failed!", 'error'));
     }
     this.state = "finished";
+  }
+
+  pushBackPlayer() {
+    const currentPos = this.getPlayerPositionIndex(); 
+    if (currentPos > 0) {
+      const newPos = currentPos - 1;
+      const positions = [100, 300, 500];
+      this.player.xPos = positions[newPos];
+      globals.messageQueue.push(new Message("Player was pushed back!", 'move'));
+      if (globals.ParticleSystem) {
+        globals.ParticleSystem.createExplosion(this.player.xPos + 60, 380, 0.8);
+      }
+    } else {
+      globals.messageQueue.push(new Message("Player couldn't be pushed back further!", 'info'));
+    }
   }
 
   getPlayerPositionIndex() {

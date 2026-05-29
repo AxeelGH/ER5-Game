@@ -373,14 +373,14 @@ export default class CollisionManager {
     
     const superPlayer = SpriteFactory.createSuperPlayer(
       globals.player.xPos,
-      globals.player.yPos,
+      200,
       globals.player.hp,
       globals.player.mana,
       globals.player.playerId
     );
 
-    superPlayer.maxHp = globals.player.maxHp * 2; 
-    superPlayer.maxMana = globals.player.maxMana * 2;
+    superPlayer.maxHp = globals.player.maxHp; 
+    superPlayer.maxMana = globals.player.maxMana;
     globals.player = superPlayer;
 
     const eventWrath = globals.eventWrath;

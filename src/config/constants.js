@@ -56,7 +56,7 @@ export const State = {
   //PLAYER COMBAT
   STILL: 0,
   ATTACK_2: 1,
-  DEFENSE: 2,
+  DEFENSE: -1,
 
   //ENEMY
   ENEMY_STILL: 2,
