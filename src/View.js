@@ -678,15 +678,15 @@ export class View {
     this.ctx.fillText("Score: " + this.game.score, 805, 30);
     this.ctx.fillText("HighScore: " + this.game.highScore, 805, 60);
     
-    if (globals.eventWrath) {
-  let maxProgress = 100;
-  if (globals.eventWrath.level === 2) maxProgress = 250;   
-  else if (globals.eventWrath.level === 3) maxProgress = 250;
+  // if (globals.eventWrath) {
+  //   let maxProgress = 100;
+  //   if (globals.eventWrath.level === 2) maxProgress = 250;   
+  //   else if (globals.eventWrath.level === 3) maxProgress = 250;
   
-  this.ctx.fillStyle = "#d20707";
-  this.ctx.font = "32px alkhemikal";
-  this.ctx.fillText(`Wrath: ${globals.eventWrath.progress}/${maxProgress}`, 7, 225);
-}
+  //   this.ctx.fillStyle = "#d20707";
+  //   this.ctx.font = "32px alkhemikal";
+  //   this.ctx.fillText(`Wrath: ${globals.eventWrath.progress}/${maxProgress}`, 7, 225);
+  // }
 }
 
   renderLogin() {
