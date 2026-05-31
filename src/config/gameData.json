@@ -9,12 +9,26 @@
     "easy": {
       "enemyHPMultiplier": 1,
       "enemyAttackMultiplier": 1,
-      "playerHPMultiplier": 1
+      "playerHPMultiplier": 1,
+      "eventWrath": {
+        "thresholdLevel2": 100,
+        "thresholdLevel3": 250,
+        "progressPerEnemy": 20,
+        "progressPerScreen": 10,
+        "progressPerItem": 20
+      }
     },
     "hard": {
       "enemyHPMultiplier": 1.2,
       "enemyAttackMultiplier": 1.2,
-      "playerHPMultiplier": 0.95
+      "playerHPMultiplier": 0.95,
+      "eventWrath": {
+        "thresholdLevel2": 150,
+        "thresholdLevel3": 400,
+        "progressPerEnemy": 15,
+        "progressPerScreen": 8,
+        "progressPerItem": 15
+      }
     }
   }
 }

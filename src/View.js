@@ -107,6 +107,10 @@ export class View {
       break;
       case GameState.LOAD_SCREEN:
         this.renderLoadScreen();
+
+        if (this.game.showLevelUpMessageTimer > 0) {
+         this.renderLevelUpMessage();
+        }
         break;
       
       case GameState.STATS:
@@ -260,24 +264,38 @@ export class View {
     alpha = (maxTime - timer) / 30;
   }
   
+  const level = this.game.lastUnlockedLevel || this.game.eventWrath.level;;
+
   this.ctx.fillStyle = `rgba(0, 0, 0, ${0.7 * alpha})`;
   this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
   
   this.ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
   this.ctx.shadowBlur = 10;
   
-  this.ctx.fillStyle = "rgb(227, 4, 4)";
-  this.ctx.font = "bold 56px alkhemikal";
+  //this.ctx.fillStyle = "rgb(227, 4, 4)";
+  //this.ctx.font = "bold 56px alkhemikal";
   this.ctx.textAlign = "center";
-  this.ctx.fillText("💀 LEVEL 1 UNLOCKED 💀", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 60);
+  //this.ctx.fillText("LEVEL 1 UNLOCKED", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 60);
   
   this.ctx.fillStyle = "rgb(179, 0, 0)";
-  this.ctx.font = "40px alkhemikal";
-  this.ctx.fillText("The Scholar's Wrath Intensifies!", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
-  
-  this.ctx.fillStyle = "rgb(255, 255, 255)";
-  this.ctx.font = "28px alkhemikal";
-  this.ctx.fillText("Enemies grow stronger...", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 60);
+  this.ctx.font = "48px alkhemikal";
+
+    if (level === 1) {
+    this.ctx.fillText("The Scholar's Wrath begins!", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+    this.ctx.fillStyle = "rgb(255, 255, 255)";
+    this.ctx.font = "28px alkhemikal";
+    this.ctx.fillText("Enemies will grow stronger over time...", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 60);
+  } else if (level === 2) {
+    this.ctx.fillText("The Scholar's Wrath intensifies!", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+    this.ctx.fillStyle = "rgb(255, 255, 255)";
+    this.ctx.font = "28px alkhemikal";
+    this.ctx.fillText("Enemies gain health, damage, and extra spawns!", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 60);
+  } else if (level === 3) {
+    this.ctx.fillText("The Ancient Evil awakens!", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+    this.ctx.fillStyle = "rgb(255, 255, 255)";
+    this.ctx.font = "28px alkhemikal";
+    this.ctx.fillText("Mages appear and enemies multiply!", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 60);
+  }
   
   this.ctx.shadowColor = "transparent";
   this.ctx.shadowBlur = 0;
@@ -660,11 +678,15 @@ export class View {
     this.ctx.fillText("Score: " + this.game.score, 805, 30);
     this.ctx.fillText("HighScore: " + this.game.highScore, 805, 60);
     
-    if (globals.eventWrath) {   
-      this.ctx.fillStyle = "#d20707";
-      this.ctx.font = "32px alkhemikal";
-      this.ctx.fillText(`Wrath: ${globals.eventWrath.progress}/100`, 7, 225);
-    }
+    if (globals.eventWrath) {
+  let maxProgress = 100;
+  if (globals.eventWrath.level === 2) maxProgress = 250;   
+  else if (globals.eventWrath.level === 3) maxProgress = 250;
+  
+  this.ctx.fillStyle = "#d20707";
+  this.ctx.font = "32px alkhemikal";
+  this.ctx.fillText(`Wrath: ${globals.eventWrath.progress}/${maxProgress}`, 7, 225);
+}
 }
 
   renderLogin() {

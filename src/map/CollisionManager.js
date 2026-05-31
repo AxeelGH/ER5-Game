@@ -368,99 +368,88 @@ export default class CollisionManager {
     console.log("Collision with enemy:", enemy.id);
 
     if (globals.gameInstance) {
-      globals.gameInstance.backupPlayer = globals.player; 
+        globals.gameInstance.backupPlayer = globals.player;
     }
-    
-    const superPlayer = SpriteFactory.createSuperPlayer(
-      globals.player.xPos,
-      200,
-      globals.player.hp,
-      globals.player.mana,
-      globals.player.playerId
-    );
 
-    superPlayer.maxHp = globals.player.maxHp; 
+    const superPlayer = SpriteFactory.createSuperPlayer(
+        globals.player.xPos, 200, globals.player.hp,
+        globals.player.mana, globals.player.playerId
+    );
+    superPlayer.maxHp = globals.player.maxHp;
     superPlayer.maxMana = globals.player.maxMana;
     globals.player = superPlayer;
 
     const eventWrath = globals.eventWrath;
-    const extraEnemies = eventWrath.getExtraEnemyCount();
-    const hpMultiplier = eventWrath.getEnemyHpMultiplier();
+    const extraEnemies = eventWrath.getExtraEnemyCount(); 
+    const MAX_ENEMIES = 3;
+
+    let enemiesToSpawn = [];
 
     if (enemy.id === SpriteID.SLIME) {
-      console.log("Slime detected! Creating SuperSlimes for combat!");
-
-      const superSlime1 = SpriteFactory.createSuperSlime(550, 200);
-      superSlime1.hp = 80 * hpMultiplier;
-      superSlime1.maxHp = 80 * hpMultiplier;
-      superSlime1.isAlive = true;
-
-      const superSlime2 = SpriteFactory.createSuperSlime(650, 200);
-      superSlime2.hp = 80 * hpMultiplier;
-      superSlime2.maxHp = 80 * hpMultiplier;
-      superSlime2.isAlive = true;
-
-      let enemiesToSpawn = [superSlime1, superSlime2];
-
-      for (let i = 0; i < extraEnemies; i++) {
-        const availableTypes = eventWrath.getAvailableEnemyTypes();
-        const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
-        const xPos = 550 + (i * 50);
-        let extraEnemy;
         
-        if (randomType === "slime") {
-          extraEnemy = SpriteFactory.createSuperSlime(xPos, 200);
-          extraEnemy.hp = 80 * hpMultiplier;
-          extraEnemy.maxHp = 80 * hpMultiplier;
-        } else {
-          extraEnemy = SpriteFactory.createSuperSkeleton(xPos, 150);
-          extraEnemy.hp = 100 * hpMultiplier;
-          extraEnemy.maxHp = 100 * hpMultiplier;
-        }
-        extraEnemy.isAlive = true;
-        enemiesToSpawn.push(extraEnemy);
-        console.log(`[EventWrath] Extra enemy spawned! Level ${eventWrath.level}`);
-      }
+        const superSlime1 = SpriteFactory.createSuperSlime(550, 200);
+        const superSlime2 = SpriteFactory.createSuperSlime(650, 200);
+        const hpMultiplier = eventWrath.getEnemyHpMultiplier();
+        superSlime1.hp = 80 * hpMultiplier;
+        superSlime1.maxHp = 80 * hpMultiplier;
+        superSlime2.hp = 80 * hpMultiplier;
+        superSlime2.maxHp = 80 * hpMultiplier;
+        enemiesToSpawn = [superSlime1, superSlime2];
 
-      globals.currentEnemies = enemiesToSpawn;
-      globals.currentEnemy = superSlime1;
-      
-      console.log(`Created ${enemiesToSpawn.length} enemies for combat`);
+        
+        let availableSlots = MAX_ENEMIES - enemiesToSpawn.length;
+        let extrasToAdd = Math.min(extraEnemies, availableSlots);
+
+        for (let i = 0; i < extrasToAdd; i++) {
+            const availableTypes = eventWrath.getAvailableEnemyTypes();
+            const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+            let extraEnemy;
+            if (randomType === "slime") {
+                extraEnemy = SpriteFactory.createSuperSlime(550 + (i * 100), 200);
+                extraEnemy.hp = 80 * hpMultiplier;
+                extraEnemy.maxHp = 80 * hpMultiplier;
+            } else {
+                extraEnemy = SpriteFactory.createSuperSkeleton(550 + (i * 100), 150);
+                extraEnemy.hp = 100 * hpMultiplier;
+                extraEnemy.maxHp = 100 * hpMultiplier;
+            }
+            extraEnemy.isAlive = true;
+            enemiesToSpawn.push(extraEnemy);
+        }
     } else {
-      let enemiesToSpawn = [enemy];
-      
-      for (let i = 0; i < extraEnemies; i++) {
-        const availableTypes = eventWrath.getAvailableEnemyTypes();
-        const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
-        const xPos = 550 + (i * 100);
-        let extraEnemy;
         
-        if (randomType === "slime") {
-          extraEnemy = SpriteFactory.createSuperSlime(xPos, 200);
-          extraEnemy.hp = 80 * hpMultiplier;
-          extraEnemy.maxHp = 80 * hpMultiplier;
-        } else {
-          extraEnemy = SpriteFactory.createSuperSkeleton(xPos, 150);
-          extraEnemy.hp = 100 * hpMultiplier;
-          extraEnemy.maxHp = 100 * hpMultiplier;
-        }
-        extraEnemy.isAlive = true;
-        enemiesToSpawn.push(extraEnemy);
-        console.log(`[EventWrath] Extra enemy spawned! Level ${eventWrath.level}`);
-      }
+        enemiesToSpawn = [enemy];
+        let availableSlots = MAX_ENEMIES - enemiesToSpawn.length;
+        let extrasToAdd = Math.min(extraEnemies, availableSlots);
 
-      globals.currentEnemies = enemiesToSpawn;
-      globals.currentEnemy = enemy;
+        for (let i = 0; i < extrasToAdd; i++) {
+            const availableTypes = eventWrath.getAvailableEnemyTypes();
+            const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+            let extraEnemy;
+            if (randomType === "slime") {
+                extraEnemy = SpriteFactory.createSuperSlime(550 + (i * 100), 200);
+                extraEnemy.hp = 80 * eventWrath.getEnemyHpMultiplier();
+                extraEnemy.maxHp = 80 * eventWrath.getEnemyHpMultiplier();
+            } else {
+                extraEnemy = SpriteFactory.createSuperSkeleton(550 + (i * 100), 150);
+                extraEnemy.hp = 100 * eventWrath.getEnemyHpMultiplier();
+                extraEnemy.maxHp = 100 * eventWrath.getEnemyHpMultiplier();
+            }
+            extraEnemy.isAlive = true;
+            enemiesToSpawn.push(extraEnemy);
+        }
     }
-    
+
+    globals.currentEnemies = enemiesToSpawn;
+    globals.currentEnemy = enemy;
     globals.combatState = CombatState.INIT_COMBAT;
     globals.gameState = GameState.COMBAT;
 
     if (globals.gameInstance) {
-      globals.gameInstance.gameState = GameState.COMBAT;
-      globals.gameInstance.combat = new Combat(globals.player, globals.currentEnemies);
+        globals.gameInstance.gameState = GameState.COMBAT;
+        globals.gameInstance.combat = new Combat(globals.player, globals.currentEnemies);
     }
-  }
+}
 
   static onCollisionWithPotion() {
     console.log("Collision with potion");

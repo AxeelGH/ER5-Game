@@ -72,33 +72,47 @@ class Game {
     this.cinematicTimer = 0;
     this.showLevelUpMessageTimer = 0;
 
-    this.eventWrath = new EventWrath();
+    const difficulty = globals.difficulty;
+    const eventWrathConfig = gameData.difficulty[difficulty].eventWrath;
+
+    this.eventWrath = new EventWrath(eventWrathConfig);
     globals.eventWrath = this.eventWrath;
+
+    this.pendingLevelUp = false;
+    this.pendingLevelValue = 0;
   }
 
   addEnemyProgress() {
-  const leveledUp = this.eventWrath.addProgress(20);
-  if (leveledUp && this.eventWrath.level === 2) {
-    this.showLevelUpMessage();
+  const amount = this.eventWrath.progressPerEnemy;
+  const leveledUp = this.eventWrath.addProgress(amount);
+  if (leveledUp) {
+    this.pendingLevelUp = true;
+    this.pendingLevelValue = this.eventWrath.level;
   }
 }
 
 addScreenProgress() {
-  const leveledUp = this.eventWrath.addProgress(10);
-  if (leveledUp && this.eventWrath.level === 2) {
-    this.showLevelUpMessage();
+  const amount = this.eventWrath.progressPerScreen;
+  const leveledUp = this.eventWrath.addProgress(amount);
+  if (leveledUp) {
+    this.pendingLevelUp = true;
+    this.pendingLevelValue = this.eventWrath.level;
   }
 }
 
 addItemProgress() {
-  const leveledUp = this.eventWrath.addProgress(20);
-  if (leveledUp && this.eventWrath.level === 2) {
-    this.showLevelUpMessage();
+  const amount = this.eventWrath.progressPerItem;
+  const leveledUp = this.eventWrath.addProgress(amount);
+  if (leveledUp) {
+    this.pendingLevelUp = true;
+    this.pendingLevelValue = this.eventWrath.level;
   }
 }
 
-showLevelUpMessage() {
+showLevelUpMessage(level) {
+  const levelToShow = level || this.eventWrath.level;
   this.showLevelUpMessageTimer = 180;
+  this.lastUnlockedLevel = levelToShow;
   this.eventWrath.markCinematicShown();
 }
 
@@ -690,6 +704,12 @@ loadScreen(newScreen) {
 
     console.log("Screen: " + level.name);
     console.log("Enemies: " + globals.enemies.length);
+
+    if (this.pendingLevelUp) {
+      this.showLevelUpMessage(this.pendingLevelValue);
+      this.pendingLevelUp = false;
+      this.pendingLevelValue = 0;
+    }
 
     this.gameState = GameState.PLAYING;
     globals.gameState = GameState.PLAYING;
