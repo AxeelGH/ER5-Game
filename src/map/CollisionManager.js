@@ -338,9 +338,29 @@ export default class CollisionManager {
             if (globals.gameInstance && globals.gameInstance.storyChapter !== 2) {
               globals.gameInstance.startStory(2);
             }
+
+            if (globals.player) {
+              globals.player.maxHp = 200;
+              globals.player.hp = 200;
+              globals.player.maxMana = 120;
+              globals.player.mana = 120;
+              console.log("Elixir: HP max=200, MP max=120");
+            }
+
+            if (globals.eventWrath && globals.gameInstance) {
+              const oldLevel = globals.eventWrath.level;
+              globals.eventWrath.addProgress(40);
+              const newLevel = globals.eventWrath.level;
+              if (newLevel > oldLevel) {
+                globals.gameInstance.pendingLevelUp = true;
+                globals.gameInstance.pendingLevelValue = newLevel;
+              }
+            }
+            
             globals.items.splice(i, 1);
-            break;
-          } else {
+            i--;
+
+          } else if (obj.type === "potion") { 
             console.log("Potion collected from level");
             if (globals.inventory) {
               globals.inventory.addPotion();
@@ -349,7 +369,7 @@ export default class CollisionManager {
               }
             }
             globals.items.splice(i, 1);
-            i--;
+            i--; 
           }
         }
       }
