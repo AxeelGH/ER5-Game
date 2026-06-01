@@ -19,7 +19,8 @@ export const GameState = {
   INIT_COMBAT: 16,
   CINEMATIC: 17,
   STATS: 18,
-  INIT_COMBAT: 19
+  INIT_COMBAT: 19,
+  STORY: 20,
 };
 
 export const FPS = 60;

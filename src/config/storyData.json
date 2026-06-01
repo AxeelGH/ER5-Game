@@ -1,0 +1,14 @@
+{
+  "chapters": [
+    {
+      "id": 1,
+      "title": "CHAPTER 1: The Demon Invasion",
+      "text": "Welcome, adventurer! Our village has been invaded by demons.\nTo recover our village you must find the sword of the gods.\nBut first you must find the magic elixir \nthat will help you on your adventure."
+    },
+    {
+      "id": 2,
+      "title": "CHAPTER 2: The Magic Elixir",
+      "text": "Congratulations! You have found the magic elixir.\nThis is your chance to defeat the demon king.\nWe all support you.\nWe await your triumphant return."
+    }
+  ]
+}

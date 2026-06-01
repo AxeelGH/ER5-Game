@@ -89,6 +89,7 @@ export default class LevelFactory {
       let item = SpriteFactory.createItem(config.xPos, config.yPos);
 
       if (item) {
+        item.type = itemBaseData.type;
         items.push(item);
       }
     }

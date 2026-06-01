@@ -334,12 +334,23 @@ export default class CollisionManager {
         };
 
         if (this.rectIntersect(playerHitBox, itemHitBox)) {
-          console.log("Potion collected from level");
-          if (globals.inventory) {
-            globals.inventory.addPotion();
+          if (obj.type === "elixir") {
+            if (globals.gameInstance && globals.gameInstance.storyChapter !== 2) {
+              globals.gameInstance.startStory(2);
+            }
+            globals.items.splice(i, 1);
+            break;
+          } else {
+            console.log("Potion collected from level");
+            if (globals.inventory) {
+              globals.inventory.addPotion();
+              if (globals.gameInstance) {
+                globals.gameInstance.addItemProgress();
+              }
+            }
+            globals.items.splice(i, 1);
+            i--;
           }
-          globals.items.splice(i, 1);
-          i--;
         }
       }
     }

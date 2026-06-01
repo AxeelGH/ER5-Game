@@ -28,6 +28,7 @@ export default class Item extends Sprite {
     const cloneItem = new Item(item.xPos, item.yPos);
 
     cloneItem.spriteID = item.spriteID;
+    cloneItem.type = item.type;
     cloneItem.state = item.state;
 
     cloneItem.imageSet = item.imageSet;

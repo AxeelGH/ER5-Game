@@ -54,7 +54,8 @@
       "enemies": [],
       "items": [
         { "id": 4, "xPos": 430, "yPos": 400 },
-        { "id": 5, "xPos": 500, "yPos": 610 }
+        { "id": 5, "xPos": 500, "yPos": 210 },
+        {"id": 6, "xPos": 800, "yPos": 700 }
       ]
     },
     {

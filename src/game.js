@@ -80,6 +80,13 @@ class Game {
 
     this.pendingLevelUp = false;
     this.pendingLevelValue = 0;
+    
+    //chapters
+    this.storyChapter = 1;
+    this.storyTitle = "";
+    this.storyText = "";
+    this.storyTimer = 0;
+    this.pendingGameState = null;
   }
 
   addEnemyProgress() {
@@ -267,23 +274,7 @@ showLevelUpMessage(level) {
 
           switch (globals.menuIndex) {
             case 0:
-              if (globals.difficulty === "easy") {
-                this.enemyHPMultiplier = this.gameData.difficulty.easy.enemyHPMultiplier;
-                this.enemyAttackMultiplier = this.gameData.difficulty.easy.enemyAttackMultiplier;
-              } else if (globals.difficulty === "hard") {
-                this.enemyHPMultiplier = this.gameData.difficulty.hard.enemyHPMultiplier;
-                this.enemyAttackMultiplier = this.gameData.difficulty.hard.enemyAttackMultiplier;
-              }
-              this.gameState = GameState.PLAYING;
-              globals.gameState = GameState.PLAYING;
-              console.log("Game State: PLAYING");
-              for (let i = 0; i < globals.enemies.length; i++) {
-                globals.enemies[i].hp *= this.enemyHPMultiplier;
-                globals.enemies[i].maxHp = globals.enemies[i].hp;
-                console.log("Enemy " + 1 + ": " + globals.enemies[i].hp);
-              }
-              this.player.hp;
-              this.player.maxHp = this.player.hp;
+              this.startStory(1);
               break;
 
             case 1:
@@ -363,6 +354,10 @@ showLevelUpMessage(level) {
           this.gameState = GameState.PLAYING;
           globals.gameState = GameState.PLAYING;
         }
+        break;
+        
+      case GameState.STORY:
+        this.updateStory();
         break;
 
       case GameState.PLAYING:
@@ -805,6 +800,69 @@ loadScreen(newScreen) {
     });
     console.log("stats post" + JSON.stringify(globals.gameStats.toPayload()));
   }
+
+  startStory(chapterId) {
+    let chapter = null;
+    if (globals.storyData && globals.storyData.chapters) {
+      for (let i = 0; i < globals.storyData.chapters.length; i++) {
+        if (globals.storyData.chapters[i].id === chapterId) {
+          chapter = globals.storyData.chapters[i];
+          break;
+        }
+      }
+    }
+    
+    if (!chapter) {
+      console.error("Chapter " + chapterId + " not found");
+      return;
+    }
+
+    this.storyChapter = chapterId;
+    this.storyTitle = chapter.title;
+    this.storyText = chapter.text;
+    this.storyTimer = 750;
+    this.pendingGameState = this.gameState;
+    this.gameState = GameState.STORY;
+    globals.gameState = GameState.STORY;
+  }
+
+  updateStory() {
+
+    if (this.storyTimer > 0) {
+      this.storyTimer--;
+      if (this.storyTimer <= 0) {
+        this.finishStory();
+      }
+    }
+    if (globals.action.confirm) {
+      globals.action.confirm = false;
+      this.finishStory();
+    }
+  }
+
+  finishStory() {
+
+    this.gameState = this.pendingGameState;
+    globals.gameState = this.pendingGameState;
+    
+    if (this.pendingGameState === GameState.MENU && this.storyChapter === 1) {
+
+      if (globals.difficulty === "easy") {
+        this.enemyHPMultiplier = this.gameData.difficulty.easy.enemyHPMultiplier;
+        this.enemyAttackMultiplier = this.gameData.difficulty.easy.enemyAttackMultiplier;
+      } else {
+        this.enemyHPMultiplier = this.gameData.difficulty.hard.enemyHPMultiplier;
+        this.enemyAttackMultiplier = this.gameData.difficulty.hard.enemyAttackMultiplier;
+      }
+      this.gameState = GameState.PLAYING;
+      globals.gameState = GameState.PLAYING;
+      for (let i = 0; i < globals.enemies.length; i++) {
+        globals.enemies[i].hp *= this.enemyHPMultiplier;
+        globals.enemies[i].maxHp = globals.enemies[i].hp;
+      }
+    }
+  }
+
 }
 
 export function initGame(canvas) {
@@ -817,6 +875,16 @@ export function initGame(canvas) {
       if (game) game.execute();
     })
     .catch(error => console.error("Failed to fetch data:", error));
+}
+
+export function initStory(){
+  fetch("./src/config/storyData.json")
+  .then(response => response.json())
+  .then(storyData => {
+    globals.storyData = storyData;
+    initGame(globals.canvas);
+  })
+  .catch(error => console.error("Failed to load story config:", error));
 }
 
 export { Game };

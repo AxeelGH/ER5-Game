@@ -53,6 +53,10 @@ export class View {
       this.renderMenu();
       break;
 
+    case GameState.STORY:
+      this.renderStory();
+      break;
+
     case GameState.PLAYING:
       this.renderPlaying();
       this.renderHUD();
@@ -181,6 +185,34 @@ export class View {
       this.ctx.font = isSelected ? "bold 52px alkhemikal" : "36px alkhemikal";
       this.ctx.fillText(isSelected ? "> " + text + " <" : text, this.ctx.canvas.width / 2, y);
     }
+  }
+
+  renderStory() {
+  this.ctx.fillStyle = "rgb(0, 0, 0)";
+  this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+
+  this.ctx.strokeStyle = "#d4af37";
+  this.ctx.lineWidth = 4;
+  this.ctx.strokeRect(50, 50, this.ctx.canvas.width - 100, this.ctx.canvas.height - 100);
+
+  this.ctx.fillStyle = "#e9b200";
+  this.ctx.font = "bold 48px alkhemikal";
+  this.ctx.textAlign = "center";
+  this.ctx.fillText(this.game.storyTitle, this.ctx.canvas.width / 2, 150);
+
+  this.ctx.fillStyle = "#ffffff";
+  this.ctx.font = "32px alkhemikal";
+  const lines = this.game.storyText.split('\n');
+  let y = 280;
+  for (let i = 0; i < lines.length; i++) {
+    this.ctx.fillText(lines[i], this.ctx.canvas.width / 2, y);
+    y += 60;
+  }
+
+  this.ctx.fillStyle = "#aaaaaa";
+  this.ctx.font = "24px alkhemikal";
+  this.ctx.fillText("Press SPACE to continue...", this.ctx.canvas.width / 2, this.ctx.canvas.height - 80);
+  
   }
 
   renderPlaying() {
