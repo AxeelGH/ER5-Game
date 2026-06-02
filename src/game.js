@@ -833,7 +833,7 @@ class Game {
       password: password,
     };
 
-    fetch(LOCAL_URL + "login", {
+    fetch(BASE_URL + "login", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
