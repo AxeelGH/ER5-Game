@@ -21,7 +21,8 @@ import Skeleton from "./sprites/Skeleton.js";
 import GameStatistics from "./GameStatistics.js";
 import Combat from "./combat/Combat.js";
 import MessageQueue from "./combat/MessageQueue.js";
-import EventWrath from "./events/EventWrath.js"; 
+import EventWrath from "./events/EventWrath.js";
+import DamageNumbers from "./combat/DamageNumbers.js";
 
 class Game {
   constructor(canvas, gameData) {
@@ -35,7 +36,7 @@ class Game {
     console.log("Game State: LOADING");
 
     this.score = 0;
-    this.timer = gameData.game.time;
+    //this.timer = gameData.game.time;
     this.highScore = this.score;
     this.masterVolume = gameData.audio.masterVolume;
 
@@ -80,7 +81,7 @@ class Game {
 
     this.pendingLevelUp = false;
     this.pendingLevelValue = 0;
-    
+
     //chapters
     this.storyChapter = 1;
     this.storyTitle = "";
@@ -90,38 +91,38 @@ class Game {
   }
 
   addEnemyProgress() {
-  const amount = this.eventWrath.progressPerEnemy;
-  const leveledUp = this.eventWrath.addProgress(amount);
-  if (leveledUp) {
-    this.pendingLevelUp = true;
-    this.pendingLevelValue = this.eventWrath.level;
+    const amount = this.eventWrath.progressPerEnemy;
+    const leveledUp = this.eventWrath.addProgress(amount);
+    if (leveledUp) {
+      this.pendingLevelUp = true;
+      this.pendingLevelValue = this.eventWrath.level;
+    }
   }
-}
 
-addScreenProgress() {
-  const amount = this.eventWrath.progressPerScreen;
-  const leveledUp = this.eventWrath.addProgress(amount);
-  if (leveledUp) {
-    this.pendingLevelUp = true;
-    this.pendingLevelValue = this.eventWrath.level;
+  addScreenProgress() {
+    const amount = this.eventWrath.progressPerScreen;
+    const leveledUp = this.eventWrath.addProgress(amount);
+    if (leveledUp) {
+      this.pendingLevelUp = true;
+      this.pendingLevelValue = this.eventWrath.level;
+    }
   }
-}
 
-addItemProgress() {
-  const amount = this.eventWrath.progressPerItem;
-  const leveledUp = this.eventWrath.addProgress(amount);
-  if (leveledUp) {
-    this.pendingLevelUp = true;
-    this.pendingLevelValue = this.eventWrath.level;
+  addItemProgress() {
+    const amount = this.eventWrath.progressPerItem;
+    const leveledUp = this.eventWrath.addProgress(amount);
+    if (leveledUp) {
+      this.pendingLevelUp = true;
+      this.pendingLevelValue = this.eventWrath.level;
+    }
   }
-}
 
-showLevelUpMessage(level) {
-  const levelToShow = level || this.eventWrath.level;
-  this.showLevelUpMessageTimer = 180;
-  this.lastUnlockedLevel = levelToShow;
-  this.eventWrath.markCinematicShown();
-}
+  showLevelUpMessage(level) {
+    const levelToShow = level || this.eventWrath.level;
+    this.showLevelUpMessageTimer = 180;
+    this.lastUnlockedLevel = levelToShow;
+    this.eventWrath.markCinematicShown();
+  }
 
   static async create(canvas, gameData) {
     console.log("Initializing...");
@@ -189,241 +190,35 @@ showLevelUpMessage(level) {
   update(dt) {
     switch (this.gameState) {
       case GameState.LOADING:
-        if (globals.assetsLoaded >= globals.assetsToLoad.length && globals.assetsToLoad.length > 0) {
-          this.gameState = GameState.INTRO;
-          globals.gameState = GameState.INTRO;
-          console.log("Game State: INTRO");
-          console.log(this.canvas.width);
-          console.log(this.canvas.height);
-
-          console.log("Current difficulty setting: " + globals.difficulty);
-        }
+        this.loading(dt);
         break;
 
       case GameState.INTRO:
-        if (globals.action.confirm) {
-          const savedSession = localStorage.getItem("userSession");
-          if (savedSession) {
-            const profile = JSON.parse(savedSession);
-            console.log("logged:", profile);
-
-            globals.userName = profile.email;
-            console.log("profile session:", globals.userName);
-
-            this.gameState = GameState.MENU;
-            globals.gameState = GameState.MENU;
-          } else {
-            this.gameState = GameState.LOGIN;
-            globals.gameState = GameState.LOGIN;
-          }
-
-          globals.menuIndex = 0;
-          globals.action.confirm = false;
-        }
+        this.intro(dt);
         break;
 
       case GameState.LOGIN:
-        const form = document.querySelector("#formLogin");
-
-        if (form && form.style.display !== "block") {
-          form.style.display = "block";
-        }
-
-        if (globals.buttonStart && globals.buttonStart.clicked) {
-          globals.buttonStart.clicked = false;
-
-          const emailInput = document.getElementById("email");
-          const passwordInput = document.getElementById("password");
-
-          const email = emailInput.value;
-          const password = passwordInput.value;
-
-          if (!email || !password) {
-            this.loginMessage = "Please enter both email and password.";
-          } else {
-            this.login(email, password);
-          }
-        }
+        this.login(dt);
         break;
 
       case GameState.LOGIN_LOADING:
-        this.loginLoadingFrames += 1;
-
-        if (this.loginLoadingFrames >= 120) {
-          this.loginLoadingFrames = 0;
-        }
+        this.login_loading(dt);
         break;
 
       case GameState.MENU:
-
-        globals.sounds[Sound.START_MUSIC].play();
-        globals.sounds[Sound.START_MUSIC].volume = 0.5;
-
-        if (globals.action.moveUp) {
-          globals.action.moveUp = false;
-          globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 6;
-        }
-
-        if (globals.action.moveDown) {
-          globals.action.moveDown = false;
-          globals.menuIndex = globals.menuIndex < 6 ? globals.menuIndex + 1 : 0;
-        }
-
-        if (globals.action.confirm) {
-          globals.action.confirm = false;
-
-          switch (globals.menuIndex) {
-            case 0:
-              this.score = 0;
-              
-              globals.gameStats.registerGamePlayed();
-              this.startStory(1);
-              break;
-
-            case 1:
-              this.gameState = GameState.HISTORY;
-              globals.gameState = GameState.HISTORY;
-              break;
-
-            case 2:
-              this.gameState = GameState.SETTINGS;
-              globals.gameState = GameState.SETTINGS;
-              break;
-
-            case 3:
-              this.gameState = GameState.HIGHSCORE;
-              globals.gameState = GameState.HIGHSCORE;
-              break;
-
-            case 4:
-              this.gameState = GameState.DIFFICULTY;
-              globals.gameState = GameState.DIFFICULTY;
-              break;
-            case 5:
-              this.gameState = GameState.STATS;
-              globals.gameState = GameState.STATS;
-              break;
-
-            case 6:
-              this.logout();
-              break;
-          }
-        }
+        this.menu(dt);
         break;
 
       case GameState.LOAD_SCREEN:
-        this.loadScreenFrames++;
-
-        if (this.pendingScreen !== null && this.loadScreenFrames >= 30) {
-          let level = this.levelFactory.getLevelById(this.pendingScreen);
-
-          if (level) {
-            globals.map = level;
-
-            let cloneEnemies = [];
-            for (let i = 0; i < level.enemies.length; i++) {
-              let enemy = level.enemies[i];
-              if (enemy.id === SpriteID.SLIME) {
-                cloneEnemies[i] = Slime.clone(level.enemies[i]);
-              } else if (enemy.id === SpriteID.MAGE) {
-                cloneEnemies[i] = Mage.clone(level.enemies[i]);
-              } else {
-                cloneEnemies[i] = Skeleton.clone(level.enemies[i]);
-              }
-            }
-
-            globals.enemies = cloneEnemies;
-
-            let cloneItems = [];
-            for (let i = 0; i < level.items.length; i++) {
-              cloneItems[i] = Item.clone(level.items[i]);
-            }
-            globals.items = cloneItems;
-
-            globals.sprites = [];
-            globals.sprites.push(globals.player);
-            for (let i = 0; i < globals.enemies.length; i++) {
-              globals.sprites.push(globals.enemies[i]);
-            }
-            for (let i = 0; i < globals.items.length; i++) {
-              globals.sprites.push(globals.items[i]);
-            }
-
-            console.log("Level loaded: " + level.name);
-          }
-
-          this.pendingScreen = null;
-          this.loadScreenFrames = 0;
-          this.gameState = GameState.PLAYING;
-          globals.gameState = GameState.PLAYING;
-        }
+        this.loadScreenState(dt);
         break;
-        
+
       case GameState.STORY:
-        this.updateStory();
+        this.updateStory(dt);
         break;
 
       case GameState.PLAYING:
-        this.timer -= dt;
-        if (this.timer <= 0) {
-          this.gameState = GameState.GAME_OVER;
-          globals.gameState = GameState.GAME_OVER;
-          globals.gameStats.registerLoss(this.score);
-          this.postStats();
-        }
-
-        if (this.showLevelUpMessageTimer > 0) {
-          this.showLevelUpMessageTimer--;
-        }
-
-        if (this.eventWrath.level >= 2) {
-          const spawnChance = this.eventWrath.getEnemySpawnChance() * 0.5;
-          if (Math.random() < spawnChance && globals.enemies.length < 6) {
-            this.spawnRandomEnemy();
-          }
-        }
-
-        if (globals.player) {
-          globals.player.update();
-        }
-
-        for (let i = 0; i < globals.enemies.length; i++) {
-          if (globals.enemies[i].isAlive) {
-            globals.enemies[i].update();
-          }
-        }
-
-        if (globals.item) {
-          globals.item.update();
-        }
-
-        if (globals.player) {
-          globals.player.xPos = Math.max(0, Math.min(globals.player.xPos, globals.canvas.width - 50));
-          globals.player.yPos = Math.max(0, Math.min(globals.player.yPos, globals.canvas.height - 70));
-        }
-
-        CollisionManager.detectCollisions();
-
-        let allEnemiesDead = true;
-
-        if (globals.enemies.length === 0) {
-          allEnemiesDead = false;
-        }
-
-        for (let i = 0; i < globals.enemies.length; i++) {
-          if (globals.enemies[i].isAlive === true) {
-            allEnemiesDead = false;
-            break;
-          }
-        }
-
-        if (allEnemiesDead) {
-          this.gameState = GameState.VICTORY;
-          globals.gameState = GameState.VICTORY;
-          globals.gameStats.finish("Victory", this.score);
-          globals.gameStats.registerWin(this.score);
-          this.postStats();
-        }
+        this.playing(dt);
         break;
 
       case GameState.CINEMATIC:
@@ -431,113 +226,286 @@ showLevelUpMessage(level) {
         break;
 
       case GameState.INIT_COMBAT:
-        const combat = Combat.create(player, enemies);
-        this.gameState = GameState.COMBAT;
-        globals.gameState = GameState.COMBAT;
+        this.initCombat(dt);
         break;
 
       case GameState.COMBAT:
-        if (globals.messageQueue) { 
-          globals.messageQueue.update();
-        }
-        this.combat.update(globals.combatState);
+        this.combatState(dt);
         break;
 
       case GameState.HISTORY:
-        globals.subMenuIndex = 0;
-        if (globals.action.confirm) {
-          this.gameState = GameState.MENU;
-          globals.gameState = GameState.MENU;
-          globals.subMenuIndex = 0;
-          globals.action.confirm = false;
-        }
+        this.history(dt);
         break;
 
       case GameState.SETTINGS:
-        globals.subMenuIndex = 0;
-        if (globals.action.confirm) {
-          this.gameState = GameState.MENU;
-          globals.gameState = GameState.MENU;
-          globals.subMenuIndex = 0;
-          globals.action.confirm = false;
-        }
+        this.settings(dt);
         break;
 
       case GameState.DIFFICULTY:
-        if (globals.action.moveUp) {
-          globals.action.moveUp = false;
-          globals.subMenuIndex = globals.subMenuIndex > 0 ? globals.subMenuIndex - 1 : 1;
-        }
-        if (globals.action.moveDown) {
-          globals.action.moveDown = false;
-          globals.subMenuIndex = globals.subMenuIndex < 1 ? globals.subMenuIndex + 1 : 0;
-        }
-        if (globals.action.confirm) {
-          switch (globals.subMenuIndex) {
-            case 0:
-              globals.difficulty = "easy";
-              console.log("easy");
-              break;
-            case 1:
-              globals.difficulty = "hard";
-              console.log("hard");
-              break;
-          }
-          this.gameState = GameState.MENU;
-          globals.gameState = GameState.MENU;
-          globals.subMenuIndex = 0;
-          globals.action.confirm = false;
-        }
+        this.difficulty(dt);
         break;
 
       case GameState.HIGHSCORE:
-        globals.subMenuIndex = 0;
-        if (globals.action.confirm) {
-          this.gameState = GameState.MENU;
-          globals.gameState = GameState.MENU;
-          globals.subMenuIndex = 0;
-          globals.action.confirm = false;
-        }
+        this.highScore(dt);
         break;
 
       case GameState.VICTORY:
-        if (globals.action.confirm) {
-          this.gameState = GameState.MENU;
-          globals.gameState = GameState.MENU;
-          globals.action.confirm = false;
-        }
-        break;  
+        this.victory(dt);
+        break;
 
       case GameState.GAME_OVER:
-
-        if (!this.gameOverProcessed) {
-            globals.gameStats.registerLoss(this.score);
-            this.postStats();
-            this.gameOverProcessed = true; 
-        }
-        if (globals.action.confirm) {
-          this.gameState = GameState.MENU;
-          globals.gameState = GameState.MENU;
-          globals.action.confirm = false;
-          this.gameOverProcessed = false;
-        }
+        this.gameOver(dt);
         break;
       case GameState.STATS:
-        globals.subMenuIndex = 0;
-        if (globals.action.confirm) {
-          this.gameState = GameState.MENU;
-          globals.gameState = GameState.MENU;
-          globals.subMenuIndex = 0;
-          globals.action.confirm = false;
-        }
+        this.stats(dt);
         break;
-        
+
       default:
         break;
     }
   }
 
-  updateCinematic() {
+  render() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.view.render();
+  }
+
+
+
+  loading(dt) {
+    if (globals.assetsLoaded >= globals.assetsToLoad.length && globals.assetsToLoad.length > 0) {
+      this.gameState = GameState.INTRO;
+      globals.gameState = GameState.INTRO;
+      console.log("Game State: INTRO");
+      console.log(this.canvas.width);
+      console.log(this.canvas.height);
+
+      console.log("Current difficulty setting: " + globals.difficulty);
+    }
+  }
+
+  intro(dt) {
+    if (globals.action.confirm) {
+      const savedSession = localStorage.getItem("userSession");
+      if (savedSession) {
+        const profile = JSON.parse(savedSession);
+        console.log("logged:", profile);
+
+        globals.userName = profile.email;
+        console.log("profile session:", globals.userName);
+
+        this.gameState = GameState.MENU;
+        globals.gameState = GameState.MENU;
+      } else {
+        this.gameState = GameState.LOGIN;
+        globals.gameState = GameState.LOGIN;
+      }
+
+      globals.menuIndex = 0;
+      globals.action.confirm = false;
+    }
+  }
+
+  login(dt) {
+
+    const form = document.querySelector("#formLogin");
+
+    if (form && form.style.display !== "block") {
+      form.style.display = "block";
+    }
+
+    if (globals.buttonStart && globals.buttonStart.clicked) {
+      globals.buttonStart.clicked = false;
+
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+
+      const email = emailInput.value;
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        this.loginMessage = "Please enter both email and password.";
+      } else {
+        this.login(email, password);
+      }
+    }
+  }
+
+  login_loading(dt) {
+    this.loginLoadingFrames += 1;
+
+    if (this.loginLoadingFrames >= 120) {
+      this.loginLoadingFrames = 0;
+    }
+  }
+
+  menu(dt) {
+    globals.sounds[Sound.START_MUSIC].play();
+    globals.sounds[Sound.START_MUSIC].volume = 0.5;
+
+    if (globals.action.moveUp) {
+      globals.action.moveUp = false;
+      globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 6;
+    }
+
+    if (globals.action.moveDown) {
+      globals.action.moveDown = false;
+      globals.menuIndex = globals.menuIndex < 6 ? globals.menuIndex + 1 : 0;
+    }
+
+    if (globals.action.confirm) {
+      globals.action.confirm = false;
+
+      switch (globals.menuIndex) {
+        case 0:
+          this.resetGame();
+          this.score = 0;
+          globals.gameStats.registerGamePlayed();
+          this.startStory(1);
+          break;
+
+        case 1:
+          this.gameState = GameState.HISTORY;
+          globals.gameState = GameState.HISTORY;
+          break;
+
+        case 2:
+          this.gameState = GameState.SETTINGS;
+          globals.gameState = GameState.SETTINGS;
+          break;
+
+        case 3:
+          this.gameState = GameState.HIGHSCORE;
+          globals.gameState = GameState.HIGHSCORE;
+          break;
+
+        case 4:
+          this.gameState = GameState.DIFFICULTY;
+          globals.gameState = GameState.DIFFICULTY;
+          break;
+        case 5:
+          this.gameState = GameState.STATS;
+          globals.gameState = GameState.STATS;
+          break;
+
+        case 6:
+          this.logout();
+          break;
+      }
+    }
+  }
+
+  loadScreenState(dt) {
+    this.loadScreenFrames++;
+
+    if (this.pendingScreen !== null && this.loadScreenFrames >= 30) {
+      let level = this.levelFactory.getLevelById(this.pendingScreen);
+
+      if (level) {
+        globals.map = level;
+
+        let cloneEnemies = [];
+        for (let i = 0; i < level.enemies.length; i++) {
+          let enemy = level.enemies[i];
+          if (enemy.id === SpriteID.SLIME) {
+            cloneEnemies[i] = Slime.clone(level.enemies[i]);
+          } else if (enemy.id === SpriteID.MAGE) {
+            cloneEnemies[i] = Mage.clone(level.enemies[i]);
+          } else {
+            cloneEnemies[i] = Skeleton.clone(level.enemies[i]);
+          }
+        }
+
+        globals.enemies = cloneEnemies;
+
+        let cloneItems = [];
+        for (let i = 0; i < level.items.length; i++) {
+          cloneItems[i] = Item.clone(level.items[i]);
+        }
+        globals.items = cloneItems;
+
+        globals.sprites = [];
+        globals.sprites.push(globals.player);
+        for (let i = 0; i < globals.enemies.length; i++) {
+          globals.sprites.push(globals.enemies[i]);
+        }
+        for (let i = 0; i < globals.items.length; i++) {
+          globals.sprites.push(globals.items[i]);
+        }
+
+        console.log("Level loaded: " + level.name);
+      }
+
+      this.pendingScreen = null;
+      this.loadScreenFrames = 0;
+      this.gameState = GameState.PLAYING;
+      globals.gameState = GameState.PLAYING;
+    }
+  }
+
+  playing(dt) {
+    // if (this.timer <= 0) {
+    //   this.gameState = GameState.GAME_OVER;
+    //   globals.gameState = GameState.GAME_OVER;
+    //   globals.gameStats.registerLoss(this.score);
+    //   this.postStats();
+    // }
+
+    if (this.showLevelUpMessageTimer > 0) {
+      this.showLevelUpMessageTimer--;
+    }
+
+    if (this.eventWrath.level >= 2) {
+      const spawnChance = this.eventWrath.getEnemySpawnChance() * 0.5;
+      if (Math.random() < spawnChance && globals.enemies.length < 6) {
+        this.spawnRandomEnemy();
+      }
+    }
+
+    if (globals.player) {
+      globals.player.update();
+    }
+
+    for (let i = 0; i < globals.enemies.length; i++) {
+      if (globals.enemies[i].isAlive) {
+        globals.enemies[i].update();
+      }
+    }
+
+    if (globals.item) {
+      globals.item.update();
+    }
+
+    if (globals.player) {
+      globals.player.xPos = Math.max(0, Math.min(globals.player.xPos, globals.canvas.width - 50));
+      globals.player.yPos = Math.max(0, Math.min(globals.player.yPos, globals.canvas.height - 70));
+    }
+
+    CollisionManager.detectCollisions();
+
+    let allEnemiesDead = true;
+
+    if (globals.enemies.length === 0) {
+      allEnemiesDead = false;
+    }
+
+    for (let i = 0; i < globals.enemies.length; i++) {
+      if (globals.enemies[i].isAlive === true) {
+        allEnemiesDead = false;
+        break;
+      }
+    }
+
+    if (allEnemiesDead) {
+      this.gameState = GameState.VICTORY;
+      globals.gameState = GameState.VICTORY;
+      globals.gameStats.finish("Victory", this.score);
+      globals.gameStats.registerWin(this.score);
+      this.postStats();
+    }
+  }
+
+  updateCinematic(dt) {
     if (this.cinematicTimer > 0) {
       this.cinematicTimer--;
       if (this.cinematicTimer <= 0) {
@@ -552,22 +520,129 @@ showLevelUpMessage(level) {
         }
       }
     }
-    
+
     if (globals.action.confirm) {
       globals.action.confirm = false;
       this.cinematicTimer = 0;
     }
   }
 
+  initCombat(dt) {
+    const combat = Combat.create(player, enemies);
+    this.gameState = GameState.COMBAT;
+    globals.gameState = GameState.COMBAT;
+  }
+
+  combatState(dt) {
+    if (globals.messageQueue) {
+      globals.messageQueue.update();
+    }
+    this.combat.update(globals.combatState);
+  }
+
+  history(dt) {
+    globals.subMenuIndex = 0;
+    if (globals.action.confirm) {
+      this.gameState = GameState.MENU;
+      globals.gameState = GameState.MENU;
+      globals.subMenuIndex = 0;
+      globals.action.confirm = false;
+    }
+  }
+
+  settings(dt) {
+    globals.subMenuIndex = 0;
+    if (globals.action.confirm) {
+      this.gameState = GameState.MENU;
+      globals.gameState = GameState.MENU;
+      globals.subMenuIndex = 0;
+      globals.action.confirm = false;
+    }
+  }
+
+  difficulty(dt) {
+    if (globals.action.moveUp) {
+      globals.action.moveUp = false;
+      globals.subMenuIndex = globals.subMenuIndex > 0 ? globals.subMenuIndex - 1 : 1;
+    }
+    if (globals.action.moveDown) {
+      globals.action.moveDown = false;
+      globals.subMenuIndex = globals.subMenuIndex < 1 ? globals.subMenuIndex + 1 : 0;
+    }
+    if (globals.action.confirm) {
+      switch (globals.subMenuIndex) {
+        case 0:
+          globals.difficulty = "easy";
+          console.log("easy");
+          break;
+        case 1:
+          globals.difficulty = "hard";
+          console.log("hard");
+          break;
+      }
+      this.gameState = GameState.MENU;
+      globals.gameState = GameState.MENU;
+      globals.subMenuIndex = 0;
+      globals.action.confirm = false;
+    }
+  }
+
+  highScore(dt) {
+    globals.subMenuIndex = 0;
+    if (globals.action.confirm) {
+      this.gameState = GameState.MENU;
+      globals.gameState = GameState.MENU;
+      globals.subMenuIndex = 0;
+      globals.action.confirm = false;
+    }
+  }
+
+  victory(dt) {
+    if (globals.action.confirm) {
+      this.gameState = GameState.MENU;
+      globals.gameState = GameState.MENU;
+      globals.action.confirm = false;
+    }
+  }
+
+  gameOver(dt) {
+
+    if (!this.gameOverProcessed) {
+      globals.gameStats.registerLoss(this.score);
+      this.postStats();
+      this.gameOverProcessed = true;
+    }
+    if (globals.action.confirm) {
+      this.gameState = GameState.MENU;
+      globals.gameState = GameState.MENU;
+      globals.action.confirm = false;
+      this.gameOverProcessed = false;
+    }
+  }
+
+  stats(dt) {
+    globals.subMenuIndex = 0;
+    if (globals.action.confirm) {
+      this.gameState = GameState.MENU;
+      globals.gameState = GameState.MENU;
+      globals.subMenuIndex = 0;
+      globals.action.confirm = false;
+    }
+  }
+
+  
+
+
+
   spawnRandomEnemy() {
     const availableTypes = this.eventWrath.getAvailableEnemyTypes();
     const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
     const hpMultiplier = this.eventWrath.getEnemyHpMultiplier();
-    
+
     const side = Math.floor(Math.random() * 4);
     let x, y;
-    
-    switch(side) {
+
+    switch (side) {
       case 0: //Left
         x = Math.random() * (this.canvas.width - 300) + 50;
         y = 200;
@@ -584,7 +659,7 @@ showLevelUpMessage(level) {
         x = this.canvas.width - 50;
         y = Math.random() * (this.canvas.height - 300) + 50;
     }
-    
+
     let newEnemy;
     if (randomType === "slime") {
       newEnemy = SpriteFactory.createSlime(x, y);
@@ -603,7 +678,7 @@ showLevelUpMessage(level) {
         count++;
       }
     }
-    count++; 
+    count++;
 
     const typeNames = {
       slime: "Slime",
@@ -612,21 +687,21 @@ showLevelUpMessage(level) {
     };
     const capitalizedType = typeNames[randomType] || randomType;
     newEnemy.name = capitalizedType + " Savage " + count;
-    
+
     let empty = [false, false, false];
-    for ( let i = 0; i < globals.enemies.length; i++) {
+    for (let i = 0; i < globals.enemies.length; i++) {
       let enemy = globals.enemies[i];
       if (enemy.isAlive && enemy.combatXIndex !== undefined) {
         let idx = enemy.combatXIndex;
         if (idx >= 0 && idx < 3) empty[idx] = true;
       }
     }
-    
+
     const positionX = [650, 500, 400];
     let positionSelected = -1;
     for (let i = 0; i < 3; i++) {
-      if (!empty[i]) { 
-        positionSelected = i;  
+      if (!empty[i]) {
+        positionSelected = i;
       }
     }
     if (positionSelected === -1) positionSelected = 0;
@@ -636,7 +711,7 @@ showLevelUpMessage(level) {
     newEnemy.isAlive = true;
     globals.enemies.push(newEnemy);
     globals.sprites.push(newEnemy);
-    
+
     console.log(`[EventWrath] New ${randomType} spawned at (${Math.floor(x)}, ${Math.floor(y)})`);
   }
 
@@ -684,69 +759,64 @@ showLevelUpMessage(level) {
     }
   }
 
-loadScreen(newScreen) {
-  console.log("loading Screen: " + newScreen);
+  loadScreen(newScreen) {
+    console.log("loading Screen: " + newScreen);
 
-  this.addScreenProgress();
+    this.addScreenProgress();
 
-  let level = this.levelFactory.getLevelById(newScreen);
+    let level = this.levelFactory.getLevelById(newScreen);
 
-  if (level) {
-    globals.map = level;
+    if (level) {
+      globals.map = level;
 
-    let cloneEnemies = [];
+      let cloneEnemies = [];
 
-    for (let i = 0; i < level.enemies.length; i++) {
+      for (let i = 0; i < level.enemies.length; i++) {
 
-      let enemy = level.enemies[i];
+        let enemy = level.enemies[i];
 
-      if (enemy.active !== false) {
+        if (enemy.active !== false) {
 
-        if (enemy.id === SpriteID.SLIME) {
-          cloneEnemies.push(Slime.clone(enemy));
+          if (enemy.id === SpriteID.SLIME) {
+            cloneEnemies.push(Slime.clone(enemy));
 
-        } else if (enemy.id === SpriteID.MAGE) {
-          cloneEnemies.push(Mage.clone(enemy));
+          } else if (enemy.id === SpriteID.MAGE) {
+            cloneEnemies.push(Mage.clone(enemy));
 
-        } else {
-          cloneEnemies.push(Skeleton.clone(enemy));
+          } else {
+            cloneEnemies.push(Skeleton.clone(enemy));
+          }
         }
       }
+
+      globals.enemies = cloneEnemies;
+
+      let cloneItems = [];
+
+      for (let i = 0; i < level.items.length; i++) {
+        cloneItems[i] = Item.clone(level.items[i]);
+        console.log("Cloned potion: ", cloneItems[i]);
+      }
+
+      globals.items = cloneItems;
+
+      console.log("Screen: " + level.name);
+      console.log("Enemies: " + globals.enemies.length);
+
+      if (this.pendingLevelUp) {
+        this.showLevelUpMessage(this.pendingLevelValue);
+        this.pendingLevelUp = false;
+        this.pendingLevelValue = 0;
+      }
+
+      this.gameState = GameState.PLAYING;
+      globals.gameState = GameState.PLAYING;
+
+    } else {
+
+      console.log("error: " + newScreen);
+
     }
-
-    globals.enemies = cloneEnemies;
-
-    let cloneItems = [];
-
-    for (let i = 0; i < level.items.length; i++) {
-      cloneItems[i] = Item.clone(level.items[i]);
-      console.log("Cloned potion: ", cloneItems[i]);
-    }
-
-    globals.items = cloneItems;
-
-    console.log("Screen: " + level.name);
-    console.log("Enemies: " + globals.enemies.length);
-
-    if (this.pendingLevelUp) {
-      this.showLevelUpMessage(this.pendingLevelValue);
-      this.pendingLevelUp = false;
-      this.pendingLevelValue = 0;
-    }
-
-    this.gameState = GameState.PLAYING;
-    globals.gameState = GameState.PLAYING;
-
-  } else {
-
-    console.log("error: " + newScreen);
-
-  }
-}
-
-  render() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.view.render();
   }
 
   login(email, password) {
@@ -761,7 +831,7 @@ loadScreen(newScreen) {
       password: password,
     };
 
-    fetch(LOCAL_URL+"login", {
+    fetch(LOCAL_URL + "login", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -824,7 +894,7 @@ loadScreen(newScreen) {
         Accept: "application/json",
       },
       body: JSON.stringify(globals.gameStats.toPayload()),
-      
+
     });
     console.log("stats post" + JSON.stringify(globals.gameStats.toPayload()));
   }
@@ -839,7 +909,7 @@ loadScreen(newScreen) {
         }
       }
     }
-    
+
     if (!chapter) {
       console.error("Chapter " + chapterId + " not found");
       return;
@@ -872,7 +942,7 @@ loadScreen(newScreen) {
 
     this.gameState = this.pendingGameState;
     globals.gameState = this.pendingGameState;
-    
+
     if (this.pendingGameState === GameState.MENU && this.storyChapter === 1) {
 
       if (globals.difficulty === "easy") {
@@ -890,6 +960,78 @@ loadScreen(newScreen) {
       }
     }
   }
+  resetGame() {
+
+    this.score = 0;
+    this.timer = this.gameData.game.time;
+    this.highScore = Math.max(this.highScore, this.score);
+
+    const newPlayer = SpriteFactory.createPlayer(100, 220, 120, 70, Math.floor(Math.random() * 100) + 1);
+    globals.player = newPlayer;
+    this.player = newPlayer;
+
+    globals.enemies = [];
+    globals.items = [];
+    globals.potionDrops = [];
+    globals.currentEnemy = null;
+    globals.currentEnemies = null;
+    globals.messageQueue.clear();
+
+    if (globals.ParticleSystem) globals.ParticleSystem.clear();
+
+    this.gameStats = new GameStatistics(this.player.playerId);
+    globals.gameStats = this.gameStats;
+
+    globals.inventory = new Inventory();
+
+    const startLevel = this.levelFactory.getLevelById(0);
+    if (startLevel) {
+      globals.map = startLevel;
+      let cloneEnemies = [];
+      for (let i = 0; i < startLevel.enemies.length; i++) {
+        let enemy = startLevel.enemies[i];
+        if (enemy.id === SpriteID.SLIME) {
+          cloneEnemies.push(Slime.clone(startLevel.enemies[i]));
+        } else if (enemy.id === SpriteID.MAGE) {
+          cloneEnemies.push(Mage.clone(startLevel.enemies[i]));
+        } else {
+          cloneEnemies.push(Skeleton.clone(startLevel.enemies[i]));
+        }
+      }
+      globals.enemies = cloneEnemies;
+
+      let cloneItems = [];
+      for (let i = 0; i < startLevel.items.length; i++) {
+        cloneItems.push(Item.clone(startLevel.items[i]));
+      }
+      globals.items = cloneItems;
+      globals.currentScreen = startLevel.id;
+
+      globals.sprites = [globals.player];
+      for (let i = 0; i < globals.enemies.length; i++) {
+        globals.sprites.push(globals.enemies[i]);
+      }
+      for (let i = 0; i < globals.items.length; i++) {
+        globals.sprites.push(globals.items[i]);
+      }
+    }
+
+    const difficulty = globals.difficulty;
+    const eventWrathConfig = this.gameData.difficulty[difficulty].eventWrath;
+    this.eventWrath = new EventWrath(eventWrathConfig);
+    globals.eventWrath = this.eventWrath;
+
+    this.pendingLevelUp = false;
+    this.pendingLevelValue = 0;
+    this.showLevelUpMessageTimer = 0;
+    this.cinematicTimer = 0;
+    this.storyTimer = 0;
+    this.gameOverProcessed = false;
+    this.combat = null;
+
+    if (globals.ParticleSystem) globals.ParticleSystem.clear();
+    globals.damageNumbers = new DamageNumbers();
+  }
 
 }
 
@@ -905,14 +1047,14 @@ export function initGame(canvas) {
     .catch(error => console.error("Failed to fetch data:", error));
 }
 
-export function initStory(){
+export function initStory() {
   fetch("./src/config/storyData.json")
-  .then(response => response.json())
-  .then(storyData => {
-    globals.storyData = storyData;
-    initGame(globals.canvas);
-  })
-  .catch(error => console.error("Failed to load story config:", error));
+    .then(response => response.json())
+    .then(storyData => {
+      globals.storyData = storyData;
+      initGame(globals.canvas);
+    })
+    .catch(error => console.error("Failed to load story config:", error));
 }
 
 export { Game };
