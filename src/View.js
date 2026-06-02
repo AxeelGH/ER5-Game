@@ -710,12 +710,12 @@ export class View {
   this.ctx.textAlign = "left";
   this.ctx.fillText("Mana: " + Math.floor(globals.player.mana) + "/" + globals.player.maxMana, 7, 90);
 
-  if (globals.gameInstance) {
-    var timer = Math.max(0, Math.floor(globals.gameInstance.timer));
-    this.ctx.fillStyle = "white";
-    this.ctx.textAlign = "left";
-    this.ctx.fillText("Time: " + timer, 7, 165);
-  }
+  // if (globals.gameInstance) {
+  //   var timer = Math.max(0, Math.floor(globals.gameInstance.timer));
+  //   this.ctx.fillStyle = "white";
+  //   this.ctx.textAlign = "left";
+  //   this.ctx.fillText("Time: " + timer, 7, 165);
+  // }
 
   if (globals.enemies) {
     let aliveCount = 0;
