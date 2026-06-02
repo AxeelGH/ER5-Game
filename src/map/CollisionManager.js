@@ -373,6 +373,8 @@ export default class CollisionManager {
               console.log(`Player upgraded: HP=${globals.player.hp}/${globals.player.maxHp}, MP=${globals.player.mana}/${globals.player.maxMana}`);
             }
             
+            globals.collectableCollected = true; 
+
             if (globals.eventWrath && globals.gameInstance) {
               const oldLevel = globals.eventWrath.level;
               globals.eventWrath.addProgress(40);
