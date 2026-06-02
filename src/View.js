@@ -817,12 +817,13 @@ export class View {
   this.ctx.textAlign = "center";
   this.ctx.fillText("Games Played: "   + stats.gamesPlayed,    leftCol, startY);
   this.ctx.fillText("High Score: "     + stats.highScore,      rightCol, startY);
+  this.ctx.fillText("Total XP: "       + stats.totalXP,        this.ctx.canvas.width / 2, startY + gap * 3);
   
   this.ctx.fillText("Wins: "           + stats.wins,           leftCol, startY + gap);
   this.ctx.fillText("Losses: "         + stats.losses,         rightCol, startY + gap);
   
   this.ctx.fillText("Enemies Killed: " + stats.enemiesKilled,   leftCol, startY + gap * 2);
-  this.ctx.fillText("Potions Used: "   + stats.potionsConsumed, rightCol, startY + gap * 2);
+  this.ctx.fillText("Potions Used: "   + stats.consumedPotions, rightCol, startY + gap * 2);
 
   this.ctx.fillStyle = "yellow";
   this.ctx.fillText("Press SPACE to go back", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 340);

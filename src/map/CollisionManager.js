@@ -3,6 +3,7 @@ import { GameState, SpriteID, mapID, Border, CombatState } from "../config/const
 import CombatTurn from "../combat/CombatTurn.js";
 import SpriteFactory from "../sprites/SpriteFactory.js";
 import Combat from "../combat/Combat.js";
+import XPSystem from "../combat/XPSystem.js";
 
 export default class CollisionManager {
   static getSolidTileIds() {
@@ -334,6 +335,15 @@ export default class CollisionManager {
         };
 
         if (this.rectIntersect(playerHitBox, itemHitBox)) {
+          const itemXP = XPSystem.xpForItem(obj);
+          if (itemXP > 0) {
+            if (globals.gameInstance) {
+              globals.gameInstance.score += itemXP;
+            }
+            if (globals.gameStats) {
+              globals.gameStats.registerXPGained(itemXP);
+            }
+          }
           // Lógica para ELIXIR
           if (obj.type === "elixir") {
             if (globals.gameInstance && globals.gameInstance.storyChapter !== 2) {

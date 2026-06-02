@@ -6,6 +6,7 @@ import globals from "../config/globals.js";
 import { SpriteID, CombatState, GameState } from "../config/constants.js";
 import CombatTurn from "./CombatTurn.js";
 import Message from "./Message.js";
+import XPSystem from "./XPSystem.js";
 
 export default class Combat {
   constructor(player, enemies) {
@@ -200,11 +201,22 @@ export default class Combat {
       msg.charDelay = 10;
       globals.messageQueue.push(msg);
     } else {
+
+      let killedEnemies = [];
+      for (let i = 0; i < this.enemies.length; i++) {
+        if (!this.enemies[i].isAlive) {
+          killedEnemies.push(this.enemies[i]);
+        }
+      }
+
+      const wrathLevel = globals.eventWrath ? globals.eventWrath.level : 1;
+      this.pendingXP = XPSystem.xpForCombat(killedEnemies, wrathLevel);
+
       let msg1 = new Message("VICTORY! As the final enemy falls, a surge of energy washes over you. You feel refreshed and invigorated.", 'info');
       msg1.charDelay = 10;
       globals.messageQueue.push(msg1);
       
-      let msg2 = new Message("Got " + (100 * this.enemies.length) + " experience!", 'info');
+      let msg2 = new Message("Got " + this.pendingXP + " experience!", 'info');
       msg2.charDelay = 10;
       globals.messageQueue.push(msg2);
       let msg3 = new Message("                                   ", 'info');
@@ -237,8 +249,17 @@ export default class Combat {
       }
       let manaGain = 10 * this.enemies.length;
       this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaGain);
+
       if (globals.gameInstance) {
-        globals.gameInstance.score += 100 * this.enemies.length;
+        
+        const combatXP = this.pendingXP || 0;
+
+        globals.gameInstance.score += combatXP;
+
+        if (globals.gameStats) {
+          globals.gameStats.registerXPGained(combatXP);
+        }
+
         globals.gameInstance.combat = null;
         globals.gameInstance.gameState = GameState.PLAYING;
       }
@@ -251,4 +272,4 @@ export default class Combat {
 
     this.endPending = false;
   }
-}
+  }

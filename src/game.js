@@ -22,6 +22,7 @@ import GameStatistics from "./GameStatistics.js";
 import Combat from "./combat/Combat.js";
 import MessageQueue from "./combat/MessageQueue.js";
 import EventWrath from "./events/EventWrath.js"; 
+import XPSystem from "./combat/XpSystem.js";
 
 class Game {
   constructor(canvas, gameData) {

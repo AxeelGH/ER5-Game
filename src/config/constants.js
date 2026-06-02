@@ -205,3 +205,16 @@ export const CombatState = {
   PLAY_TURN: 1,
   END_COMBAT: 2
 }
+
+export const EnemyXP = {
+  SLIME:    100, 
+  SKELETON: 150,  
+  MAGE:     200,   
+};
+
+export const ItemXP = {
+  POTION:       0,    
+  COLLECTABLE:  150,   
+  ELIXIR:       200,   
+  SWORD:        300,      
+};
