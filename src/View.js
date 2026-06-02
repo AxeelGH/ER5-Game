@@ -657,83 +657,88 @@ export class View {
   }
 
   renderHUD() {
-    if (!globals.player) return;
+  if (!globals.player) return;
 
-    this.ctx.fillStyle = "rgba(0,0,0,0.7)";
-    this.ctx.fillRect(2, 3, 200, 125);
-    this.ctx.strokeStyle = "white";
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeRect(2, 3, 200, 125);
+  this.ctx.fillStyle = "rgba(0,0,0,0.7)";
+  this.ctx.fillRect(2, 3, 200, 125);
+  this.ctx.strokeStyle = "white";
+  this.ctx.lineWidth = 2;
+  this.ctx.strokeRect(2, 3, 200, 125);
 
-    this.ctx.fillStyle = "rgba(0,0,0,0.7)";
-    this.ctx.fillRect(2, 135, 200, 100);
-    this.ctx.strokeStyle = "white";
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeRect(2, 135, 200, 100);
+  this.ctx.fillStyle = "rgba(0,0,0,0.7)";
+  this.ctx.fillRect(2, 135, 200, 100);
+  this.ctx.strokeStyle = "white";
+  this.ctx.lineWidth = 2;
+  this.ctx.strokeRect(2, 135, 200, 100);
 
-    this.ctx.fillStyle = "rgba(0,0,0,0.7)";
-    this.ctx.fillRect(800, 3, 222, 70);
-    this.ctx.strokeStyle = "white";
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeRect(800, 3, 222, 70);
+  this.ctx.fillStyle = "rgba(0,0,0,0.7)";
+  this.ctx.fillRect(750, 3, 272, 70);
+  this.ctx.strokeStyle = "white";
+  this.ctx.lineWidth = 2;
+  this.ctx.strokeRect(750, 3, 272, 70);
 
-    this.ctx.fillStyle = "#ff0000";
-    this.ctx.fillRect(7, 40, 190, 20);
+  this.ctx.fillStyle = "rgba(0,0,0,0.7)";
+  this.ctx.fillRect(695, 3, 50, 70);
+  this.ctx.strokeStyle = "white";
+  this.ctx.lineWidth = 2;
+  this.ctx.strokeRect(695, 3, 50, 70);
 
-    this.ctx.fillStyle = "#00ff00";
-    var hpPercent = globals.player.hp / globals.player.maxHp;
-    this.ctx.fillRect(7, 40, 190 * hpPercent, 20);
-    this.ctx.strokeStyle = "grey";
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeRect(7, 40, 190, 20);
+  this.ctx.fillStyle = "#ff0000";
+  this.ctx.fillRect(7, 40, 190, 20);
 
-    this.ctx.fillStyle = "white";
-    this.ctx.font = "32px alkhemikal";
-    this.ctx.textAlign = "left";
-    this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/" + globals.player.maxHp, 7, 30);
+  this.ctx.fillStyle = "#00ff00";
+  var hpPercent = globals.player.hp / globals.player.maxHp;
+  this.ctx.fillRect(7, 40, 190 * hpPercent, 20);
+  this.ctx.strokeStyle = "grey";
+  this.ctx.lineWidth = 2;
+  this.ctx.strokeRect(7, 40, 190, 20);
 
-    this.ctx.fillStyle = "#002aff";
-    var manaPercent = globals.player.mana / globals.player.maxMana;
-    this.ctx.fillRect(7, 100, 190 * manaPercent, 20);
-    this.ctx.strokeStyle = "grey";
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeRect(7, 100, 190, 20);
+  this.ctx.fillStyle = "white";
+  this.ctx.font = "32px alkhemikal";
+  this.ctx.textAlign = "left";
+  this.ctx.fillText("HP: " + Math.floor(globals.player.hp) + "/" + globals.player.maxHp, 7, 30);
 
-    this.ctx.fillStyle = "white";
-    this.ctx.font = "32px alkhemikal";
-    this.ctx.textAlign = "left";
-    this.ctx.fillText("Mana: " + Math.floor(globals.player.mana) + "/" + globals.player.maxMana, 7, 90);
+  this.ctx.fillStyle = "#002aff";
+  var manaPercent = globals.player.mana / globals.player.maxMana;
+  this.ctx.fillRect(7, 100, 190 * manaPercent, 20);
+  this.ctx.strokeStyle = "grey";
+  this.ctx.lineWidth = 2;
+  this.ctx.strokeRect(7, 100, 190, 20);
 
-    if (globals.gameInstance) {
-      var timer = Math.max(0, Math.floor(globals.gameInstance.timer));
-      this.ctx.fillStyle = "white";
-      this.ctx.textAlign = "left";
-      this.ctx.fillText("Time: " + timer, 7, 165);
-    }
+  this.ctx.fillStyle = "white";
+  this.ctx.font = "32px alkhemikal";
+  this.ctx.textAlign = "left";
+  this.ctx.fillText("Mana: " + Math.floor(globals.player.mana) + "/" + globals.player.maxMana, 7, 90);
 
-    if (globals.enemies) {
-      let aliveCount = 0;
-      for (let i = 0; i < globals.enemies.length; i++) {
-        if (globals.enemies[i].isAlive) aliveCount++;
-      }
-      this.ctx.fillStyle = "#ffffff";
-      this.ctx.fillText("Enemies: " + aliveCount, 7, 195);
-    }
-
-    this.ctx.fillStyle = "white";
-    this.ctx.textAlign = "left";
-    this.ctx.fillText("Score: " + this.game.score, 805, 30);
-    this.ctx.fillText("HighScore: " + this.game.highScore, 805, 60);
-    
-  // if (globals.eventWrath) {
-  //   let maxProgress = 100;
-  //   if (globals.eventWrath.level === 2) maxProgress = 250;   
-  //   else if (globals.eventWrath.level === 3) maxProgress = 250;
-  
-  //   this.ctx.fillStyle = "#d20707";
-  //   this.ctx.font = "32px alkhemikal";
-  //   this.ctx.fillText(`Wrath: ${globals.eventWrath.progress}/${maxProgress}`, 7, 225);
+  // if (globals.gameInstance) {
+  //   var timer = Math.max(0, Math.floor(globals.gameInstance.timer));
+  //   this.ctx.fillStyle = "white";
+  //   this.ctx.textAlign = "left";
+  //   this.ctx.fillText("Time: " + timer, 7, 165);
   // }
+
+  if (globals.enemies) {
+    let aliveCount = 0;
+    for (let i = 0; i < globals.enemies.length; i++) {
+      if (globals.enemies[i].isAlive) aliveCount++;
+    }
+    this.ctx.fillStyle = "#ffffff";
+    this.ctx.fillText("Enemies: " + aliveCount, 7, 195);
+  }
+
+  if (globals.collectableCollected) {
+    const img = globals.tileSets[2];
+    if (img && img.complete) {
+      this.ctx.drawImage(img, 0, 80, 20, 20, 705, 20, 30, 30);
+    }
+  }
+
+  // Mostrar Score y HighScore
+  this.ctx.fillStyle = "white";
+  this.ctx.textAlign = "left";
+  
+  this.ctx.fillText("Score: " + this.game.score, 755, 30);
+  this.ctx.fillText("HighScore: " + this.game.highScore, 755, 60);
 }
 
   renderLogin() {
