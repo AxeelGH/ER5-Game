@@ -6,7 +6,7 @@ export default class MovePhase extends CombatPhase {
   constructor(player, enemies, dice, combatTurn, messageQueue) {
     super(player, enemies, dice, combatTurn, messageQueue);
     
-    this.movePositions = [100, 300, 500]; 
+    this.movePositions = [100, 250, 400]; 
     this.selectedIndex = 1; 
     this.targetX = null;
     this.errorMessage = "";
@@ -102,8 +102,8 @@ export default class MovePhase extends CombatPhase {
 
   renderUI(ctx) {
     
-    const groundY = 350;      
-    const boxWidth = 180;     
+    const groundY = 320;      
+    const boxWidth = 140;     
     const boxHeight = 300;     
 
     let currentIndex = 1;

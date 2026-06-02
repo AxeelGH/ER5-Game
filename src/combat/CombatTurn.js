@@ -27,6 +27,10 @@ export default class CombatTurn {
     globals.triedToFlee = false;
     this.announceTimer = 0;
     this.pendingAction = null;
+
+    this.turnTimeLimit = 1800; // 30 seconds 
+    this.turnTimer = 0;
+    this.turnTimerActive = false;
   }
 
   update() {
@@ -41,6 +45,15 @@ export default class CombatTurn {
         this.startPlayerTurn(); 
         break;
       case "selecting": 
+        if (this.turnTimerActive) {
+          this.turnTimer--;
+          if (this.turnTimer <= 0) {
+            this.turnTimerActive = false;
+            globals.messageQueue.push(new Message("Time's up! Your turn is skipped.", 'error'));
+            this.state = "finished";
+            return;
+          }
+        }
         this.handlePhaseSelection(); 
         break;
       case "executing": 
@@ -59,6 +72,9 @@ export default class CombatTurn {
     this.currentPhaseIndex = 0;
     this.selectedPhase = null;
     globals.triedToFlee = false;
+
+    this.turnTimer = this.turnTimeLimit;
+    this.turnTimerActive = true;
   }
 
   handlePhaseSelection() {
@@ -76,6 +92,7 @@ export default class CombatTurn {
     }
     if (globals.action.confirm) {
       globals.action.confirm = false;
+      this.turnTimerActive = false;
       const phaseName = this.phases[this.currentPhaseIndex];
       this.selectedPhase = this.createPhase(phaseName);
       this.selectedPhase.init();
@@ -83,6 +100,15 @@ export default class CombatTurn {
       console.log("phase: " + phaseName);
     }
   }
+
+  handlePlayerTimeout() {
+    globals.messageQueue.push(new Message("Time's up! Auto-attacking!", 'error'));
+    this.currentPhaseIndex = 0; // Attack
+    const phaseName = this.phases[this.currentPhaseIndex];
+    this.selectedPhase = this.createPhase(phaseName);
+    this.selectedPhase.init();
+    this.state = "executing";
+}
 
   createPhase(phaseName) {
     let mq = globals.messageQueue;
@@ -134,7 +160,17 @@ export default class CombatTurn {
 
     switch (this.state) {
       case "idle": this.startEnemyTurn(); break;
-      case "deciding": this.decideEnemyAction(); break;
+      case "deciding":     
+        if (this.turnTimerActive && this.turnTimer <= 0) {
+          this.turnTimerActive = false;
+          globals.messageQueue.push(new Message("Enemy took too long and lost its turn!", 'error'));
+          this.state = "finished";
+          this.attackExecuted = true; 
+          return;
+        }
+        this.decideEnemyAction();
+        break;
+
       case "announcing":
         if (this.announceTimer > 0) {
           this.announceTimer--;
@@ -164,7 +200,17 @@ export default class CombatTurn {
     console.log("=== ENEMY (" + this.entity.id + ") ===");
     globals.messageQueue.push(new Message("Enemy's turn!", 'info'));
     this.state = "deciding";
+    this.turnTimer = this.turnTimeLimit;
+    this.turnTimerActive = true;
   }
+
+  handleEnemyTimeout() {
+    this.turnTimerActive = false;
+    globals.messageQueue.push(new Message("Enemy hesitates! Auto-attacking!", 'error'));
+    this.pendingAction = "attack";
+    this.state = "announcing";
+    this.announceTimer = 30; 
+}
 
   decideEnemyAction() {
     let action = Math.floor(Math.random() * 2) + 1;

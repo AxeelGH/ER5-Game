@@ -64,7 +64,7 @@ export default class CombatView {
 
   if (player) {
     player.combatUpdate();
-    this.drawPlayer(player, player.xPos, player.yPos, 300, 300);
+    this.drawPlayer(player, player.xPos - 50, player.yPos, 300, 300);
   }
 }
 
