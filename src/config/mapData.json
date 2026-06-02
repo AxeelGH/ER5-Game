@@ -8,8 +8,7 @@
         { "id": 2, "xPos": 300, "yPos": 400, "spawnCount": 1 }
       ],
       "items": [
-        { "id": 1, "xPos": 500, "yPos": 610 },
-        { "id": 7, "xPos": 350, "yPos": 500 }
+        { "id": 1, "xPos": 500, "yPos": 610 }
       ]
     },
     {
@@ -68,7 +67,8 @@
       "items": [
         { "id": 4, "xPos": 430, "yPos": 400 },
         { "id": 5, "xPos": 500, "yPos": 210 },
-        { "id": 6, "xPos": 800, "yPos": 700 }
+        { "id": 6, "xPos": 800, "yPos": 700 },
+        { "id": 7, "xPos": 900, "yPos": 200 }
       ]
     },
     {

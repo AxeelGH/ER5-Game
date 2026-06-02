@@ -374,7 +374,7 @@ export default class CollisionManager {
           // Lógica para COLLECTABLE
           else if (obj.type === "collectable") {
             console.log("Collectable collected!");
-            
+            globals.gameInstance.startStory(2);
             if (globals.player) {
               globals.player.maxHp = 200;
               globals.player.hp = 200;
@@ -403,6 +403,7 @@ export default class CollisionManager {
             console.log("Sword collected! The legendary weapon!");
             if (globals.gameInstance && globals.gameInstance.storyChapter !== 3) {
               globals.gameInstance.startStory(3);
+              globals.gameInstance.swordStoryEndsGame = true;
             }
             if (globals.player) {
               globals.player.damage = (globals.player.damage || 10) * 2;

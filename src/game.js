@@ -89,6 +89,7 @@ class Game {
     this.storyText = "";
     this.storyTimer = 0;
     this.pendingGameState = null;
+    this.swordStoryEndsGame = false;
   }
 
   addEnemyProgress() {
@@ -943,6 +944,16 @@ class Game {
 
     this.gameState = this.pendingGameState;
     globals.gameState = this.pendingGameState;
+
+    if (this.swordStoryEndsGame && this.storyChapter === 3) {
+      this.gameState = GameState.VICTORY;
+      globals.gameState = GameState.VICTORY;
+      globals.gameStats.finish("Victory", this.score);
+      globals.gameStats.registerWin(this.score);
+      this.postStats();
+      this.swordStoryEndsGame = false;
+      return;
+    }
 
     if (this.pendingGameState === GameState.MENU && this.storyChapter === 1) {
 
