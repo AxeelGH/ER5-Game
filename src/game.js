@@ -201,7 +201,7 @@ class Game {
         break;
 
       case GameState.LOGIN:
-        this.login(dt);
+        this.loginScreen(dt);
         break;
 
       case GameState.LOGIN_LOADING:
@@ -309,7 +309,7 @@ class Game {
     }
   }
 
-  login(dt) {
+  loginScreen(dt) {
 
     const form = document.querySelector("#formLogin");
 
