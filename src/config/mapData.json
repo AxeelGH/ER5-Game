@@ -4,46 +4,58 @@
       "id": 0,
       "name": "Starter village",
       "enemies": [
-        { "id": 1, "xPos": 270, "yPos": 550 },
-        { "id": 2, "xPos": 300, "yPos": 400 }
+        { "id": 1, "xPos": 270, "yPos": 550, "spawnCount": 1 },
+        { "id": 2, "xPos": 300, "yPos": 400, "spawnCount": 1 }
       ],
-      "items": [{ "id": 1, "xPos": 500, "yPos": 610 },
-                { "id": 7, "xPos": 350, "yPos": 500 }]
+      "items": [
+        { "id": 1, "xPos": 500, "yPos": 610 },
+        { "id": 7, "xPos": 350, "yPos": 500 }
+      ]
     },
     {
       "id": 1,
       "name": "First challenge",
       "enemies": [
-        { "id": 3, "xPos": 570, "yPos": 610 },
-        { "id": 4, "xPos": 160, "yPos": 300 }
+        { "id": 3, "xPos": 570, "yPos": 610, "spawnCount": 2 },
+        { "id": 4, "xPos": 160, "yPos": 300, "spawnCount": 1 }
       ],
-      "items": [{ "id": 2, "xPos": 570, "yPos": 610 }]
+      "items": [
+        { "id": 2, "xPos": 570, "yPos": 610 }
+      ]
     },
     {
       "id": 2,
       "name": "Castle",
-      "enemies": [{ "id": 5, "xPos": 400, "yPos": 300 }],
+      "enemies": [
+        { "id": 5, "xPos": 400, "yPos": 300, "spawnCount": 3 }
+      ],
       "items": []
     },
     {
       "id": 3,
       "name": "Ride",
-      "enemies": [{ "id": 6, "xPos": 400, "yPos": 340 }],
-      "items": [{ "id": 3, "xPos": 420, "yPos": 310 }]
+      "enemies": [
+        { "id": 6, "xPos": 400, "yPos": 340, "spawnCount": 2 }
+      ],
+      "items": [
+        { "id": 3, "xPos": 420, "yPos": 310 }
+      ]
     },
     {
       "id": 4,
       "name": "Cemetery",
       "enemies": [
-        { "id": 7, "xPos": 300, "yPos": 450 },
-        { "id": 8, "xPos": 480, "yPos": 420 }
+        { "id": 7, "xPos": 300, "yPos": 450, "spawnCount": 2 },
+        { "id": 8, "xPos": 480, "yPos": 420, "spawnCount": 1 }
       ],
       "items": []
     },
     {
       "id": 5,
       "name": "Beach",
-      "enemies": [{ "id": 9, "xPos": 400, "yPos": 610 }],
+      "enemies": [
+        { "id": 9, "xPos": 400, "yPos": 610, "spawnCount": 3 }
+      ],
       "items": [
         { "id": 4, "xPos": 430, "yPos": 400 },
         { "id": 5, "xPos": 500, "yPos": 610 }
@@ -51,21 +63,22 @@
     },
     {
       "id": 6,
-      "name": "Beach",
+      "name": "Final Cave",
       "enemies": [],
       "items": [
         { "id": 4, "xPos": 430, "yPos": 400 },
         { "id": 5, "xPos": 500, "yPos": 210 },
-        {"id": 6, "xPos": 800, "yPos": 700 }
+        { "id": 6, "xPos": 800, "yPos": 700 }
       ]
     },
     {
       "id": 7,
-      "name": "Beach",
+      "name": "Boss Room",
       "enemies": [],
-      "items": [{ "id": 5, "xPos": 500, "yPos": 610 },
-                { "id": 8, "xPos": 500, "yPos": 500}
-            ]
+      "items": [
+        { "id": 5, "xPos": 500, "yPos": 610 },
+        { "id": 8, "xPos": 500, "yPos": 500 }
+      ]
     }
   ]
 }

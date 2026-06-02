@@ -58,10 +58,6 @@ export default class LevelFactory {
 
     let mapData = this.getMapDataForLevel(mapConfig.id);
 
-    let enemiesData = mapConfig.enemies ? mapConfig.enemies : this.enemyData;
-
-    let itemsData = mapConfig.items ? mapConfig.items : this.itemData;
-
     let enemies = this.createEnemiesFromConfig(mapConfig.enemies);
 
     let items = this.createItemsFromConfig(mapConfig.items);
@@ -72,40 +68,53 @@ export default class LevelFactory {
   }
 
   createItemsFromConfig(itemsConfig) {
-  let items = [];
+    let items = [];
 
-  for (let i = 0; i < itemsConfig.length; i++) {
-    let config = itemsConfig[i];
-    let itemId = config.id;
-    let itemBaseData = null;
+    for (let i = 0; i < itemsConfig.length; i++) {
+      let config = itemsConfig[i];
+      let itemId = config.id;
+      let itemBaseData = null;
 
-    for (let j = 0; j < this.itemData.items.length; j++) {
-      if (this.itemData.items[j].id === itemId) {
-        itemBaseData = this.itemData.items[j];
-        break;
+      for (let j = 0; j < this.itemData.items.length; j++) {
+        if (this.itemData.items[j].id === itemId) {
+          itemBaseData = this.itemData.items[j];
+          break;
+        }
+      }
+
+      let item = null;
+      
+      if (itemBaseData.type === "collectable") {
+        item = SpriteFactory.createCollectable(config.xPos, config.yPos);
+      } else if (itemBaseData.type === "sword") {
+        item = SpriteFactory.createSword(config.xPos, config.yPos);
+      } else {
+        item = SpriteFactory.createItem(config.xPos, config.yPos);
+      }
+
+      if (item) {
+        item.type = itemBaseData.type;
+        items.push(item);
       }
     }
-
-    let item = null;
-    
-    if (itemBaseData.type === "collectable") {
-      item = SpriteFactory.createCollectable(config.xPos, config.yPos);
-    } else if (itemBaseData.type === "sword") {
-      item = SpriteFactory.createSword(config.xPos, config.yPos);
-    } else {
-      item = SpriteFactory.createItem(config.xPos, config.yPos);
-    }
-
-    if (item) {
-      item.type = itemBaseData.type;
-      items.push(item);
-    }
+    return items;
   }
-  return items;
-}
 
   createEnemiesFromConfig(enemiesConfig) {
     let enemies = [];
+    
+    // Posiciones predefinidas para distribución en el mapa
+    const availablePositions = [
+      { x: 200, y: 300 },   // Posición izquierda
+      { x: 400, y: 340 },   // Posición centro
+      { x: 570, y: 610 },   // Posición derecha
+      { x: 300, y: 450 },   // Posición extra 1
+      { x: 480, y: 420 },   // Posición extra 2
+      { x: 160, y: 300 },   // Posición extra 3
+      { x: 500, y: 500 }    // Posición extra 4
+    ];
+    
+    let positionIndex = 0;
 
     for (let i = 0; i < enemiesConfig.length; i++) {
       let config = enemiesConfig[i];
@@ -119,30 +128,48 @@ export default class LevelFactory {
         }
       }
 
-      let enemy = null;
-      const x = config.xPos;
-      const y = config.yPos;
+      let spawnCount = config.spawnCount || 1;
+      
+      for (let i = 0; i < spawnCount; i++) {
+        let enemy = null;
+        
+        let x, y;
+        
+        if (positionIndex < availablePositions.length) {
+          x = availablePositions[positionIndex].x;
+          y = availablePositions[positionIndex].y;
+          positionIndex++;
+        } else {
+          x = config.xPos + (i * 80);
+          y = config.yPos;
+        }
 
-      if (enemyStats.type === "slime") {
-        enemy = SpriteFactory.createSlime(x, y);
-      } else if (enemyStats.type === "skeleton") {
-        enemy = SpriteFactory.createSkeleton(x, y);
-      } else if (enemyStats.type === "mage") {
-        enemy = SpriteFactory.createMage(x, y);
-      }
+        if (enemyStats.type === "slime") {
+          enemy = SpriteFactory.createSlime(x, y);
+        } else if (enemyStats.type === "skeleton") {
+          enemy = SpriteFactory.createSkeleton(x, y);
+        } else if (enemyStats.type === "mage") {
+          enemy = SpriteFactory.createMage(x, y);
+        }
 
-      if (enemy && enemyStats.hp) {
-        enemy.hp = enemyStats.hp;
-        enemy.maxHp = enemyStats.hp;
-      }
+        if (enemy && enemyStats.hp) {
+          const difficultyMultiplier = globals.difficulty === "hard" ? 1.2 : 1;
+          enemy.hp = enemyStats.hp * difficultyMultiplier;
+          enemy.maxHp = enemyStats.hp * difficultyMultiplier;
+        }
 
-      if (enemy) {
-        enemy.name = enemyStats.name;
-        enemies.push(enemy);
+        if (enemy) {
+          enemy.name = enemyStats.name;
+          if (spawnCount > 1) {
+            const suffixes = ["Alpha", "Beta", "Gamma", "Delta", "Epsilon"];
+            enemy.name = enemyStats.name + " " + (suffixes[i] || (i + 1));
+          }
+          enemies.push(enemy);
+        }
       }
     }
 
-    console.log("Created", enemies.length, "enemies");
+    console.log("Created", enemies.length, "enemies at different positions");
     return enemies;
   }
 

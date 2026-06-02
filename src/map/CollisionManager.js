@@ -460,96 +460,109 @@ export default class CollisionManager {
   }
 
   static onCollisionWithEnemy(enemy) {
-    console.log("Collision with enemy:", enemy.id);
+  console.log("Collision with enemy:", enemy.id);
 
-    if (globals.gameInstance) {
-        globals.gameInstance.backupPlayer = globals.player;
+  if (globals.gameInstance) {
+      globals.gameInstance.backupPlayer = globals.player;
+  }
+
+  const superPlayer = SpriteFactory.createSuperPlayer(
+      globals.player.xPos, 200, globals.player.hp,
+      globals.player.mana, globals.player.playerId
+  );
+  superPlayer.maxHp = globals.player.maxHp;
+  superPlayer.maxMana = globals.player.maxMana;
+  globals.player = superPlayer;
+
+  const eventWrath = globals.eventWrath;
+  const extraEnemies = eventWrath.getExtraEnemyCount(); 
+  const MAX_ENEMIES = 3;
+
+  // OBTENER TODOS LOS ENEMIGOS VIVOS DEL MAPA, NO SOLO EL QUE COLISIONÓ
+  let allAliveEnemies = [];
+  for (let i = 0; i < globals.enemies.length; i++) {
+    if (globals.enemies[i].isAlive) {
+      allAliveEnemies.push(globals.enemies[i]);
     }
+  }
 
-    const superPlayer = SpriteFactory.createSuperPlayer(
-        globals.player.xPos, 200, globals.player.hp,
-        globals.player.mana, globals.player.playerId
-    );
-    superPlayer.maxHp = globals.player.maxHp;
-    superPlayer.maxMana = globals.player.maxMana;
-    globals.player = superPlayer;
+  let enemiesToSpawn = [];
 
-    const eventWrath = globals.eventWrath;
-    const extraEnemies = eventWrath.getExtraEnemyCount(); 
-    const MAX_ENEMIES = 3;
+  // Procesar cada enemigo vivo
+  for (let e = 0; e < allAliveEnemies.length; e++) {
+    let currentEnemy = allAliveEnemies[e];
+    
+    if (currentEnemy.id === SpriteID.SLIME) {
+      const superSlime = SpriteFactory.createSuperSlime(550 + (e * 100), 200);
+      const hpMultiplier = eventWrath.getEnemyHpMultiplier();
+      superSlime.name = currentEnemy.name;
+      superSlime.hp = 80 * hpMultiplier;
+      superSlime.maxHp = 80 * hpMultiplier;
+      superSlime.isAlive = true;
+      enemiesToSpawn.push(superSlime);
+    } else if (currentEnemy.id === SpriteID.MAGE) {
+      const superMage = SpriteFactory.createSuperMage(550 + (e * 100), 130);
+      const hpMultiplier = eventWrath.getEnemyHpMultiplier();
+      superMage.name = currentEnemy.name;
+      superMage.hp = 70 * hpMultiplier;
+      superMage.maxHp = 70 * hpMultiplier;
+      superMage.isAlive = true;
+      enemiesToSpawn.push(superMage);
+    } else if (currentEnemy.id === SpriteID.SKELETON) {
+      const superSkeleton = SpriteFactory.createSuperSkeleton(550 + (e * 100), 100);
+      const hpMultiplier = eventWrath.getEnemyHpMultiplier();
+      superSkeleton.name = currentEnemy.name;
+      superSkeleton.hp = 100 * hpMultiplier;
+      superSkeleton.maxHp = 100 * hpMultiplier;
+      superSkeleton.isAlive = true;
+      enemiesToSpawn.push(superSkeleton);
+    }
+  }
 
-    let enemiesToSpawn = [];
+  // Limitar a MAX_ENEMIES (3)
+  if (enemiesToSpawn.length > MAX_ENEMIES) {
+    enemiesToSpawn = enemiesToSpawn.slice(0, MAX_ENEMIES);
+  }
 
-    if (enemy.id === SpriteID.SLIME) {
-        
-        const superSlime1 = SpriteFactory.createSuperSlime(550, 200);
-        const superSlime2 = SpriteFactory.createSuperSlime(650, 200);
-        const hpMultiplier = eventWrath.getEnemyHpMultiplier();
-        superSlime1.name = enemy.name;
-        superSlime1.hp = 80 * hpMultiplier;
-        superSlime1.maxHp = 80 * hpMultiplier;
-        superSlime2.name = "Guardian Shadow";
-        superSlime2.hp = 80 * hpMultiplier;
-        superSlime2.maxHp = 80 * hpMultiplier;
-        enemiesToSpawn = [superSlime1, superSlime2];
+  // Agregar enemigos extras por EventWrath si hay espacio
+  let availableSlots = MAX_ENEMIES - enemiesToSpawn.length;
+  let extrasToAdd = Math.min(extraEnemies, availableSlots);
 
-        
-        let availableSlots = MAX_ENEMIES - enemiesToSpawn.length;
-        let extrasToAdd = Math.min(extraEnemies, availableSlots);
-
-        for (let i = 0; i < extrasToAdd; i++) {
-            const availableTypes = eventWrath.getAvailableEnemyTypes();
-            const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
-            let extraEnemy;
-            if (randomType === "slime") {
-                extraEnemy = SpriteFactory.createSuperSlime(550 + (i * 100), 200);
-                extraEnemy.hp = 80 * hpMultiplier;
-                extraEnemy.maxHp = 80 * hpMultiplier;
-                extraEnemy.name = `Dark Slime${i+1}`;
-            } else {
-                extraEnemy = SpriteFactory.createSuperSkeleton(550 + (i * 100), 150);
-                extraEnemy.hp = 100 * hpMultiplier;
-                extraEnemy.maxHp = 100 * hpMultiplier;
-                extraEnemy.name = `Skeleton Defender ${i+1}`;
-            }
-            extraEnemy.isAlive = true;
-            enemiesToSpawn.push(extraEnemy);
-        }
+  for (let i = 0; i < extrasToAdd; i++) {
+    const availableTypes = eventWrath.getAvailableEnemyTypes();
+    const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+    let extraEnemy;
+    const hpMultiplier = eventWrath.getEnemyHpMultiplier();
+    
+    if (randomType === "slime") {
+      extraEnemy = SpriteFactory.createSuperSlime(550 + (i * 100), 200);
+      extraEnemy.hp = 80 * hpMultiplier;
+      extraEnemy.maxHp = 80 * hpMultiplier;
+      extraEnemy.name = `Dark Slime ${i+1}`;
+    } else if (randomType === "mage") {
+      extraEnemy = SpriteFactory.createSuperMage(550 + (i * 100), 130);
+      extraEnemy.hp = 70 * hpMultiplier;
+      extraEnemy.maxHp = 70 * hpMultiplier;
+      extraEnemy.name = `Dark Mage ${i+1}`;
     } else {
-        
-        enemiesToSpawn = [enemy];
-        let availableSlots = MAX_ENEMIES - enemiesToSpawn.length;
-        let extrasToAdd = Math.min(extraEnemies, availableSlots);
-
-        for (let i = 0; i < extrasToAdd; i++) {
-            const availableTypes = eventWrath.getAvailableEnemyTypes();
-            const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
-            let extraEnemy;
-            if (randomType === "slime") {
-                extraEnemy = SpriteFactory.createSuperSlime(550 + (i * 100), 200);
-                extraEnemy.hp = 80 * eventWrath.getEnemyHpMultiplier();
-                extraEnemy.maxHp = 80 * eventWrath.getEnemyHpMultiplier();
-                extraEnemy.name = `Super Slime ${i+1}`;
-            } else {
-                extraEnemy = SpriteFactory.createSuperSkeleton(550 + (i * 100), 150);
-                extraEnemy.hp = 100 * eventWrath.getEnemyHpMultiplier();
-                extraEnemy.maxHp = 100 * eventWrath.getEnemyHpMultiplier();
-                extraEnemy.name = `Skeleton Guardian ${i+1}`;
-            }
-            extraEnemy.isAlive = true;
-            enemiesToSpawn.push(extraEnemy);
-        }
+      extraEnemy = SpriteFactory.createSuperSkeleton(550 + (i * 100), 100);
+      extraEnemy.hp = 100 * hpMultiplier;
+      extraEnemy.maxHp = 100 * hpMultiplier;
+      extraEnemy.name = `Skeleton Defender ${i+1}`;
     }
+    extraEnemy.isAlive = true;
+    enemiesToSpawn.push(extraEnemy);
+  }
 
-    globals.currentEnemies = enemiesToSpawn;
-    globals.currentEnemy = enemy;
-    globals.combatState = CombatState.INIT_COMBAT;
-    globals.gameState = GameState.COMBAT;
+  globals.currentEnemies = enemiesToSpawn;
+  globals.currentEnemy = enemy;
+  globals.combatState = CombatState.INIT_COMBAT;
+  globals.gameState = GameState.COMBAT;
 
-    if (globals.gameInstance) {
-        globals.gameInstance.gameState = GameState.COMBAT;
-        globals.gameInstance.combat = new Combat(globals.player, globals.currentEnemies);
-    }
+  if (globals.gameInstance) {
+      globals.gameInstance.gameState = GameState.COMBAT;
+      globals.gameInstance.combat = new Combat(globals.player, globals.currentEnemies);
+  }
 }
 
   static onCollisionWithPotion() {
