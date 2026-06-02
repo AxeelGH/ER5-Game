@@ -72,29 +72,37 @@ export default class LevelFactory {
   }
 
   createItemsFromConfig(itemsConfig) {
-    let items = [];
+  let items = [];
 
-    for (let i = 0; i < itemsConfig.length; i++) {
-      let config = itemsConfig[i];
-      let itemId = config.id;
-      let itemBaseData = null;
+  for (let i = 0; i < itemsConfig.length; i++) {
+    let config = itemsConfig[i];
+    let itemId = config.id;
+    let itemBaseData = null;
 
-      for (let j = 0; j < this.itemData.items.length; j++) {
-        if (this.itemData.items[j].id === itemId) {
-          itemBaseData = this.itemData.items[j];
-          break;
-        }
-      }
-
-      let item = SpriteFactory.createItem(config.xPos, config.yPos);
-
-      if (item) {
-        item.type = itemBaseData.type;
-        items.push(item);
+    for (let j = 0; j < this.itemData.items.length; j++) {
+      if (this.itemData.items[j].id === itemId) {
+        itemBaseData = this.itemData.items[j];
+        break;
       }
     }
-    return items;
+
+    let item = null;
+    
+    if (itemBaseData.type === "collectable") {
+      item = SpriteFactory.createCollectable(config.xPos, config.yPos);
+    } else if (itemBaseData.type === "sword") {
+      item = SpriteFactory.createSword(config.xPos, config.yPos);
+    } else {
+      item = SpriteFactory.createItem(config.xPos, config.yPos);
+    }
+
+    if (item) {
+      item.type = itemBaseData.type;
+      items.push(item);
+    }
   }
+  return items;
+}
 
   createEnemiesFromConfig(enemiesConfig) {
     let enemies = [];

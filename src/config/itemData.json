@@ -23,6 +23,14 @@
     {
       "id": 6,
       "type": "elixir"
+    },
+    {
+      "id": 7,
+      "type": "collectable"
+    },
+    {
+      "id": 8,
+      "type": "sword"
     }
   ]
 }

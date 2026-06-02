@@ -1,3 +1,4 @@
+// src/sprites/SpriteFactory.js
 import Player from "./Player.js";
 import Slime from "./Slime.js";
 import Skeleton from "./Skeleton.js";
@@ -7,6 +8,8 @@ import SuperSlime from "./SuperSlime.js";
 import SuperMage from "./SuperMage.js";
 import SuperSkeleton from "./SuperSkeleton.js";
 import SuperPlayer from "./SuperPlayer.js";
+import Collectable from "./Collectable.js";
+import Sword from "./Sword.js";  // ¡Agregar esta línea!
 
 export default class SpriteFactory {
   static createPlayer(xPos, yPos, hp, mana, playerId) {
@@ -43,5 +46,13 @@ export default class SpriteFactory {
 
   static createItem(xPos, yPos) {
     return new Item(xPos, yPos);
+  }
+
+  static createCollectable(xPos, yPos) {
+    return new Collectable(xPos, yPos);
+  }
+
+  static createSword(xPos, yPos) {
+    return new Sword(xPos, yPos);
   }
 }

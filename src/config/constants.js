@@ -41,6 +41,8 @@ export const SpriteID = {
   SUPER_SLIME: 6,
   SUPER_MAGE: 7,
   SUPER_SKELETON: 8,
+  COLLECTABLE: 9,
+  SWORD: 10
 };
 
 export const State = {

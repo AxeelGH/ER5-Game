@@ -234,7 +234,19 @@ export class View {
       if (obj && obj.imageSet) {
         const img = globals.tileSets[2];
         if (img && img.complete) {
-          this.ctx.drawImage(img, 0, 0, 16, 16, obj.xPos, obj.yPos, 16, 16);
+          if(obj.type === "collectable")
+          {
+            this.ctx.drawImage(img, 0, 80, 20, 20, obj.xPos, obj.yPos, 20, 20);
+          }
+          if(obj.type === "potion")
+          {
+            this.ctx.drawImage(img, 0, 0, 20, 20, obj.xPos, obj.yPos, 20, 20);
+          }
+          if(obj.type === "sword")
+          {
+            this.ctx.drawImage(img, 0, 120, 64, 64, obj.xPos, obj.yPos, 64, 64);
+
+          }
         }
       }
     }

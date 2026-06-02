@@ -334,6 +334,7 @@ export default class CollisionManager {
         };
 
         if (this.rectIntersect(playerHitBox, itemHitBox)) {
+          // Lógica para ELIXIR
           if (obj.type === "elixir") {
             if (globals.gameInstance && globals.gameInstance.storyChapter !== 2) {
               globals.gameInstance.startStory(2);
@@ -359,8 +360,69 @@ export default class CollisionManager {
             
             globals.items.splice(i, 1);
             i--;
-
-          } else if (obj.type === "potion") { 
+          } 
+          // Lógica para COLLECTABLE
+          else if (obj.type === "collectable") {
+            console.log("Collectable collected!");
+            
+            if (globals.player) {
+              globals.player.maxHp = 200;
+              globals.player.hp = 200;
+              globals.player.maxMana = 120;
+              globals.player.mana = 120;
+              console.log(`Player upgraded: HP=${globals.player.hp}/${globals.player.maxHp}, MP=${globals.player.mana}/${globals.player.maxMana}`);
+            }
+            
+            if (globals.eventWrath && globals.gameInstance) {
+              const oldLevel = globals.eventWrath.level;
+              globals.eventWrath.addProgress(40);
+              const newLevel = globals.eventWrath.level;
+              if (newLevel > oldLevel) {
+                globals.gameInstance.pendingLevelUp = true;
+                globals.gameInstance.pendingLevelValue = newLevel;
+              }
+            }
+            
+            globals.items.splice(i, 1);
+            i--;
+          }
+          // Lógica para SWORD
+          else if (obj.type === "sword") {
+            console.log("Sword collected! The legendary weapon!");
+            if (globals.gameInstance && globals.gameInstance.storyChapter !== 3) {
+              globals.gameInstance.startStory(3);
+            }
+            if (globals.player) {
+              globals.player.damage = (globals.player.damage || 10) * 2;
+              
+              globals.player.maxHp += 50;
+              globals.player.hp = globals.player.maxHp;
+              globals.player.maxMana += 30;
+              globals.player.mana = globals.player.maxMana;
+              
+              console.log(`Player got the Sword! Damage increased to ${globals.player.damage}`);
+            }
+            
+            globals.swordCollected = true;
+            
+            if (globals.eventWrath && globals.gameInstance) {
+              const oldLevel = globals.eventWrath.level;
+              globals.eventWrath.addProgress(50);
+              const newLevel = globals.eventWrath.level;
+              if (newLevel > oldLevel) {
+                globals.gameInstance.pendingLevelUp = true;
+                globals.gameInstance.pendingLevelValue = newLevel;
+              }
+            }
+            
+            globals.items.splice(i, 1);
+            
+            localStorage.setItem("swordCollected", "true");
+            
+            i--;
+          }
+          // Lógica para POTION
+          else if (obj.type === "potion") {
             console.log("Potion collected from level");
             if (globals.inventory) {
               globals.inventory.addPotion();
@@ -369,7 +431,7 @@ export default class CollisionManager {
               }
             }
             globals.items.splice(i, 1);
-            i--; 
+            i--;
           }
         }
       }

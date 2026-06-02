@@ -9,6 +9,11 @@
       "id": 2,
       "title": "CHAPTER 2: The Magic Elixir",
       "text": "Congratulations! You have found the magic elixir.\nThis is your chance to defeat the demon king.\nWe all support you.\nWe await your triumphant return."
+    },
+    {
+      "id": 3,
+      "title": "CHAPTER 3: The Ancestral Sword",
+      "text": "Congratulations! You have found the ancestral sword.\nDefeat all enemies and recover the peace of the Kingdom."
     }
   ]
 }
