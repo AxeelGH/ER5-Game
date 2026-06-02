@@ -30,8 +30,8 @@ class Game {
     globals.ctx = this.ctx;
     this.gameData = gameData;
 
-    this.gameState = GameState.LOADING;
-    globals.gameState = GameState.LOADING;
+    this.gameState = GameState.PLAYING;
+    globals.gameState = GameState.PLAYING;
     console.log("Game State: LOADING");
 
     this.score = 0;

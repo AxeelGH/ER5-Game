@@ -334,7 +334,8 @@ export default class CollisionManager {
         };
 
         if (this.rectIntersect(playerHitBox, itemHitBox)) {
-          if (obj.type === "elixir") {
+          // Lógica para ELIXIR
+          if (obj.type === "collectable") {
             if (globals.gameInstance && globals.gameInstance.storyChapter !== 2) {
               globals.gameInstance.startStory(2);
             }
@@ -359,8 +360,40 @@ export default class CollisionManager {
             
             globals.items.splice(i, 1);
             i--;
-
-          } else if (obj.type === "potion") { 
+          } 
+          // Lógica para COLLECTABLE (NUEVO)
+          else if (obj.type === "collectable") {
+            console.log("Collectable collected!");
+            
+            if (globals.player) {
+              // Aumentar vida máxima y vida actual a 200
+              globals.player.maxHp = 200;
+              globals.player.hp = 200;
+              
+              // Aumentar mana máxima y mana actual a 120
+              globals.player.maxMana = 120;
+              globals.player.mana = 120;
+              
+              console.log(`Player upgraded: HP=${globals.player.hp}/${globals.player.maxHp}, MP=${globals.player.mana}/${globals.player.maxMana}`);
+            }
+            
+            // Agregar progreso al EventWrath si existe
+            if (globals.eventWrath && globals.gameInstance) {
+              const oldLevel = globals.eventWrath.level;
+              globals.eventWrath.addProgress(40);
+              const newLevel = globals.eventWrath.level;
+              if (newLevel > oldLevel) {
+                globals.gameInstance.pendingLevelUp = true;
+                globals.gameInstance.pendingLevelValue = newLevel;
+              }
+            }
+            
+            // Eliminar el collectable del array
+            globals.items.splice(i, 1);
+            i--;
+          }
+          // Lógica para POTION
+          else if (obj.type === "potion") {
             console.log("Potion collected from level");
             if (globals.inventory) {
               globals.inventory.addPotion();
@@ -369,7 +402,7 @@ export default class CollisionManager {
               }
             }
             globals.items.splice(i, 1);
-            i--; 
+            i--;
           }
         }
       }

@@ -7,7 +7,8 @@
         { "id": 1, "xPos": 270, "yPos": 550 },
         { "id": 2, "xPos": 300, "yPos": 400 }
       ],
-      "items": [{ "id": 1, "xPos": 500, "yPos": 610 }]
+      "items": [{ "id": 1, "xPos": 500, "yPos": 610 },
+                { "id": 7, "xPos": 350, "yPos": 500 }]
     },
     {
       "id": 1,

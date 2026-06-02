@@ -7,6 +7,7 @@ import SuperSlime from "./SuperSlime.js";
 import SuperMage from "./SuperMage.js";
 import SuperSkeleton from "./SuperSkeleton.js";
 import SuperPlayer from "./SuperPlayer.js";
+import Collectable from "./Collectable.js";
 
 export default class SpriteFactory {
   static createPlayer(xPos, yPos, hp, mana, playerId) {
@@ -44,4 +45,8 @@ export default class SpriteFactory {
   static createItem(xPos, yPos) {
     return new Item(xPos, yPos);
   }
+
+  static createCollectable(xPos, yPos) {
+  return new Collectable(xPos, yPos);
+}
 }
