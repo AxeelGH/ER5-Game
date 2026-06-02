@@ -88,9 +88,10 @@ export default class LevelFactory {
 
     let item = null;
     
-    // Crear el tipo correcto de item según el tipo
     if (itemBaseData.type === "collectable") {
       item = SpriteFactory.createCollectable(config.xPos, config.yPos);
+    } else if (itemBaseData.type === "sword") {
+      item = SpriteFactory.createSword(config.xPos, config.yPos);
     } else {
       item = SpriteFactory.createItem(config.xPos, config.yPos);
     }

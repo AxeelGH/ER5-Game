@@ -241,6 +241,10 @@ export class View {
           if(obj.type === "potion")
           {
             this.ctx.drawImage(img, 0, 0, 20, 20, obj.xPos, obj.yPos, 20, 20);
+          }
+          if(obj.type === "sword")
+          {
+            this.ctx.drawImage(img, 0, 120, 64, 64, obj.xPos, obj.yPos, 64, 64);
 
           }
         }

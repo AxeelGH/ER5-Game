@@ -8,7 +8,9 @@
         { "id": 2, "xPos": 300, "yPos": 400 }
       ],
       "items": [{ "id": 1, "xPos": 500, "yPos": 610 },
-                { "id": 7, "xPos": 350, "yPos": 500 }]
+                { "id": 7, "xPos": 350, "yPos": 500 },
+                { "id": 8, "xPos": 200, "yPos": 500}
+]
     },
     {
       "id": 1,
@@ -63,7 +65,9 @@
       "id": 7,
       "name": "Beach",
       "enemies": [],
-      "items": [{ "id": 5, "xPos": 500, "yPos": 610 }]
+      "items": [{ "id": 5, "xPos": 500, "yPos": 610 },
+                { "id": 8, "xPos": 500, "yPos": 500}
+            ]
     }
   ]
 }
