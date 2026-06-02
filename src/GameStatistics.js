@@ -3,43 +3,45 @@ export default class GameStatistics {
     this.sessionId = crypto.randomUUID();
     this.playerId = playerId;
     this.startedAt = new Date(Date.now()).toISOString().replace('T',' ').replace('Z','');
-    this.finishedAt = null;
 
+
+    this.gamesPlayed = 0;
+    this.potionsConsumed = 0;
     this.enemiesKilled = 0;
-    this.damageDone = 0;
-    this.damageTaken = 0;
-    this.successfulFlees = 0;
-    this.failedFlees = 0;
-    this.consumedPotions = 0;
-
-    this.finalScore = 0;
-    this.result = null; // Victory|Defeat|Abandoned
-    this.levelReached = -1;
+    this.wins = 0;
+    this.losses = 0;
+    this.highScore = 0;
   }
 
+  registerGamePlayed() {
+    this.gamesPlayed++;
+  }
+  
   registerKill() {
     this.enemiesKilled++;
   }
-  registerFlee() {
-    this.successfulFlees++;
+  registerConsumedPotion() {
+    this.potionsConsumed++;
   }
-  registerFailedFlee() {
-    this.failedFlees++;
+
+  registerWin(score) {
+    this.wins++;
+    this.updateHighScore(score);
   }
-  addStatDamage(amount) {
-    this.damageDone += amount;
+
+  registerLoss(score) {
+    this.losses++;
+    this.updateHighScore(score);
   }
-  takenStatDamage(amount) {
-    this.damageTaken += amount;
-  }
+
   registerConsumedPotion() {
     this.consumedPotions++;
   }
 
-  finish(result, score) {
-    this.finishedAt = new Date(Date.now()).toISOString().replace('T',' ').replace('Z','');
-    this.result = result;
-    this.finalScore = score;
+  updateHighScore(score) {
+    if (score > this.highScore) {
+      this.highScore = score;
+    }
   }
 
   toPayload() {

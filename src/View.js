@@ -801,25 +801,25 @@ export class View {
   this.ctx.fillStyle = "#e9b200";
   this.ctx.font = "48px alkhemikal";
   this.ctx.textAlign = "center";
-  this.ctx.fillText("STATISTICS", this.ctx.canvas.width / 2, 80);
+  this.ctx.fillText("SESSION STATISTICS", this.ctx.canvas.width / 2, 80);
 
   this.ctx.font = "32px alkhemikal";
   this.ctx.fillStyle = "#ffffff";
 
   const leftCol = 400;
   const rightCol = (this.ctx.canvas.width / 4) * 2.5;
-  const startY = 220;
-  const gap = 60;
+  const startY = 240;
+  const gap = 70;
 
   this.ctx.textAlign = "center";
-  this.ctx.fillText("Enemies Killed: "   + stats.enemiesKilled,   leftCol, startY);
-  this.ctx.fillText("Damage Done: "      + stats.damageDone,      rightCol, startY);
-  this.ctx.fillText("Damage Taken: "     + stats.damageTaken,     leftCol, startY + gap);
-  this.ctx.fillText("Potions Used: "     + stats.consumedPotions, rightCol, startY + gap);
-  this.ctx.fillText("Successful Flees: " + stats.successfulFlees, leftCol, startY + gap * 2);
-  this.ctx.fillText("Failed Flees: "     + stats.failedFlees,     rightCol, startY + gap * 2);
-  this.ctx.fillText("Final Score: "      + stats.finalScore,      leftCol, startY + gap * 3);
-  this.ctx.fillText("Result: "           + stats.result,          rightCol, startY + gap * 3);
+  this.ctx.fillText("Games Played: "   + stats.gamesPlayed,    leftCol, startY);
+  this.ctx.fillText("High Score: "     + stats.highScore,      rightCol, startY);
+  
+  this.ctx.fillText("Wins: "           + stats.wins,           leftCol, startY + gap);
+  this.ctx.fillText("Losses: "         + stats.losses,         rightCol, startY + gap);
+  
+  this.ctx.fillText("Enemies Killed: " + stats.enemiesKilled,   leftCol, startY + gap * 2);
+  this.ctx.fillText("Potions Used: "   + stats.potionsConsumed, rightCol, startY + gap * 2);
 
   this.ctx.fillStyle = "yellow";
   this.ctx.fillText("Press SPACE to go back", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 340);

@@ -186,6 +186,7 @@ export default class Combat {
     globals.messageQueue.clear();
     if (playerDied) {
       globals.messageQueue.push(new Message((this.player.name || "Player") + " blacked out!", 'error'));
+      
       if (globals.gameInstance) {
         globals.gameInstance.combat = null;
         globals.gameInstance.gameState = GameState.GAME_OVER;

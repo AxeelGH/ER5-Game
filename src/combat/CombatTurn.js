@@ -271,7 +271,6 @@ export default class CombatTurn {
     if (damage > 0) {
       this.player.hp -= damage;
       this.player.hitBlinkTimer = 18;
-      globals.gameStats.takenStatDamage(damage);
       if (globals.damageNumbers) globals.damageNumbers.addDamageNumber(Math.floor(damage), 230, 350, true);
       if (globals.ParticleSystem) globals.ParticleSystem.createExplosion(230, 340, isCritical ? 1.5 : 0.8);
 
