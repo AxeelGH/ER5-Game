@@ -23,7 +23,7 @@ import Combat from "./combat/Combat.js";
 import MessageQueue from "./combat/MessageQueue.js";
 import EventWrath from "./events/EventWrath.js";
 import DamageNumbers from "./combat/DamageNumbers.js";
-import XPSystem from "./combat/XpSystem.js";
+import XPSystem from "./combat/XPSystem.js";
 
 class Game {
   constructor(canvas, gameData) {
@@ -247,7 +247,7 @@ class Game {
         break;
 
       case GameState.HIGHSCORE:
-        this.highScore(dt);
+        this.highScoreScreen(dt);
         break;
 
       case GameState.VICTORY:
@@ -502,6 +502,7 @@ class Game {
       globals.gameState = GameState.VICTORY;
       globals.gameStats.finish("Victory", this.score);
       globals.gameStats.registerWin(this.score);
+      this.saveHighScore(this.score)
       this.postStats();
     }
   }
@@ -588,7 +589,7 @@ class Game {
     }
   }
 
-  highScore(dt) {
+  highScoreScreen(dt) {
     globals.subMenuIndex = 0;
     if (globals.action.confirm) {
       this.gameState = GameState.MENU;
@@ -610,6 +611,7 @@ class Game {
 
     if (!this.gameOverProcessed) {
       globals.gameStats.registerLoss(this.score);
+      this.saveHighScore(this.score);
       this.postStats();
       this.gameOverProcessed = true;
     }
@@ -898,6 +900,40 @@ class Game {
 
     });
     console.log("stats post" + JSON.stringify(globals.gameStats.toPayload()));
+  }
+
+   saveHighScore(score) {
+   
+    let playerName = globals.userName || "Player";
+ 
+    
+    let scores = [];
+    const saved = localStorage.getItem("highScores");
+    if (saved) {
+      scores = JSON.parse(saved);
+    }
+ 
+   
+    scores.push({ name: playerName, score: score });
+ 
+    
+    for (let i = 0; i < scores.length - 1; i++) {
+      for (let j = i + 1; j < scores.length; j++) {
+        if (scores[j].score > scores[i].score) {
+          let temp = scores[i];
+          scores[i] = scores[j];
+          scores[j] = temp;
+        }
+      }
+    }
+ 
+    
+    if (scores.length > 5) {
+      scores = scores.slice(0, 5);
+    }
+ 
+    localStorage.setItem("highScores", JSON.stringify(scores));
+    console.log("High score saved:", score);
   }
 
   startStory(chapterId) {
