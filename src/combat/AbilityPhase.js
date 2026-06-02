@@ -27,7 +27,6 @@ export default class AbilityPhase extends CombatPhase {
         const enemy = this.enemies[i];
         if (enemy.isAlive) {
           enemy.hp -= this.damage;
-          globals.gameStats.addStatDamage(this.damage);
           if (globals.damageNumbers) globals.damageNumbers.addDamageNumber(this.damage, 700, 250, false);
           if (enemy.hp <= 0) {
             enemy.isAlive = false;

@@ -115,7 +115,6 @@ export default class AttackPhase extends CombatPhase {
     if (damage > 0) {
       targetEnemy.hp -= damage;
       targetEnemy.hitBlinkTimer = 18;
-      globals.gameStats.addStatDamage(damage);
       if (globals.damageNumbers) globals.damageNumbers.addDamageNumber(damage, 700, 250, false);
       this.messageQueue.push(new Message(targetEnemy.name + " took " + damage + " damage!", 'damage'));
 

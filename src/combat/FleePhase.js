@@ -15,7 +15,7 @@ export default class FleePhase extends CombatPhase {
       if (fleeResult === 1) {
         this.messageQueue.push(new Message("You manage to slip away from the enemy's grasp. You're safe... for now.", 'flee'));
         this.fled = true;
-        globals.gameStats.registerFlee();
+        //globals.gameStats.registerFlee();
       } else if (fleeResult === 2) {
         this.player.hp -= 5 + this.dice.rollDice(6);
         this.messageQueue.push(new Message("You escape, but not without a scratch! The enemy lands a parting blow.", 'flee'));
@@ -29,7 +29,7 @@ export default class FleePhase extends CombatPhase {
         this.messageQueue.push(new Message("Can't escape!", 'error'));
         this.messageQueue.push(new Message("The enemy blocked the way!", 'error'));
         this.fled = false;
-        globals.gameStats.registerFailedFlee();
+        //globals.gameStats.registerFailedFlee();
       }
       if (this.fled) this.echoesOfTheCoward();
     } else {

@@ -30,8 +30,8 @@ class Game {
     globals.ctx = this.ctx;
     this.gameData = gameData;
 
-    this.gameState = GameState.PLAYING;
-    globals.gameState = GameState.PLAYING;
+    this.gameState = GameState.LOADING;
+    globals.gameState = GameState.LOADING;
     console.log("Game State: LOADING");
 
     this.score = 0;
@@ -274,6 +274,9 @@ showLevelUpMessage(level) {
 
           switch (globals.menuIndex) {
             case 0:
+              this.score = 0;
+              
+              globals.gameStats.registerGamePlayed();
               this.startStory(1);
               break;
 
@@ -365,6 +368,8 @@ showLevelUpMessage(level) {
         if (this.timer <= 0) {
           this.gameState = GameState.GAME_OVER;
           globals.gameState = GameState.GAME_OVER;
+          globals.gameStats.registerLoss(this.score);
+          this.postStats();
         }
 
         if (this.showLevelUpMessageTimer > 0) {
@@ -416,6 +421,7 @@ showLevelUpMessage(level) {
           this.gameState = GameState.VICTORY;
           globals.gameState = GameState.VICTORY;
           globals.gameStats.finish("Victory", this.score);
+          globals.gameStats.registerWin(this.score);
           this.postStats();
         }
         break;
@@ -503,12 +509,17 @@ showLevelUpMessage(level) {
         break;  
 
       case GameState.GAME_OVER:
-        globals.gameStats.finish("Defeat",this.score);
-        this.postStats();
+
+        if (!this.gameOverProcessed) {
+            globals.gameStats.registerLoss(this.score);
+            this.postStats();
+            this.gameOverProcessed = true; 
+        }
         if (globals.action.confirm) {
           this.gameState = GameState.MENU;
           globals.gameState = GameState.MENU;
           globals.action.confirm = false;
+          this.gameOverProcessed = false;
         }
         break;
       case GameState.STATS:
