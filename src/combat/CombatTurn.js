@@ -4,7 +4,7 @@ import AbilityPhase from "./AbilityPhase.js";
 import InventoryPhase from "./InventoryPhase.js";
 import FleePhase from "./FleePhase.js";
 import MovePhase from "./MovePhase.js";
-import { GameState } from "../config/constants.js";
+import { GameState, State, SpriteID } from "../config/constants.js";
 import Message from "./Message.js";
 
 export default class CombatTurn {
@@ -284,6 +284,12 @@ export default class CombatTurn {
     if (this.animationDelay > 0) {
       this.animationDelay--;
       return;
+    }
+
+    if (this.entity.id === SpriteID.MAGE || this.entity.id === SpriteID.SUPER_MAGE) {
+      if (globals.ParticleSystem) {
+        globals.ParticleSystem.createMagicBolt(this.entity.combatX, 250, 230, 340, 0.8);
+      }
     }
     const damageMultiplier = globals.eventWrath.getEnemyDamageMultiplier();
     const playerPosition = this.getPlayerPositionIndex();
