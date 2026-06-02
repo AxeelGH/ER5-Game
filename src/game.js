@@ -90,6 +90,7 @@ class Game {
     this.storyTimer = 0;
     this.pendingGameState = null;
     this.swordStoryEndsGame = false;
+    this.collectedItemsIds = [];
   }
 
   addEnemyProgress() {
@@ -421,8 +422,17 @@ class Game {
         globals.enemies = cloneEnemies;
 
         let cloneItems = [];
-        for (let i = 0; i < level.items.length; i++) {
-          cloneItems[i] = Item.clone(level.items[i]);
+        for (let i = 0; i < currentLevel.items.length; i++) {
+          let itemDef = currentLevel.items[i];
+          let itemCollected = false;
+          for(let j = 0;j < this.collectedItemsIds.length;j++){
+            if(this.collectedItemsIds[j] === itemDef.xPos + "_" + itemDef.yPos){
+              itemCollected = true;
+            }
+          }
+          if(!itemCollected) {
+            cloneItems.push(Item.clone(itemDef));
+          }
         }
         globals.items = cloneItems;
 
@@ -741,8 +751,16 @@ class Game {
 
       let cloneItems = [];
       for (let i = 0; i < currentLevel.items.length; i++) {
-        cloneItems[i] = Item.clone(currentLevel.items[i]);
-        console.log("Cloned potion: ", cloneItems[i]);
+        let itemDef = currentLevel.items[i];
+        let itemCollected = false;
+        for(let j = 0;j < this.collectedItemsIds.length;j++){
+          if(this.collectedItemsIds[j] === itemDef.xPos + "_" + itemDef.yPos){
+            itemCollected = true;
+          }
+        }
+        if(!itemCollected) {
+          cloneItems.push(Item.clone(itemDef));
+        }
       }
       globals.items = cloneItems;
       globals.currentScreen = currentLevel.id;
@@ -796,12 +814,20 @@ class Game {
       globals.enemies = cloneEnemies;
 
       let cloneItems = [];
-
+      console.log("Items recogidos:", this.collectedItemsIds);
+      console.log("Items del nivel:", level.items);
       for (let i = 0; i < level.items.length; i++) {
-        cloneItems[i] = Item.clone(level.items[i]);
-        console.log("Cloned potion: ", cloneItems[i]);
+        let itemDef = level.items[i];
+        let itemCollected = false;
+        for(let j = 0;j < this.collectedItemsIds.length;j++){
+          if(this.collectedItemsIds[j] === itemDef.xPos + "_" + itemDef.yPos){
+            itemCollected = true;
+          }
+        }
+        if(!itemCollected) {
+          cloneItems.push(Item.clone(itemDef));
+        }
       }
-
       globals.items = cloneItems;
 
       console.log("Screen: " + level.name);
@@ -1024,6 +1050,7 @@ class Game {
     globals.currentEnemy = null;
     globals.currentEnemies = null;
     globals.messageQueue.clear();
+    this.collectedItemsIds = [];
 
     if (globals.ParticleSystem) globals.ParticleSystem.clear();
 

@@ -367,7 +367,9 @@ export default class CollisionManager {
                 globals.gameInstance.pendingLevelValue = newLevel;
               }
             }
-            
+            if (globals.gameInstance) {
+              globals.gameInstance.collectedItemsIds.push(obj.xPos + "_" + obj.yPos);
+            }
             globals.items.splice(i, 1);
             i--;
           } 
@@ -394,7 +396,9 @@ export default class CollisionManager {
                 globals.gameInstance.pendingLevelValue = newLevel;
               }
             }
-            
+            if (globals.gameInstance) {
+              globals.gameInstance.collectedItemsIds.push(obj.xPos + "_" + obj.yPos);
+            }
             globals.items.splice(i, 1);
             i--;
           }
@@ -427,7 +431,9 @@ export default class CollisionManager {
                 globals.gameInstance.pendingLevelValue = newLevel;
               }
             }
-            
+            if (globals.gameInstance) {
+              globals.gameInstance.collectedItemsIds.push(obj.xPos + "_" + obj.yPos);
+            }
             globals.items.splice(i, 1);
             
             localStorage.setItem("swordCollected", "true");
@@ -442,6 +448,9 @@ export default class CollisionManager {
               if (globals.gameInstance) {
                 globals.gameInstance.addItemProgress();
               }
+            }
+            if (globals.gameInstance) {
+              globals.gameInstance.collectedItemsIds.push(obj.xPos + "_" + obj.yPos);
             }
             globals.items.splice(i, 1);
             i--;
@@ -489,7 +498,6 @@ export default class CollisionManager {
   const extraEnemies = eventWrath.getExtraEnemyCount(); 
   const MAX_ENEMIES = 3;
 
-  // OBTENER TODOS LOS ENEMIGOS VIVOS DEL MAPA, NO SOLO EL QUE COLISIONÓ
   let allAliveEnemies = [];
   for (let i = 0; i < globals.enemies.length; i++) {
     if (globals.enemies[i].isAlive) {
@@ -530,12 +538,11 @@ export default class CollisionManager {
     }
   }
 
-  // Limitar a MAX_ENEMIES (3)
+
   if (enemiesToSpawn.length > MAX_ENEMIES) {
     enemiesToSpawn = enemiesToSpawn.slice(0, MAX_ENEMIES);
   }
 
-  // Agregar enemigos extras por EventWrath si hay espacio
   let availableSlots = MAX_ENEMIES - enemiesToSpawn.length;
   let extrasToAdd = Math.min(extraEnemies, availableSlots);
 
