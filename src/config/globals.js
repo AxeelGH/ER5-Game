@@ -59,4 +59,5 @@ export default {
   
   eventWrath: null,
   gameStats : null,
+  collectableCollected: false,
 };
