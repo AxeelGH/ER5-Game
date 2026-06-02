@@ -121,7 +121,7 @@ export default class Combat {
 
   initCombat() {
     let enemyName = this.enemies[0] ? (this.enemies[0].name || "wild enemy") : "wild enemy";
-    globals.messageQueue.push(new Message("A wild " + enemyName + " appeared!", 'info'));
+    globals.messageQueue.push(new Message("Sudden encounter! An " + enemyName + " draws its weapon!", 'info'));
     this.state = CombatState.PLAY_TURN;
     globals.combatState = CombatState.PLAY_TURN;
     this.currentTurnIndex = 0;
@@ -177,7 +177,7 @@ export default class Combat {
 
   startNewRound() {
     this.currentRound++;
-    globals.messageQueue.push(new Message("Round " + this.currentRound + "!", 'info'));
+    globals.messageQueue.push(new Message("Round " + this.currentRound + " begins! The battle intensifies...", 'info'));
 
     for (let i = 0; i < this.turns.length; i++) {
       let turn = this.turns[i];
@@ -196,11 +196,11 @@ export default class Combat {
     this.endResult = playerDied;
 
     if (playerDied) {
-      let msg = new Message((this.player.name || "Player") + " blacked out!", 'error');
+      let msg = new Message("You have been overwhelmed... The world goes dark. GAME OVER.", 'error');
       msg.charDelay = 10;
       globals.messageQueue.push(msg);
     } else {
-      let msg1 = new Message("You won the battle!", 'info');
+      let msg1 = new Message("VICTORY! As the final enemy falls, a surge of energy washes over you. You feel refreshed and invigorated.", 'info');
       msg1.charDelay = 10;
       globals.messageQueue.push(msg1);
       

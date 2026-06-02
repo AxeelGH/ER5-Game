@@ -42,6 +42,7 @@ export default class Skeleton extends Enemy {
     const cloneSkeleton = new Skeleton(skeleton.xPos, skeleton.yPos);
 
     cloneSkeleton.spriteID = skeleton.spriteID;
+    cloneSkeleton.name = skeleton.name;
     cloneSkeleton.state = skeleton.state;
     cloneSkeleton.life = skeleton.life;
 

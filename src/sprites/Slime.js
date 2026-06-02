@@ -42,6 +42,7 @@ export default class Slime extends Enemy {
     const cloneSlime = new Slime(slime.xPos, slime.yPos);
 
     cloneSlime.spriteID = slime.spriteID;
+    cloneSlime.name = slime.name;
     cloneSlime.state = slime.state;
     cloneSlime.life = slime.life;
 

@@ -129,6 +129,7 @@ export default class LevelFactory {
       }
 
       if (enemy) {
+        enemy.name = enemyStats.name;
         enemies.push(enemy);
       }
     }

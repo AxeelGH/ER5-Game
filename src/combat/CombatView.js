@@ -74,6 +74,11 @@ export default class CombatView {
     const barX = x + width / 2 - barWidth / 2;
     const barY = y;
 
+    this.ctx.fillStyle = "#ffffff";
+    this.ctx.font = "bold 16px alkhemikal";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText(enemy.name, barX + barWidth / 2, barY - 8);
+
     this.ctx.fillStyle = "#330000";
     this.ctx.fillRect(barX, barY, barWidth, barHeight);
 

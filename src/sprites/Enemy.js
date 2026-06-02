@@ -19,6 +19,7 @@ export default class Enemy extends Sprite {
     this.hitBox = hitBox;
     this.hp = hp;
     this.maxHp = hp;
+    this.name = name;
     this.isAlive = true;
     this.isCollidingWithPlayer = false;
     this.animationTimer = 0;

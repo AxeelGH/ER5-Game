@@ -13,7 +13,7 @@ export default class SuperSkeleton extends Enemy {
     const physics = new Physics(20, 0, 20);
     const hitBox = new HitBox(25, 25, 20, 20);
 
-    super(SpriteID.SUPER_SKELETON, State.SUPER_SKELETON_STILL, xPos, yPos, imageSet, frames, physics, hitBox, 50);
+    super(SpriteID.SUPER_SKELETON, State.SUPER_SKELETON_STILL, xPos, yPos, imageSet, frames, physics, hitBox, 50, name);
 
     this.baseX = xPos;
     this.range = 60;
