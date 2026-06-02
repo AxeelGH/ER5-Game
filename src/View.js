@@ -644,12 +644,44 @@ export class View {
     this.ctx.textAlign = "center";
     this.ctx.fillText("HIGH SCORES", this.ctx.canvas.width / 2, 80);
 
+      let scores = [];
+    const saved = localStorage.getItem("highScores");
+    if (saved) {
+      scores = JSON.parse(saved);
+    }
+ 
     this.ctx.font = "32px alkhemikal";
-    this.ctx.fillStyle = "#e7e7e7";
-    var scores = ["1. WARRIOR - 9999", "2. KNIGHT - 8500", "3. MAGE - 7200", "4. ROGUE - 6800", "5. CLERIC - 5500"];
-
-    for (var i = 0; i < scores.length; i++) {
-      this.ctx.fillText(scores[i], this.ctx.canvas.width / 2, 230 + i * 50);
+    this.ctx.textAlign = "center";
+ 
+    if (scores.length === 0) {
+      
+      this.ctx.fillStyle = "#aaaaaa";
+      this.ctx.fillText("No scores yet. Play a game first!", this.ctx.canvas.width / 2, 280);
+    } else {
+      
+      this.ctx.fillStyle = "#e9b200";
+      this.ctx.fillText("#    PLAYER                  SCORE", this.ctx.canvas.width / 2, 180);
+ 
+      
+      this.ctx.fillStyle = "#666666";
+      this.ctx.fillRect(this.ctx.canvas.width / 2 - 300, 195, 600, 2);
+ 
+     
+      for (let i = 0; i < scores.length; i++) {
+        let entry = scores[i];
+ 
+        
+        if (i === 0) {
+          this.ctx.fillStyle = "#ffd700";
+        } else {
+          this.ctx.fillStyle = "#e7e7e7";
+        }
+ 
+        let position = (i + 1) + ".";
+        let name = entry.name || "Unknown";
+        let score = entry.score;
+        this.ctx.fillText(position + "   " + name + "   " + score + " XP", this.ctx.canvas.width / 2, 240 + i * 55);
+      }
     }
 
     this.ctx.fillStyle = "yellow";
