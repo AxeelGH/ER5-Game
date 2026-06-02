@@ -16,7 +16,7 @@ export default class SuperPlayer extends Player {
     this.id = SpriteID.SUPER_HERO;
     this.state = State.STILL;
     this.imageSet = new ImageSet(23, 0, 160, 160, 50, 30);
-    this.frames = new Frames(4, 12); 
+    this.frames = new Frames(4, 12);
     this.physics = new Physics(20, 0, 30);
     this.hitBox = new HitBox(32, 32, 7.5, 29);
 

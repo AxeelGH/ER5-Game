@@ -25,7 +25,7 @@ export default class AbilityPhase extends CombatPhase {
           if (globals.damageNumbers) globals.damageNumbers.addDamageNumber(this.damage, 700, 250, false);
           if (enemy.hp <= 0) {
             enemy.isAlive = false;
-            this.messageQueue.push(new Message("An enemy fainted!", 'info'));
+            this.messageQueue.push(new Message(enemy.name + " fainted!", 'info'));
             for (let j = 0; j < globals.map.enemies.length; j++) {
               if (globals.map.enemies[j].id === enemy.id) globals.map.enemies[j].active = false;
             }

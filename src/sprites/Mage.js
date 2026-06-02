@@ -43,6 +43,7 @@ export default class Mage extends Enemy {
     const cloneMage = new Mage(mage.xPos, mage.yPos);
 
     cloneMage.spriteID = mage.spriteID;
+    cloneMage.name = mage.name;
     cloneMage.state = mage.state;
     cloneMage.life = mage.life;
 

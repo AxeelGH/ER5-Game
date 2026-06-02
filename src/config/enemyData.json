@@ -3,46 +3,55 @@
     {
       "id": 1,
       "type": "slime",
+      "name": "Guardian Slime",
       "hp": 50
     },
     {
       "id": 2,
       "type": "mage",
+      "name": "Fire Mage",
       "hp": 60
     },
     {
       "id": 3,
       "type": "mage",
+      "name": "Ice Mage",
       "hp": 50
     },
     {
       "id": 4,
       "type": "skeleton",
+      "name": "Skeleton Warrior",
       "hp": 50
     },
     {
       "id": 5,
       "type": "skeleton",
+      "name": "Skeleton Archer",
       "hp": 80
     },
     {
       "id": 6,
       "type": "slime",
+      "name": "Poison Slime",
       "hp": 50
     },
     {
       "id": 7,
       "type": "skeleton",
+      "name": "Skeleton Knight",
       "hp": 80
     },
     {
       "id": 8,
       "type": "mage",
+      "name": "Dark Mage",
       "hp": 60
     },
     {
       "id": 9,
       "type": "slime",
+      "name": "Green Slime",
       "hp": 50
     }
   ]

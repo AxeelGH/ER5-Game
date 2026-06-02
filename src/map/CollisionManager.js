@@ -483,8 +483,10 @@ export default class CollisionManager {
         const superSlime1 = SpriteFactory.createSuperSlime(550, 200);
         const superSlime2 = SpriteFactory.createSuperSlime(650, 200);
         const hpMultiplier = eventWrath.getEnemyHpMultiplier();
+        superSlime1.name = enemy.name;
         superSlime1.hp = 80 * hpMultiplier;
         superSlime1.maxHp = 80 * hpMultiplier;
+        superSlime2.name = "Guardian Shadow";
         superSlime2.hp = 80 * hpMultiplier;
         superSlime2.maxHp = 80 * hpMultiplier;
         enemiesToSpawn = [superSlime1, superSlime2];
@@ -501,10 +503,12 @@ export default class CollisionManager {
                 extraEnemy = SpriteFactory.createSuperSlime(550 + (i * 100), 200);
                 extraEnemy.hp = 80 * hpMultiplier;
                 extraEnemy.maxHp = 80 * hpMultiplier;
+                extraEnemy.name = `Dark Slime${i+1}`;
             } else {
                 extraEnemy = SpriteFactory.createSuperSkeleton(550 + (i * 100), 150);
                 extraEnemy.hp = 100 * hpMultiplier;
                 extraEnemy.maxHp = 100 * hpMultiplier;
+                extraEnemy.name = `Skeleton Defender ${i+1}`;
             }
             extraEnemy.isAlive = true;
             enemiesToSpawn.push(extraEnemy);
@@ -523,10 +527,12 @@ export default class CollisionManager {
                 extraEnemy = SpriteFactory.createSuperSlime(550 + (i * 100), 200);
                 extraEnemy.hp = 80 * eventWrath.getEnemyHpMultiplier();
                 extraEnemy.maxHp = 80 * eventWrath.getEnemyHpMultiplier();
+                extraEnemy.name = `Super Slime ${i+1}`;
             } else {
                 extraEnemy = SpriteFactory.createSuperSkeleton(550 + (i * 100), 150);
                 extraEnemy.hp = 100 * eventWrath.getEnemyHpMultiplier();
                 extraEnemy.maxHp = 100 * eventWrath.getEnemyHpMultiplier();
+                extraEnemy.name = `Skeleton Guardian ${i+1}`;
             }
             extraEnemy.isAlive = true;
             enemiesToSpawn.push(extraEnemy);

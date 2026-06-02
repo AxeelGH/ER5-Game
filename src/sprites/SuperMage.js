@@ -13,7 +13,7 @@ export default class SuperMage extends Enemy {
     const physics = new Physics(20, 0, 20);
     const hitBox = new HitBox(25, 25, 20, 20);
 
-    super(SpriteID.SUPER_MAGE, State.SUPER_MAGE_STILL, xPos, yPos, imageSet, frames, physics, hitBox, 50);
+    super(SpriteID.SUPER_MAGE, State.SUPER_MAGE_STILL, xPos, yPos, imageSet, frames, physics, hitBox, 50, name);
 
     this.baseX = xPos;
     this.range = 60;

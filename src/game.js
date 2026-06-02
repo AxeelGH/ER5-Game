@@ -437,10 +437,10 @@ showLevelUpMessage(level) {
         break;
 
       case GameState.COMBAT:
-        this.combat.update(globals.combatState);
-        if (globals.messageQueue) {
+        if (globals.messageQueue) { 
           globals.messageQueue.update();
         }
+        this.combat.update(globals.combatState);
         break;
 
       case GameState.HISTORY:
@@ -595,6 +595,23 @@ showLevelUpMessage(level) {
       newEnemy.hp = 50 * hpMultiplier;
       newEnemy.maxHp = 50 * hpMultiplier;
     }
+
+    let count = 0;
+    for (let i = 0; i < globals.enemies.length; i++) {
+      const e = globals.enemies[i];
+      if (e.isAlive && e.id === newEnemy.id) {
+        count++;
+      }
+    }
+    count++; 
+
+    const typeNames = {
+      slime: "Slime",
+      skeleton: "Skeleton",
+      mage: "Mage"
+    };
+    const capitalizedType = typeNames[randomType] || randomType;
+    newEnemy.name = capitalizedType + " Savage " + count;
     
     let empty = [false, false, false];
     for ( let i = 0; i < globals.enemies.length; i++) {

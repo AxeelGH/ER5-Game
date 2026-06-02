@@ -21,6 +21,8 @@ export default class Combat {
     this.combatSprites(player, enemies);
     this.orderTurn(player, enemies);
     this.assignCombatPositions();
+    this.endPending = false;
+    this.endResult = null;
   }
 
   create(player, enemies) {
@@ -32,6 +34,13 @@ export default class Combat {
 
   update(combatState) {
     if (globals.messageQueue) globals.messageQueue.update();
+
+    if (this.endPending) {
+      if (!globals.messageQueue.isBusy()) {
+        this.finalizeEnd();
+      }
+      return;
+    }
 
     switch (combatState) {
       case CombatState.INIT_COMBAT:
@@ -47,9 +56,9 @@ export default class Combat {
   }
 
   assignCombatPositions() {
-    const positionX = [650, 500, 400]; 
+    const positionX = [650, 500, 400];
     const enemiesAlive = [];
-    
+
     for (let i = 0; i < this.enemies.length; i++) {
       if (this.enemies[i].isAlive) enemiesAlive.push(this.enemies[i]);
     }
@@ -58,7 +67,6 @@ export default class Combat {
       enemiesAlive[0].combatXIndex = 1;
       enemiesAlive[0].combatX = positionX[1];
     } else {
-
       for (let i = 0; i < enemiesAlive.length; i++) {
         let indexPosition = i % 3;
         enemiesAlive[i].combatXIndex = indexPosition;
@@ -113,7 +121,7 @@ export default class Combat {
 
   initCombat() {
     let enemyName = this.enemies[0] ? (this.enemies[0].name || "wild enemy") : "wild enemy";
-    globals.messageQueue.push(new Message("A wild " + enemyName + " appeared!", 'info'));
+    globals.messageQueue.push(new Message("Sudden encounter! An " + enemyName + " draws its weapon!", 'info'));
     this.state = CombatState.PLAY_TURN;
     globals.combatState = CombatState.PLAY_TURN;
     this.currentTurnIndex = 0;
@@ -169,8 +177,8 @@ export default class Combat {
 
   startNewRound() {
     this.currentRound++;
-    globals.messageQueue.push(new Message("Round " + this.currentRound + "!", 'info'));
-    
+    globals.messageQueue.push(new Message("Round " + this.currentRound + " begins! The battle intensifies...", 'info'));
+
     for (let i = 0; i < this.turns.length; i++) {
       let turn = this.turns[i];
       turn.completed = false;
@@ -183,40 +191,52 @@ export default class Combat {
   }
 
   endCombat(playerDied) {
-    globals.messageQueue.clear();
+    if (this.endPending) return;
+    this.endPending = true;
+    this.endResult = playerDied;
+
     if (playerDied) {
-      globals.messageQueue.push(new Message((this.player.name || "Player") + " blacked out!", 'error'));
+      let msg = new Message("You have been overwhelmed... The world goes dark. GAME OVER.", 'error');
+      msg.charDelay = 10;
+      globals.messageQueue.push(msg);
+    } else {
+      let msg1 = new Message("VICTORY! As the final enemy falls, a surge of energy washes over you. You feel refreshed and invigorated.", 'info');
+      msg1.charDelay = 10;
+      globals.messageQueue.push(msg1);
       
+      let msg2 = new Message("Got " + (100 * this.enemies.length) + " experience!", 'info');
+      msg2.charDelay = 10;
+      globals.messageQueue.push(msg2);
+      let msg3 = new Message("                                   ", 'info');
+      msg3.charDelay = 10;
+      globals.messageQueue.push(msg3);
+    }
+  }
+
+  finalizeEnd() {
+    if (this.endResult) {
       if (globals.gameInstance) {
         globals.gameInstance.combat = null;
         globals.gameInstance.gameState = GameState.GAME_OVER;
       }
       globals.gameState = GameState.GAME_OVER;
     } else {
-      globals.messageQueue.push(new Message("You won the battle!", 'info'));
-      globals.messageQueue.push(new Message("Got " + (100 * this.enemies.length) + " experience!", 'info'));
-
       if (globals.gameInstance && globals.gameInstance.backupPlayer) {
-      const original = globals.gameInstance.backupPlayer;
-
-      original.hp = Math.min(original.maxHp, Math.ceil(this.player.hp / 2));
-      original.mana = Math.min(original.maxMana, Math.ceil(this.player.mana / 2));
-
-      globals.player = original;
-      globals.gameInstance.backupPlayer = null;
-    }
-      if (globals.gameInstance) {
-        for (let i = 0; i < this.enemies.length; i++) {
-          let enemy = this.enemies[i];
-          if (!enemy.isAlive) {
-            globals.gameStats.registerKill();
-            globals.gameInstance.addEnemyProgress();
-          }
+        const original = globals.gameInstance.backupPlayer;
+        original.hp = Math.min(original.maxHp, Math.ceil(this.player.hp / 2));
+        original.mana = Math.min(original.maxMana, Math.ceil(this.player.mana / 2));
+        globals.player = original;
+        globals.gameInstance.backupPlayer = null;
+      }
+      for (let i = 0; i < this.enemies.length; i++) {
+        let enemy = this.enemies[i];
+        if (!enemy.isAlive) {
+          globals.gameStats.registerKill();
+          if (globals.gameInstance) globals.gameInstance.addEnemyProgress();
         }
       }
       let manaGain = 10 * this.enemies.length;
-      this.player.mana = this.player.mana + manaGain;
-      if (this.player.mana > this.player.maxMana) this.player.mana = this.player.maxMana;
+      this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaGain);
       if (globals.gameInstance) {
         globals.gameInstance.score += 100 * this.enemies.length;
         globals.gameInstance.combat = null;
@@ -224,7 +244,11 @@ export default class Combat {
       }
       globals.gameState = GameState.PLAYING;
     }
+
     globals.currentEnemy = null;
     globals.currentEnemies = null;
+    globals.messageQueue.clear();
+
+    this.endPending = false;
   }
 }

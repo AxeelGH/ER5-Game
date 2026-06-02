@@ -93,13 +93,13 @@ export default class AttackPhase extends CombatPhase {
     if (isCritical) {
       if (enemyPosition === 2) {
         damage = 22 + 10 + this.dice.rollDice(6) + this.dice.rollDice(6);
-        this.messageQueue.push(new Message("Critical hit! It's super effective!", 'critical'));
+        this.messageQueue.push(new Message(targetEnemy.name + " critically hit! It's super effective!", 'critical'));
       } else if (enemyPosition === 1) {
         damage = 16 + 10 + this.dice.rollDice(6);
-        this.messageQueue.push(new Message("Critical hit!", 'critical'));
+        this.messageQueue.push(new Message(targetEnemy.name + " critically hit!", 'critical'));
       } else {
         damage = 0;
-        this.messageQueue.push(new Message("But it missed!", 'error'));
+        this.messageQueue.push(new Message(targetEnemy.name + " missed the attack!", 'error'));
       }
     } else {
       if (enemyPosition === 2) {
@@ -108,7 +108,7 @@ export default class AttackPhase extends CombatPhase {
         damage = 10 + this.dice.rollDice(6);
       } else {
         damage = 0;
-        this.messageQueue.push(new Message("The enemy avoided the attack!", 'move'));
+        this.messageQueue.push(new Message(targetEnemy.name + " avoided the attack!", 'move'));
       }
     }
 
@@ -116,7 +116,7 @@ export default class AttackPhase extends CombatPhase {
       targetEnemy.hp -= damage;
       targetEnemy.hitBlinkTimer = 18;
       if (globals.damageNumbers) globals.damageNumbers.addDamageNumber(damage, 700, 250, false);
-      this.messageQueue.push(new Message("It dealt " + damage + " damage!", 'damage'));
+      this.messageQueue.push(new Message(targetEnemy.name + " took " + damage + " damage!", 'damage'));
 
       if (isCritical) {
         this.pushBackEnemy(targetEnemy);
@@ -124,7 +124,7 @@ export default class AttackPhase extends CombatPhase {
 
       if (targetEnemy.hp <= 0) {
         targetEnemy.isAlive = false;
-        this.messageQueue.push(new Message("The enemy fainted!", 'info'));
+        this.messageQueue.push(new Message(targetEnemy.name + " has been slain!", 'info'));
         for (let i = 0; i < globals.map.enemies.length; i++) {
           if (globals.map.enemies[i].id === targetEnemy.id) globals.map.enemies[i].active = false;
         }
@@ -164,7 +164,7 @@ export default class AttackPhase extends CombatPhase {
       }
       
       if (!positionFree) {
-        this.messageQueue.push(new Message("Another enemy blocks the push!", 'error'));
+        this.messageQueue.push(new Message(enemy.name + " is blocked by another enemy!", 'error'));
         if (globals.ParticleSystem) {
           globals.ParticleSystem.createExplosion(enemy.combatX, 340, 0.5);
         }
@@ -174,12 +174,12 @@ export default class AttackPhase extends CombatPhase {
       const positions = [650, 500, 400];
       enemy.combatXIndex = newPos;
       enemy.combatX = positions[newPos];
-      this.messageQueue.push(new Message("The enemy was pushed back!", 'move'));
+      this.messageQueue.push(new Message(enemy.name + " was pushed back!", 'move'));
       if (globals.ParticleSystem) {
         globals.ParticleSystem.createExplosion(enemy.combatX, 340, 0.8);
       }
     } else {
-      this.messageQueue.push(new Message("The enemy couldn't be pushed back further!", 'info'));
+      this.messageQueue.push(new Message(enemy.name + " couldn't be pushed back further!", 'info'));
     }
   }
 
@@ -209,7 +209,7 @@ export default class AttackPhase extends CombatPhase {
       ctx.fillStyle = isSelected ? "yellow" : "white";
       ctx.font = isSelected ? "bold 20px alkhemikal" : "20px alkhemikal";
       let enemyType = enemy.id === 2 ? "SLIME" : enemy.id === 3 ? "SKELETON" : "MAGE";
-      ctx.fillText(enemyType + " " + (visibleIndex + 1), x, 480);
+      ctx.fillText(enemy.name + " " + (visibleIndex + 1), x, 480);
       ctx.font = isSelected ? "bold 16px alkhemikal" : "16px alkhemikal";
       ctx.fillStyle = isSelected ? "yellow" : "#cccccc";
       ctx.fillText("HP: " + Math.floor(enemy.hp) + "/" + enemy.maxHp, x, 510);

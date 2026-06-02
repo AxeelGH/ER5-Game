@@ -64,7 +64,7 @@ export default class CombatView {
 
   if (player) {
     player.combatUpdate();
-    this.drawPlayer(player, player.xPos, player.yPos, 300, 300);
+    this.drawPlayer(player, player.xPos - 50, player.yPos, 300, 300);
   }
 }
 
@@ -73,6 +73,11 @@ export default class CombatView {
     const barHeight = 15;
     const barX = x + width / 2 - barWidth / 2;
     const barY = y;
+
+    this.ctx.fillStyle = "#ffffff";
+    this.ctx.font = "bold 16px alkhemikal";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText(enemy.name, barX + barWidth / 2, barY - 8);
 
     this.ctx.fillStyle = "#330000";
     this.ctx.fillRect(barX, barY, barWidth, barHeight);

@@ -27,6 +27,10 @@ export default class CombatTurn {
     globals.triedToFlee = false;
     this.announceTimer = 0;
     this.pendingAction = null;
+
+    this.turnTimeLimit = 1800; // 30 seconds 
+    this.turnTimer = 0;
+    this.turnTimerActive = false;
   }
 
   update() {
@@ -41,6 +45,15 @@ export default class CombatTurn {
         this.startPlayerTurn(); 
         break;
       case "selecting": 
+        if (this.turnTimerActive) {
+          this.turnTimer--;
+          if (this.turnTimer <= 0) {
+            this.turnTimerActive = false;
+            globals.messageQueue.push(new Message("Time's up! Your turn is skipped.", 'error'));
+            this.state = "finished";
+            return;
+          }
+        }
         this.handlePhaseSelection(); 
         break;
       case "executing": 
@@ -59,6 +72,9 @@ export default class CombatTurn {
     this.currentPhaseIndex = 0;
     this.selectedPhase = null;
     globals.triedToFlee = false;
+
+    this.turnTimer = this.turnTimeLimit;
+    this.turnTimerActive = true;
   }
 
   handlePhaseSelection() {
@@ -76,6 +92,7 @@ export default class CombatTurn {
     }
     if (globals.action.confirm) {
       globals.action.confirm = false;
+      this.turnTimerActive = false;
       const phaseName = this.phases[this.currentPhaseIndex];
       this.selectedPhase = this.createPhase(phaseName);
       this.selectedPhase.init();
@@ -83,6 +100,15 @@ export default class CombatTurn {
       console.log("phase: " + phaseName);
     }
   }
+
+  handlePlayerTimeout() {
+    globals.messageQueue.push(new Message("Time's up! Auto-attacking!", 'error'));
+    this.currentPhaseIndex = 0; // Attack
+    const phaseName = this.phases[this.currentPhaseIndex];
+    this.selectedPhase = this.createPhase(phaseName);
+    this.selectedPhase.init();
+    this.state = "executing";
+}
 
   createPhase(phaseName) {
     let mq = globals.messageQueue;
@@ -134,7 +160,17 @@ export default class CombatTurn {
 
     switch (this.state) {
       case "idle": this.startEnemyTurn(); break;
-      case "deciding": this.decideEnemyAction(); break;
+      case "deciding":     
+        if (this.turnTimerActive && this.turnTimer <= 0) {
+          this.turnTimerActive = false;
+          globals.messageQueue.push(new Message(this.entity.name + " took too long and lost its turn!", 'error'));
+          this.state = "finished";
+          this.attackExecuted = true; 
+          return;
+        }
+        this.decideEnemyAction();
+        break;
+
       case "announcing":
         if (this.announceTimer > 0) {
           this.announceTimer--;
@@ -164,13 +200,23 @@ export default class CombatTurn {
     console.log("=== ENEMY (" + this.entity.id + ") ===");
     globals.messageQueue.push(new Message("Enemy's turn!", 'info'));
     this.state = "deciding";
+    this.turnTimer = this.turnTimeLimit;
+    this.turnTimerActive = true;
   }
+
+  handleEnemyTimeout() {
+    this.turnTimerActive = false;
+    globals.messageQueue.push(new Message(this.entity.name + " hesitates! Auto-attacking!", 'error'));
+    this.pendingAction = "attack";
+    this.state = "announcing";
+    this.announceTimer = 30; 
+}
 
   decideEnemyAction() {
     let action = Math.floor(Math.random() * 2) + 1;
     this.pendingAction = (action === 1) ? "attack" : "move";
     let actionText = (this.pendingAction === "attack") ? "preparing an attack" : "trying to move";
-    globals.messageQueue.push(new Message("Wild enemy is " + actionText + "!", 'info'));
+    globals.messageQueue.push(new Message(this.entity.name + " is " + actionText + "!", 'info'));
     this.state = "announcing";
     this.announceTimer = 60;
   }
@@ -221,7 +267,7 @@ export default class CombatTurn {
     
     if (occupied || this.targetPositionIndex === this.entity.combatXIndex) {
 
-      globals.messageQueue.push(new Message("Enemy tried to move but the spot is blocked!", 'error'));
+      globals.messageQueue.push(new Message(this.entity.name + " tried to move but the spot is blocked!", 'error'));
       this.state = "finished";
       return;
     }
@@ -229,7 +275,7 @@ export default class CombatTurn {
     const positions = [650, 500, 400];
     this.entity.combatXIndex = this.targetPositionIndex;
     this.entity.combatX = positions[this.targetPositionIndex];
-    globals.messageQueue.push(new Message("Enemy moved to the " + this.getPositionName(this.targetPositionIndex) + "!", 'move'));
+    globals.messageQueue.push(new Message(this.entity.name + " moved to the " + this.getPositionName(this.targetPositionIndex) + "!", 'move'));
     if (globals.ParticleSystem) globals.ParticleSystem.createExplosion(this.entity.combatX, 340, 0.5);
     this.state = "finished";
   }
@@ -247,13 +293,13 @@ export default class CombatTurn {
     if (isCritical) {
       if (playerPosition === 0) {
         damage = 0;
-        globals.messageQueue.push(new Message("Player avoided the attack!", 'move'));
+        globals.messageQueue.push(new Message(this.entity.name + " missed the attack!", 'move'));
       } else if (playerPosition === 1) {
         damage = Math.floor((16 + 5 + this.dice.rollDice(6)) * damageMultiplier);
-        globals.messageQueue.push(new Message("Critical hit! It's super effective!", 'critical'));
+        globals.messageQueue.push(new Message(this.entity.name + " landed a critical hit! It's super effective!", 'critical'));
       } else {
         damage = Math.floor((22 + 5 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier);
-        globals.messageQueue.push(new Message("Critical hit! It's super effective!", 'critical'));
+        globals.messageQueue.push(new Message(this.entity.name + " landed a critical hit! It's super effective!", 'critical'));
       }
     } else {
       if (playerPosition === 0) {
@@ -261,10 +307,10 @@ export default class CombatTurn {
         globals.messageQueue.push(new Message("Player avoided the attack!", 'move'));
       } else if (playerPosition === 1) {
         damage = Math.floor((5 + this.dice.rollDice(6)) * damageMultiplier);
-        globals.messageQueue.push(new Message("Enemy dealt " + damage + " damage!", 'damage'));
+        globals.messageQueue.push(new Message(this.entity.name + " dealt " + damage + " damage!", 'damage'));
       } else {
         damage = Math.floor((5 + this.dice.rollDice(6) + this.dice.rollDice(6)) * damageMultiplier);
-        globals.messageQueue.push(new Message("Enemy dealt " + damage + " damage!", 'damage'));
+        globals.messageQueue.push(new Message(this.entity.name + " dealt " + damage + " damage!", 'damage'));
       }
     }
 
@@ -279,7 +325,7 @@ export default class CombatTurn {
       }
 
     } else if (!isCritical) {
-      globals.messageQueue.push(new Message("But it failed!", 'error'));
+      globals.messageQueue.push(new Message(this.entity.name + " missed the attack!", 'error'));
     }
     this.state = "finished";
   }
