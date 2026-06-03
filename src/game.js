@@ -145,6 +145,7 @@ class Game {
     game.assets.loadAssets();
     game.player = SpriteFactory.createPlayer(100, 220, 120, 70, Math.floor(Math.random() * 100) + 1);
     globals.player = game.player;
+    game.applyDifficultyToPlayer();
     game.gameStats = new GameStatistics(game.player.playerId);
     globals.gameStats = game.gameStats;
     globals.sprites.push(globals.player);
@@ -1022,7 +1023,7 @@ class Game {
       if (globals.difficulty === "easy") {
         this.enemyHPMultiplier = this.gameData.difficulty.easy.enemyHPMultiplier;
         this.enemyAttackMultiplier = this.gameData.difficulty.easy.enemyAttackMultiplier;
-      } else {
+      } else if (globals.difficulty === "hard") {
         this.enemyHPMultiplier = this.gameData.difficulty.hard.enemyHPMultiplier;
         this.enemyAttackMultiplier = this.gameData.difficulty.hard.enemyAttackMultiplier;
       }
@@ -1034,6 +1035,15 @@ class Game {
       }
     }
   }
+
+  applyDifficultyToPlayer() {
+    const diff = globals.difficulty;
+    const playerHpMult = this.gameData.difficulty[diff].playerHPMultiplier;
+  
+    globals.player.maxHp = Math.floor(globals.player.maxHp * playerHpMult);
+    globals.player.hp = Math.min(globals.player.hp, globals.player.maxHp);
+  }
+
   resetGame() {
 
     this.score = 0;
@@ -1043,6 +1053,7 @@ class Game {
     const newPlayer = SpriteFactory.createPlayer(100, 220, 120, 70, Math.floor(Math.random() * 100) + 1);
     globals.player = newPlayer;
     this.player = newPlayer;
+    this.applyDifficultyToPlayer();
 
     globals.enemies = [];
     globals.items = [];
